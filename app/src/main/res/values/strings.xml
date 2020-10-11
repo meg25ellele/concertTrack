@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">concertTrack</string>
+    <string name="mainPageInfo">Korzystaj z aplikacji jako artysta lub fan."\n" Zaloguj się na swoje konto lub utwórz nowe.</string>
+    <string name="loginArtistInfo">Zaloguj się jako artysta aby używać aplikacji.</string>
+    <string name="loginFanInfo">Zaloguj się jako fan aby używać aplikacji.</string>
+    <string name="mailLoginET">Adres email</string>
+    <string name="passwordLoginET">Hasło</string>
+    <string name="forgotPasswordText">Nie pamiętasz hasła?</string>
+    <string name="logInInfo">Zaloguj się</string>
+    <string name="registerInfo">Zarejestruj się</string>
+    <string name="noAccountInfo">Nie masz jeszcze konta?</string>
+    <string name="appName">concertTrack</string>
+    <string name="IamfanInfo">jestem fanem</string>
+    <string name="IamartistInfo">jestem artystą</string>
 </resources>
