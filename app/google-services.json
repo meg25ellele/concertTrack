@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "810475567350",
+    "firebase_url": "https://concerttrack-1d695.firebaseio.com",
+    "project_id": "concerttrack-1d695",
+    "storage_bucket": "concerttrack-1d695.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:810475567350:android:12b72d314e82bcd6a054d7",
+        "android_client_info": {
+          "package_name": "com.example.concerttrack"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "810475567350-advpf0i4qlnq62v9t5eu50026b7lsipr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.concerttrack",
+            "certificate_hash": "b92221f61b4f9f2b38593aecb44bedb49d9ae595"
+          }
+        },
+        {
+          "client_id": "810475567350-2l83if4d7l4ije1fm0n5e7sremmu26i9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC8eB1ibOsn66hj95216LzORQL0f8dC84w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "810475567350-2l83if4d7l4ije1fm0n5e7sremmu26i9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

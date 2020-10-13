@@ -12,4 +12,11 @@
     <string name="appName">concertTrack</string>
     <string name="IamfanInfo">jestem fanem</string>
     <string name="IamartistInfo">jestem artystą</string>
+    <string name="userName">Nazwa użytkownika</string>
+    <string name="repeatPassword">Powtórz hasło</string>
+    <string name="notAllowedEmptyField">Pole nie może być puste</string>
+    <string name="tooLongUserName">Za długa nazwa użytkownika</string>
+    <string name="passwordTooShort">Hasło powinno mieć przynajmniej 6 znaków</string>
+    <string name="differentPasswordMsg">Hasła powinny być takie same </string>
+    <string name="badlyFormattedEmail">Niepoprawny adres email</string>
 </resources>

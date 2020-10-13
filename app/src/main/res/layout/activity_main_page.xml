@@ -55,6 +55,7 @@
         android:paddingBottom="10sp"
         android:shadowColor="@color/buttonColor"
         android:text="@string/IamfanInfo"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/artistBtn" />
@@ -69,6 +70,7 @@
         android:paddingTop="10sp"
         android:paddingBottom="10sp"
         android:text="@string/IamartistInfo"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/mainPageInfoTV" />
