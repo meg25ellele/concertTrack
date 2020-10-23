@@ -1,23 +1,19 @@
 package com.example.concerttrack.ui
 
-import android.content.Context
-import android.content.Intent
+
 import android.os.Bundle
-import android.util.Log
 import android.util.Patterns
-import android.widget.Toast
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.concerttrack.R
-import com.example.concerttrack.util.Constants
 import com.example.concerttrack.util.content
 import com.example.concerttrack.viewmodel.FanRegisterViewModel
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.android.synthetic.main.activity_fan_register.*
 import kotlinx.android.synthetic.main.activity_fan_register.text_input_email
 import kotlinx.android.synthetic.main.activity_fan_register.text_input_password
-import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_login.registerBtn
 
 
@@ -25,22 +21,30 @@ class FanRegisterActivity : AppCompatActivity() {
 
     private val fanRegisterViewModel: FanRegisterViewModel by lazy { ViewModelProvider(this).get(FanRegisterViewModel::class.java) }
 
+    private var allControls: List<View> = listOf()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_fan_register)
 
-        registerBtn.setOnClickListener {
-            if(areInputValid()){
-                fanRegisterViewModel.register(userEmail.text.toString(),userPassword.text.toString())
-            }
-        }
+        allControls = listOf(text_input_artistName, text_input_email, text_input_password,text_input_repeat_password, registerBtn)
 
         fanRegisterViewModel.userLiveData?.observe(this,Observer<FirebaseUser>{ firebaseUser ->
             if(firebaseUser != null) {
-                Toast.makeText(this,"User created",Toast.LENGTH_SHORT).show()
                 finish()
             }
         })
+
+        fanRegisterViewModel.isRegisterSuccessful?.observe(this, Observer<Boolean> {
+            hideSpinnerAndEnableControls()
+        })
+
+        registerBtn.setOnClickListener {
+            if(areInputValid()){
+                showSpinnerAndDisableControls()
+                fanRegisterViewModel.register(userEmail.text.toString(),userPassword.text.toString())
+            }
+        }
 
 
     }
@@ -62,16 +66,16 @@ class FanRegisterActivity : AppCompatActivity() {
 
 
     private fun validateUserName(): Boolean {
-        val isEmpty: Boolean = text_input_userName.editText?.content()?.isEmpty() ?: true
+        val isEmpty: Boolean = text_input_artistName.editText?.content()?.isEmpty() ?: true
 
         if(isEmpty) {
-            text_input_userName.error = getString(R.string.notAllowedEmptyField)
+            text_input_artistName.error = getString(R.string.notAllowedEmptyField)
             return false
-        } else if(text_input_userName.editText?.length()!! > 15 ) {
-            text_input_userName.error = getString(R.string.tooLongUserName)
+        } else if(text_input_artistName.editText?.length()!! > 15 ) {
+            text_input_artistName.error = getString(R.string.tooLongUserName)
             return false
         } else {
-            text_input_userName.error = null
+            text_input_artistName.error = null
             return true
         }
 
@@ -139,6 +143,16 @@ class FanRegisterActivity : AppCompatActivity() {
         } else {
             return true
         }
+    }
+
+    private fun showSpinnerAndDisableControls() {
+        progressBar.visibility = View.VISIBLE
+        allControls.forEach { v -> v.isEnabled = false }
+    }
+
+    private  fun hideSpinnerAndEnableControls() {
+        progressBar.visibility = View.GONE
+        allControls.forEach { v -> v.isEnabled = true }
     }
 
 

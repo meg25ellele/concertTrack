@@ -9,6 +9,7 @@
         android:roundIcon="@mipmap/ic_channel"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".ui.ForgotPasswordActivity"></activity>
         <activity android:name=".ui.SplashScreenActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -20,9 +21,7 @@
         <activity android:name=".ui.ArtistRegisterActivity" />
         <activity android:name=".ui.FanRegisterActivity" />
         <activity android:name=".ui.LoginActivity" />
-        <activity android:name=".ui.MainPageActivity">
-
-        </activity>
+        <activity android:name=".ui.MainPageActivity"></activity>
 
         <meta-data
             android:name="preloaded_fonts"

@@ -10,11 +10,11 @@ class LoggedInViewModel(application: Application) : AndroidViewModel(application
 
     private val authAppRepository: AuthAppRepository by lazy { AuthAppRepository(application) }
     var userLiveData: MutableLiveData<FirebaseUser>? = null
-    var isLoginLiveData: MutableLiveData<Boolean>? = null
+    var isUserLogin: MutableLiveData<Boolean>? = null
 
     init{
         userLiveData = authAppRepository.userLiveData
-        isLoginLiveData = authAppRepository.isLoginLiveData
+        isUserLogin = authAppRepository.isUserLogin
     }
 
     fun logOut(){

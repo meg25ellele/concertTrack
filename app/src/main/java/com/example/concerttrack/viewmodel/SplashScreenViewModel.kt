@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.example.concerttrack.repository.AuthAppRepository
-import com.google.firebase.auth.FirebaseUser
 
 class SplashScreenViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -12,7 +11,7 @@ class SplashScreenViewModel(application: Application) : AndroidViewModel(applica
     var isLoginLiveData: MutableLiveData<Boolean>? = null
 
     init {
-        isLoginLiveData = authAppRepository.isLoginLiveData
+        isLoginLiveData = authAppRepository.isUserLogin
     }
 
 }

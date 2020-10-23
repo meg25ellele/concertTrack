@@ -10,19 +10,19 @@ import com.google.firebase.auth.FirebaseUser
 class FanRegisterViewModel(application: Application) : AndroidViewModel(application) {
 
     val authAppRepository: AuthAppRepository by lazy { AuthAppRepository(application) }
+
     var userLiveData: MutableLiveData<FirebaseUser>? = null
+    var isRegisterSuccessful: MutableLiveData<Boolean>? = null
 
 
     init {
         userLiveData = authAppRepository.userLiveData
+        isRegisterSuccessful = authAppRepository.isRegisterSuccessful
     }
 
     fun register(email: String, password: String) {
         authAppRepository.registerUser(email,password)
     }
 
-    fun accountAlreadyExists(email: String) : Boolean {
-        return authAppRepository.accountExists(email)
-    }
 
 }

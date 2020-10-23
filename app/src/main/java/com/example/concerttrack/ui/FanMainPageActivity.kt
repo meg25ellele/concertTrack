@@ -27,8 +27,9 @@ class FanMainPageActivity : AppCompatActivity() {
             }
         })
 
-        loggedInViewModel.isLoginLiveData?.observe(this,Observer<Boolean>{ loggedIn ->
+        loggedInViewModel.isUserLogin?.observe(this,Observer<Boolean>{ loggedIn ->
             if(!loggedIn) {
+                startActivity(Intent(this,MainPageActivity::class.java))
                 finish()
             }
 

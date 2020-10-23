@@ -14,9 +14,29 @@
     <string name="IamartistInfo">jestem artystą</string>
     <string name="userName">Nazwa użytkownika</string>
     <string name="repeatPassword">Powtórz hasło</string>
+    <string name="artistName">Nazwa artysty/zespołu</string>
     <string name="notAllowedEmptyField">Pole nie może być puste</string>
     <string name="tooLongUserName">Za długa nazwa użytkownika</string>
     <string name="passwordTooShort">Hasło powinno mieć przynajmniej 6 znaków</string>
     <string name="differentPasswordMsg">Hasła powinny być takie same </string>
     <string name="badlyFormattedEmail">Niepoprawny adres email</string>
+    <string name="unknownLoginError">Logowanie nie powiodło się. Coś poszło nie tak!</string>
+    <string name="noSuchAccount">Logowanie nie powiodło się. Konto o podanym adresie email nie istnieje!</string>
+    <string name="wrongPassword">Logowanie nie powiodło się. Konto o podanym adresie email nie istnieje!</string>
+    <string name="loginSuccess">Zalogowano!</string>
+    <string name="unknownRegisterError">Rejstracja nie powiodła się. Coś poszło nie tak!</string>
+    <string name="accountExists">Rejestracja nie powiodła się. Konto o podanym adresie email już istnieje! </string>
+    <string name="registerSuccess">Zarejestrowano nowego użytkownika!</string>
+    <string name="useAppWithoutLoginInfo">przeglądaj wydarzenia muzyczne bez logowania</string>
+    <string name="orInfo">lub</string>
+    <string name="forgotPasswordIfo">Wpisz email aby otrzymać wiadomość "\n"z linkiem do resetowania hasła.</string>
+    <string name="sendEmailBtnInfo">Wyślij email</string>
+    <string name="sendEmailError">Wysyłanie maila nie powiodło się. Coś poszło nie tak!</string>
+    <string name="wrongEmailError">Wysyłanie maila nie powiodło się. Konto o podanym adresie email nie istnieje!</string>
+    <string name="sendEmailSuccess">Mail zostal wysłany. Sprawdź swoją skrzynkę aby dokończyć restowanie hasła! </string>
+    <string name="createFanAccountInfo">Utwórz nowe konto jako fan</string>
+    <string name="createArtistAccountInfo">Utwórz nowe konto jako artysta</string>
+    <string name="extraDataRegisterInfo">Uzupełnij dodatkowe dane, aby Twój profil "\n"był atrakcyjniejszy i łatwiejszy do znalezienia."\n"Możesz to zrobić także po rejestracji.</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

@@ -20,9 +20,6 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun login(email: String, password: String){
-        viewModelScope.launch {
             authAppRepository.loginUser(email,password)
-        }
-
     }
 }
