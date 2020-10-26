@@ -9,8 +9,11 @@ class Constants {
         const val ARTIST_TYPE_STR = "artist"
         const val FAN_TYPE_STR = "fan"
 
-        const val RC_SIGN_IN = 123
+
+        const val GALLERY_REQUEST_CODE = 123
+        const  val PICK_IMAGE_REQUEST = 1
     }
+
 }
 
 fun EditText.content() = text.toString()

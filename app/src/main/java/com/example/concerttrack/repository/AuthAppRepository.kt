@@ -4,6 +4,7 @@ import android.app.Application
 import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import com.example.concerttrack.R
+import com.example.concerttrack.util.Resource
 import com.example.concerttrack.util.showToastError
 import com.example.concerttrack.util.showToastSuccess
 import com.google.firebase.auth.*
@@ -41,13 +42,51 @@ class AuthAppRepository(private val application: Application) {
             isUserLogin!!.postValue(false)
         }
 
+
+
     }
 
-    fun registerUser(email: String, password: String) {
+
+    suspend fun registerUser(email:String, password: String, name: String) : Resource<FirebaseUser?> {
+        firebaseAuth.createUserWithEmailAndPassword(email,password).await()
+
+        firebaseAuth.currentUser?.let { user ->
+            val profileUpdates = UserProfileChangeRequest.Builder()
+                .setDisplayName(name)
+                .build()
+
+            user.updateProfile(profileUpdates).await()
+        }
+
+        return Resource.Success(firebaseAuth.currentUser)
+    }
+
+
+
+    fun registerUser1(email: String, password: String, name: String) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 firebaseAuth.createUserWithEmailAndPassword(email,password).await()
                 withContext(Dispatchers.Main) {
+
+                    firebaseAuth.currentUser?.let {user->
+                        val profileUpdates = UserProfileChangeRequest.Builder()
+                            .setDisplayName(name)
+                            .build()
+
+                        CoroutineScope(Dispatchers.IO).launch {
+                            try {
+                                user.updateProfile(profileUpdates).await()
+                            } catch(e: Exception){
+                                withContext(Dispatchers.Main){
+                                    Toast.makeText(application,e.message,Toast.LENGTH_LONG).show()
+                                }
+
+                            }
+
+                        }
+                    }
+
                     userLiveData?.postValue(firebaseAuth.currentUser)
                     isRegisterSuccessful?.postValue(true)
                     logOut()
@@ -125,6 +164,7 @@ class AuthAppRepository(private val application: Application) {
             }
         }
     }
+
 
     fun logOut(){
         firebaseAuth.signOut()

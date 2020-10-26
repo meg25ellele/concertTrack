@@ -37,6 +37,9 @@
     <string name="createFanAccountInfo">Utwórz nowe konto jako fan</string>
     <string name="createArtistAccountInfo">Utwórz nowe konto jako artysta</string>
     <string name="extraDataRegisterInfo">Uzupełnij dodatkowe dane, aby Twój profil "\n"był atrakcyjniejszy i łatwiejszy do znalezienia."\n"Możesz to zrobić także po rejestracji.</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="shortDesc">Krótki opis"\n"</string>
+    <string name="permission_denied_info">Brak uprawnień…</string>
+    <string name="shortDescInfo">Napisz pare zdań o sobie:</string>
+    <string name="addAvatarInfo">Dodaj zdjęcie z galerii</string>
+    <string name="otherLinksInfo">Linki do innych portali:</string>
 </resources>

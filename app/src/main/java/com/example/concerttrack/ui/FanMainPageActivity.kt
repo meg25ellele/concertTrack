@@ -24,6 +24,7 @@ class FanMainPageActivity : AppCompatActivity() {
         loggedInViewModel.userLiveData?.observe(this,Observer<FirebaseUser>{ firebaseUser ->
             if(firebaseUser != null) {
                 currentUser.text = firebaseUser.email
+                userName.text = firebaseUser.displayName
             }
         })
 

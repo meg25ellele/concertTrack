@@ -136,6 +136,8 @@ class LoginActivity : AppCompatActivity() {
         passwordLoginET.text = null
         mailLoginET.clearFocus()
         passwordLoginET.clearFocus()
+        text_input_email.error = null
+        text_input_password.error = null
     }
 
 
