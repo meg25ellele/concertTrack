@@ -22,7 +22,7 @@
     <string name="badlyFormattedEmail">Niepoprawny adres email</string>
     <string name="unknownLoginError">Logowanie nie powiodło się. Coś poszło nie tak!</string>
     <string name="noSuchAccount">Logowanie nie powiodło się. Konto o podanym adresie email nie istnieje!</string>
-    <string name="wrongPassword">Logowanie nie powiodło się. Konto o podanym adresie email nie istnieje!</string>
+    <string name="wrongPassword">Logowanie nie powiodło się. Niepoprawne hasło!</string>
     <string name="loginSuccess">Zalogowano!</string>
     <string name="unknownRegisterError">Rejstracja nie powiodła się. Coś poszło nie tak!</string>
     <string name="accountExists">Rejestracja nie powiodła się. Konto o podanym adresie email już istnieje! </string>

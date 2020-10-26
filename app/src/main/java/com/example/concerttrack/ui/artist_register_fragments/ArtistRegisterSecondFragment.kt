@@ -32,6 +32,11 @@ class ArtistRegisterSecondFragment: Fragment(R.layout.fragment_artist_register_s
         ArtistRegisterViewModel::class.java) }
 
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        artistRegisterViewModel.retrieveMusicGenres()
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -44,7 +49,9 @@ class ArtistRegisterSecondFragment: Fragment(R.layout.fragment_artist_register_s
             loadPhotoFromGallery()
         }
 
-        artistRegisterViewModel.retrieveMusicGenresLiveData.observe(viewLifecycleOwner, Observer {
+
+
+        artistRegisterViewModel.musicGenresLiveData.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is Resource.Loading -> {
                 }

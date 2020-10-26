@@ -7,7 +7,9 @@ import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.concerttrack.R
+import com.example.concerttrack.util.Resource
 import com.example.concerttrack.util.content
+import com.example.concerttrack.util.showToastError
 import com.example.concerttrack.viewmodel.ForgotPasswordViewModel
 import com.example.concerttrack.viewmodel.LoginViewModel
 import kotlinx.android.synthetic.main.activity_forgot_password.*
@@ -29,18 +31,38 @@ class ForgotPasswordActivity : AppCompatActivity() {
 
         allControls = listOf(text_input_email, sendEmailBt)
 
-        forgotPasswordViewModel.isResetEmailSend?.observe(this, Observer<Boolean> {isResetEmailSend ->
-            hideSpinnerAndEnableControls()
-            if(isResetEmailSend){
-                finish()
+
+        forgotPasswordViewModel.isResetEmailSendLiveData.observe(this, Observer {
+            when(it) {
+                is Resource.Loading -> {
+                    showSpinnerAndDisableControls()
+                }
+
+                is Resource.Success -> {
+                    hideSpinnerAndEnableControls()
+                    finish()
+                }
+
+                is Resource.Failure -> {
+                    hideSpinnerAndEnableControls()
+
+                    when(it.throwable.javaClass.simpleName) {
+                        "FirebaseAuthInvalidUserException" -> {
+                            this.showToastError(R.string.wrongEmailError)
+                        }
+                        else -> {
+                            this.showToastError(R.string.sendEmailError)
+                        }
+                    }
+
+                }
             }
         })
 
 
         sendEmailBt.setOnClickListener {
             if(isEmailCorrect()){
-                showSpinnerAndDisableControls()
-                forgotPasswordViewModel.sendEmail(mailLoginET.text.toString())
+                forgotPasswordViewModel.sendResetPasswordEmail(mailLoginET.text.toString())
             }
         }
     }

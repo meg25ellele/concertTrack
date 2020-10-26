@@ -8,7 +8,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.concerttrack.R
+import com.example.concerttrack.util.Resource
 import com.example.concerttrack.util.content
+import com.example.concerttrack.util.showToastError
+import com.example.concerttrack.util.showToastSuccess
 import com.example.concerttrack.viewmodel.FanRegisterViewModel
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.android.synthetic.main.activity_fan_register.*
@@ -27,20 +30,39 @@ class FanRegisterActivity : AppCompatActivity() {
 
         allControls = listOf(text_input_userName, text_input_email, text_input_password,text_input_repeat_password, registerBtn)
 
-        fanRegisterViewModel.userLiveData?.observe(this,Observer<FirebaseUser>{ firebaseUser ->
-            if(firebaseUser != null) {
-                finish()
+
+        fanRegisterViewModel.successfullyRegisterLiveData.observe(this, Observer {
+            when(it) {
+                is Resource.Loading -> {
+                    showSpinnerAndDisableControls()
+                }
+                is Resource.Success -> {
+                    hideSpinnerAndEnableControls()
+                    this.showToastSuccess(R.string.registerSuccess)
+                    finish()
+                }
+                is Resource.Failure -> {
+                    hideSpinnerAndEnableControls()
+
+                    when(it.throwable.javaClass.simpleName) {
+                        "FirebaseAuthUserCollisionException" -> {
+                            this.showToastError(R.string.accountExists)
+                        }
+                        else -> {
+                            this.showToastError(R.string.unknownRegisterError)
+                        }
+                    }
+                }
             }
         })
 
-        fanRegisterViewModel.isRegisterSuccessful?.observe(this, Observer<Boolean> {
-            hideSpinnerAndEnableControls()
-        })
+
 
         registerBtn.setOnClickListener {
             if(areInputValid()){
-                showSpinnerAndDisableControls()
-                fanRegisterViewModel.register(userEmail.text.toString(),userPassword.text.toString(), userName.text.toString())
+                //showSpinnerAndDisableControls()
+                //fanRegisterViewModel.register(userEmail.text.toString(),userPassword.text.toString(), userName.text.toString())
+                fanRegisterViewModel.registerUser(userEmail.text.toString(),userPassword.text.toString(), userName.text.toString())
             }
         }
 

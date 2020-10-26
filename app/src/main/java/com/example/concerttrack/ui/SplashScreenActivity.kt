@@ -19,9 +19,11 @@ class SplashScreenActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash_screen)
 
+        splashScreenViewModel.checkUserLogin()
 
-        splashScreenViewModel.isLoginLiveData?.observe(this, Observer<Boolean>{ isLoginUser ->
+        splashScreenViewModel.isUserLoginLiveData.observe(this, Observer<Boolean>{ isLoginUser ->
             if(isLoginUser) {
+
                 startActivity(Intent(this,FanMainPageActivity::class.java))
                 finish()
             } else {

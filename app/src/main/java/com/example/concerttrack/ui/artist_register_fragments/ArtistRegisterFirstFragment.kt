@@ -8,7 +8,10 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.example.concerttrack.R
+import com.example.concerttrack.util.Resource
 import com.example.concerttrack.util.content
+import com.example.concerttrack.util.showToastError
+import com.example.concerttrack.util.showToastSuccess
 import com.example.concerttrack.viewmodel.ArtistRegisterViewModel
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.android.synthetic.main.fragment_artist_register_first.*
@@ -40,21 +43,35 @@ class ArtistRegisterFirstFragment: Fragment(R.layout.fragment_artist_register_fi
             view.findNavController().navigate(R.id.action_artistRegisterFirstFragment_to_artistRegisterSecondFragment)
         }
 
+        artistRegisterViewModel.successfullyRegisterLiveData.observe(viewLifecycleOwner, Observer {
+            when(it) {
+                is Resource.Loading -> {
+                    showSpinnerAndDisableControls()
+                }
+                is Resource.Success -> {
+                    hideSpinnerAndEnableControls()
+                    this.showToastSuccess(R.string.registerSuccess)
+                    activity?.finish()
+                }
+                is Resource.Failure -> {
+                    hideSpinnerAndEnableControls()
 
-        artistRegisterViewModel.userLiveData?.observe(viewLifecycleOwner, Observer<FirebaseUser>{ firebaseUser ->
-            if(firebaseUser != null) {
-                activity?.finish()
+                    when(it.throwable.javaClass.simpleName) {
+                        "FirebaseAuthUserCollisionException" -> {
+                            this.showToastError(R.string.accountExists)
+                        }
+                        else -> {
+                            this.showToastError(R.string.unknownRegisterError)
+                        }
+                    }
+                }
             }
         })
 
-        artistRegisterViewModel.isRegisterSuccessful?.observe(viewLifecycleOwner, Observer<Boolean> {
-            hideSpinnerAndEnableControls()
-        })
 
         registerBtn.setOnClickListener {
             if(areInputValid()){
-                showSpinnerAndDisableControls()
-                artistRegisterViewModel.register(userEmail.text.toString(),userPassword.text.toString(), userName.text.toString())
+                artistRegisterViewModel.registerUser(userEmail.text.toString(),userPassword.text.toString(), userName.text.toString())
             }
         }
     }

@@ -8,10 +8,12 @@ import com.example.concerttrack.repository.AuthAppRepository
 class SplashScreenViewModel(application: Application) : AndroidViewModel(application) {
 
     val authAppRepository: AuthAppRepository by lazy { AuthAppRepository(application) }
-    var isLoginLiveData: MutableLiveData<Boolean>? = null
+    var isUserLoginLiveData: MutableLiveData<Boolean> = MutableLiveData()
 
-    init {
-        isLoginLiveData = authAppRepository.isUserLogin
+
+    fun checkUserLogin(){
+        val user = authAppRepository.checkUserLogin()
+        isUserLoginLiveData.postValue(user.data)
     }
 
 }

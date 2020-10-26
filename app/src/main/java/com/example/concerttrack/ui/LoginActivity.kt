@@ -2,21 +2,19 @@ package com.example.concerttrack.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.util.Patterns
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.concerttrack.R
-import com.example.concerttrack.util.Constants
-import com.example.concerttrack.util.content
+import com.example.concerttrack.util.*
 import com.example.concerttrack.viewmodel.LoginViewModel
-import com.google.firebase.auth.FirebaseUser
 import kotlinx.android.synthetic.main.activity_login.*
 
 
 class LoginActivity : AppCompatActivity() {
-
 
     private val loginViewModel: LoginViewModel by lazy {
         ViewModelProvider(this).get(LoginViewModel::class.java) }
@@ -30,30 +28,47 @@ class LoginActivity : AppCompatActivity() {
 
         allControls = listOf(text_input_email, text_input_password, logInBtn,registerBtn, forgotPasswordBtn)
 
-        loginViewModel.userLiveData?.observe(this, Observer<FirebaseUser>{ firebaseUser ->
-            if(firebaseUser != null) {
-                val intent = Intent(this,FanMainPageActivity::class.java).apply {
-                    addFlags(
-                        Intent.FLAG_ACTIVITY_CLEAR_TOP or
-                                Intent.FLAG_ACTIVITY_CLEAR_TASK or
-                                Intent.FLAG_ACTIVITY_NEW_TASK
-                    )
+
+        loginViewModel.successfullyLoginLiveData.observe(this, Observer { it ->
+            when(it) {
+                is Resource.Loading -> {
+                    showSpinnerAndDisableControls()
                 }
-                startActivity(intent)
+
+                is Resource.Success -> {
+                    Log.e("success","success")
+                    val intent = Intent(this,FanMainPageActivity::class.java).apply {
+                        addFlags(
+                            Intent.FLAG_ACTIVITY_CLEAR_TOP or
+                                    Intent.FLAG_ACTIVITY_CLEAR_TASK or
+                                    Intent.FLAG_ACTIVITY_NEW_TASK
+                        )
+                    }
+                    hideSpinnerAndEnableControls()
+                    this.showToastSuccess(R.string.loginSuccess)
+                    startActivity(intent)
+                }
+
+                is Resource.Failure-> {
+                    hideSpinnerAndEnableControls()
+
+                   when(it.throwable.javaClass.simpleName) {
+                       "FirebaseAuthInvalidCredentialsException" -> {
+                           this.showToastError(R.string.wrongPassword)
+                       }
+                        "FirebaseAuthInvalidUserException" -> {
+                            this.showToastError(R.string.noSuchAccount)
+                        }
+                        else -> {
+                            this.showToastError(R.string.unknownLoginError)
+                        }
+                    }
+                }
             }
         })
 
-        loginViewModel.isLoginSuccessful?.observe(this, Observer<Boolean> {
-            hideSpinnerAndEnableControls()
-        })
 
-
-
-
-
-        val userTypeName = intent.getStringExtra(Constants.USER_TYPE)
-
-        when(userTypeName) {
+        when(intent.getStringExtra(Constants.USER_TYPE)) {
             Constants.ARTIST_TYPE_STR -> {
                 loginInfo.text = getText(R.string.loginArtistInfo)
                 userTypeIcon.setImageResource(R.drawable.star)
@@ -73,8 +88,7 @@ class LoginActivity : AppCompatActivity() {
 
         logInBtn.setOnClickListener {
             if( areInputValid()) {
-                showSpinnerAndDisableControls()
-                loginViewModel.login(mailLoginET.text.toString(),passwordLoginET.text.toString())
+                loginViewModel.loginUser(mailLoginET.text.toString(),passwordLoginET.text.toString())
             }
         }
 
