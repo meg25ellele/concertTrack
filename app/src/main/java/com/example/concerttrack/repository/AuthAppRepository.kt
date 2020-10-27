@@ -27,7 +27,7 @@ class AuthAppRepository(private val application: Application) {
         return Resource.Success(true)
     }
 
-    suspend fun registerUser(email:String,password:String, name: String): Resource<Boolean> {
+    suspend fun registerUser(email:String,password:String, name: String): Resource<String> {
         firebaseAuth.createUserWithEmailAndPassword(email,password).await()
         firebaseAuth.currentUser?.let { user ->
             val profileUpdates = UserProfileChangeRequest.Builder()
@@ -36,8 +36,9 @@ class AuthAppRepository(private val application: Application) {
 
             user.updateProfile(profileUpdates).await()
         }
+        val userUID = firebaseAuth.currentUser!!.uid
         logOut()
-        return Resource.Success(true)
+        return Resource.Success(userUID)
     }
 
     suspend fun sendResetPasswordEmail(email: String): Resource<Boolean> {

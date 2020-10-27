@@ -42,4 +42,7 @@
     <string name="shortDescInfo">Napisz pare zdań o sobie:</string>
     <string name="addAvatarInfo">Dodaj zdjęcie z galerii</string>
     <string name="otherLinksInfo">Linki do innych portali:</string>
+    <string name="name">name</string>
+    <string name="email">email</string>
+    <string name="password">password</string>
 </resources>

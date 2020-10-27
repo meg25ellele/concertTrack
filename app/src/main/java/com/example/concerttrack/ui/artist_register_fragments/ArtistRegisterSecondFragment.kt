@@ -2,7 +2,6 @@ package com.example.concerttrack.ui.artist_register_fragments
 
 import android.Manifest
 import android.app.Activity
-import android.content.AbstractThreadedSyncAdapter
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -10,32 +9,27 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.PermissionChecker
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.concerttrack.R
 import com.example.concerttrack.adapters.GenresAdapter
 import com.example.concerttrack.models.MusicGenre
-import com.example.concerttrack.util.Constants.Companion
 import com.example.concerttrack.util.Constants.Companion.GALLERY_REQUEST_CODE
 import com.example.concerttrack.util.Constants.Companion.PICK_IMAGE_REQUEST
 import com.example.concerttrack.util.Resource
 import com.example.concerttrack.util.showToastError
 import com.example.concerttrack.util.showToastSuccess
 import com.example.concerttrack.viewmodel.ArtistRegisterViewModel
-import com.example.concerttrack.viewmodel.ForgotPasswordViewModel
 import com.squareup.picasso.Picasso
 import com.theartofdev.edmodo.cropper.CropImage
-import kotlinx.android.synthetic.main.fragment_artist_register_first.*
 import kotlinx.android.synthetic.main.fragment_artist_register_second.*
 import kotlinx.android.synthetic.main.fragment_artist_register_second.progressBar
 import kotlinx.android.synthetic.main.fragment_artist_register_second.registerBtn
-import java.lang.StringBuilder
+
 
 class ArtistRegisterSecondFragment: Fragment(R.layout.fragment_artist_register_second) {
 
@@ -52,13 +46,13 @@ class ArtistRegisterSecondFragment: Fragment(R.layout.fragment_artist_register_s
 
 
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        name = arguments?.getString("name").toString()
-        email = arguments?.getString("email").toString()
-        password = arguments?.getString("password").toString()
+
+        name = arguments?.getString(getString(R.string.name)).toString()
+        email = arguments?.getString(getString(R.string.email)).toString()
+        password = arguments?.getString(getString(R.string.password)).toString()
 
         artistRegisterViewModel.retrieveMusicGenres()
 
@@ -81,29 +75,38 @@ class ArtistRegisterSecondFragment: Fragment(R.layout.fragment_artist_register_s
             when(it) {
                 is Resource.Loading -> {
                 }
-
                 is Resource.Success -> {
-
                     for(genre in it.data){
                         musicGenreList.add(genre)
                     }
                     setAdapterAndManager()
                 }
-
                 is Resource.Failure-> {
-
                 }
             }
         })
 
-        artistRegisterViewModel.successfullyRegisterLiveData.observe(viewLifecycleOwner, Observer {
+
+        artistRegisterViewModel.registerUIDLiveData.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is Resource.Loading -> {
                     showSpinnerAndDisableControls()
                 }
                 is Resource.Success -> {
-                    hideSpinnerAndEnableControls()
-                    this.showToastSuccess(R.string.registerSuccess)
+
+                    val myGenres = getMusicGenres()
+                    val fbLink =  if (fbLink.text.toString() != "") fbLink.text.toString() else null
+                    val ytLink = if (ytLink.text.toString() != "") ytLink.text.toString() else null
+                    val spotiLink = if (spotiLink.text.toString() != "") spotiLink.text.toString() else null
+                    val description = if(shortDesc.text.toString() !="") shortDesc.text.toString() else null
+
+                    artistRegisterViewModel.addNewArtist(it.data,email,name,
+                        description,fbLink,
+                        ytLink,spotiLink,myGenres)
+
+                    if(mImageUri!=null){
+                        artistRegisterViewModel.addPhotoToStorage(mImageUri!!,it.data)
+                    }
                     activity?.finish()
                 }
                 is Resource.Failure -> {
@@ -114,6 +117,7 @@ class ArtistRegisterSecondFragment: Fragment(R.layout.fragment_artist_register_s
                             this.showToastError(R.string.accountExists)
                         }
                         else -> {
+                            Log.e("error",it.throwable.message)
                             this.showToastError(R.string.unknownRegisterError)
                         }
                     }
@@ -121,6 +125,36 @@ class ArtistRegisterSecondFragment: Fragment(R.layout.fragment_artist_register_s
             }
         })
 
+        artistRegisterViewModel.successfullyAddedArtist.observe(viewLifecycleOwner, Observer {
+            when(it) {
+                is Resource.Loading -> {
+
+                }
+                is Resource.Success -> {
+                    hideSpinnerAndEnableControls()
+                    this.showToastSuccess(R.string.registerSuccess)
+                    activity?.finish()
+                }
+                is Resource.Failure -> {
+                    hideSpinnerAndEnableControls()
+                    this.showToastError(R.string.unknownRegisterError)
+                }
+            }
+        })
+    }
+     private fun getMusicGenres() : List<String>{
+         var myGenres = mutableListOf<String>()
+         for(genre in musicGenreList) {
+             if(genre.chosen) {
+                 myGenres.add(genre.name)
+             }
+         }
+         return myGenres
+     }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        Log.i("saved","saved")
     }
 
     private fun loadPhotoFromGallery(){
@@ -152,7 +186,7 @@ class ArtistRegisterSecondFragment: Fragment(R.layout.fragment_artist_register_s
                     .setAspectRatio(1,1)
                     .setAutoZoomEnabled(false)
                     .start(requireContext(),this)
-            };
+            }
         }
 
         if(requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE && data!=null) {
@@ -188,7 +222,9 @@ class ArtistRegisterSecondFragment: Fragment(R.layout.fragment_artist_register_s
         allControls.forEach { v -> v.isEnabled = true }
     }
 
+
+
     companion object{
-        private var mImageUri: Uri? = null
+         var mImageUri: Uri? = null
     }
 }

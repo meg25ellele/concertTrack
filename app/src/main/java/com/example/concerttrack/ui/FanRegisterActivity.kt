@@ -31,15 +31,13 @@ class FanRegisterActivity : AppCompatActivity() {
         allControls = listOf(text_input_userName, text_input_email, text_input_password,text_input_repeat_password, registerBtn)
 
 
-        fanRegisterViewModel.successfullyRegisterLiveData.observe(this, Observer {
+        fanRegisterViewModel.registerUIDLiveData.observe(this, Observer {
             when(it) {
                 is Resource.Loading -> {
                     showSpinnerAndDisableControls()
                 }
                 is Resource.Success -> {
-                    hideSpinnerAndEnableControls()
-                    this.showToastSuccess(R.string.registerSuccess)
-                    finish()
+                    fanRegisterViewModel.addNewUser(it.data,userEmail.text.toString(),userName.text.toString())
                 }
                 is Resource.Failure -> {
                     hideSpinnerAndEnableControls()
@@ -56,12 +54,26 @@ class FanRegisterActivity : AppCompatActivity() {
             }
         })
 
+        fanRegisterViewModel.successfullyAddedUser.observe(this, Observer {
+            when(it) {
+                is Resource.Loading -> {
+                }
+                is Resource.Success -> {
+                    hideSpinnerAndEnableControls()
+                    this.showToastSuccess(R.string.registerSuccess)
+                    finish()
+                }
+                is Resource.Failure -> {
+                    hideSpinnerAndEnableControls()
+
+                    this.showToastError(R.string.unknownRegisterError)
+                }
+            }
+        })
 
 
         registerBtn.setOnClickListener {
             if(areInputValid()){
-                //showSpinnerAndDisableControls()
-                //fanRegisterViewModel.register(userEmail.text.toString(),userPassword.text.toString(), userName.text.toString())
                 fanRegisterViewModel.registerUser(userEmail.text.toString(),userPassword.text.toString(), userName.text.toString())
             }
         }

@@ -39,22 +39,21 @@ class ArtistRegisterFirstFragment: Fragment(R.layout.fragment_artist_register_fi
 
         nextFragmentBtn.setOnClickListener {view ->
             if(areInputValid()){
-                val bundle = bundleOf("name" to userName.text.toString(),
-                    "email" to userEmail.text.toString(),
-                    "password" to userPassword.text.toString())
+                val bundle = bundleOf(getString(R.string.name) to userName.text.toString(),
+                    getString(R.string.email) to userEmail.text.toString(),
+                    getString(R.string.password) to userPassword.text.toString())
                 view.findNavController().navigate(R.id.action_artistRegisterFirstFragment_to_artistRegisterSecondFragment,bundle)
             }
         }
 
-        artistRegisterViewModel.successfullyRegisterLiveData.observe(viewLifecycleOwner, Observer {
+        artistRegisterViewModel.registerUIDLiveData.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is Resource.Loading -> {
                     showSpinnerAndDisableControls()
                 }
                 is Resource.Success -> {
-                    hideSpinnerAndEnableControls()
-                    this.showToastSuccess(R.string.registerSuccess)
-                    activity?.finish()
+                    artistRegisterViewModel.addNewArtist(it.data,userEmail.text.toString(),userName.text.toString(),
+                        null,null,null,null,null)
                 }
                 is Resource.Failure -> {
                     hideSpinnerAndEnableControls()
@@ -67,6 +66,23 @@ class ArtistRegisterFirstFragment: Fragment(R.layout.fragment_artist_register_fi
                             this.showToastError(R.string.unknownRegisterError)
                         }
                     }
+                }
+            }
+        })
+
+        artistRegisterViewModel.successfullyAddedArtist.observe(viewLifecycleOwner, Observer {
+            when(it) {
+                is Resource.Loading -> {
+
+                }
+                is Resource.Success -> {
+                    hideSpinnerAndEnableControls()
+                    this.showToastSuccess(R.string.registerSuccess)
+                    activity?.finish()
+                }
+                is Resource.Failure -> {
+                    hideSpinnerAndEnableControls()
+                    this.showToastError(R.string.unknownRegisterError)
                 }
             }
         })
