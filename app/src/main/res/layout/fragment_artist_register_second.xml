@@ -6,6 +6,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:elevation="10dp"
+        android:outlineProvider="none"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/backInfo"
         android:layout_width="wrap_content"
@@ -32,9 +45,10 @@
         app:srcCompat="@drawable/back" />
 
     <ScrollView
-        android:layout_width="409dp"
-        android:layout_height="678dp"
-        android:layout_marginTop="8dp"
+        android:id="@+id/scrollView2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="50dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -44,7 +58,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
             <ImageView
                 android:id="@+id/avatarIV"
@@ -86,7 +100,7 @@
             <EditText
                 android:id="@+id/shortDesc"
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
+                android:layout_height="75dp"
                 android:layout_marginStart="32dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="32dp"
@@ -161,9 +175,9 @@
                 android:layout_marginEnd="32dp"
                 android:background="@drawable/edit_text_background"
                 android:ems="10"
+                android:inputType="textPersonName"
                 android:paddingStart="5dp"
                 android:paddingEnd="5dp"
-                android:inputType="textPersonName"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/ytIV"
                 app:layout_constraintTop_toBottomOf="@+id/fbLink" />
@@ -173,8 +187,7 @@
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:layout_marginStart="32dp"
-                android:layout_marginTop="14dp"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginTop="16dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/ytIV"
                 app:srcCompat="@drawable/spotify" />
@@ -188,20 +201,45 @@
                 android:layout_marginEnd="32dp"
                 android:background="@drawable/edit_text_background"
                 android:ems="10"
+                android:inputType="textPersonName"
                 android:paddingStart="5dp"
                 android:paddingEnd="5dp"
-                android:inputType="textPersonName"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/spotiIV"
                 app:layout_constraintTop_toBottomOf="@+id/ytLink" />
 
-            <TextView
-                android:id="@+id/musicGenresListTV"
-                android:layout_width="wrap_content"
-                android:layout_height="19dp"
-                android:layout_marginTop="32dp"
-                android:text="TextView"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/musicGenresRV"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="32dp"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/musicGenresInfo" />
+
+            <Button
+                android:id="@+id/registerBtn"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@color/buttonColor"
+                android:text="@string/registerInfo"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/musicGenresRV" />
+
+            <TextView
+                android:id="@+id/musicGenresInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="16dp"
+                android:text="Gatunek muzyki:"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/spotiLink" />
 

@@ -2,6 +2,7 @@ package com.example.concerttrack.ui.artist_register_fragments
 
 import android.Manifest
 import android.app.Activity
+import android.content.AbstractThreadedSyncAdapter
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -15,15 +16,25 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.concerttrack.R
+import com.example.concerttrack.adapters.GenresAdapter
+import com.example.concerttrack.models.MusicGenre
 import com.example.concerttrack.util.Constants.Companion
 import com.example.concerttrack.util.Constants.Companion.GALLERY_REQUEST_CODE
 import com.example.concerttrack.util.Constants.Companion.PICK_IMAGE_REQUEST
 import com.example.concerttrack.util.Resource
+import com.example.concerttrack.util.showToastError
+import com.example.concerttrack.util.showToastSuccess
 import com.example.concerttrack.viewmodel.ArtistRegisterViewModel
+import com.example.concerttrack.viewmodel.ForgotPasswordViewModel
 import com.squareup.picasso.Picasso
 import com.theartofdev.edmodo.cropper.CropImage
+import kotlinx.android.synthetic.main.fragment_artist_register_first.*
 import kotlinx.android.synthetic.main.fragment_artist_register_second.*
+import kotlinx.android.synthetic.main.fragment_artist_register_second.progressBar
+import kotlinx.android.synthetic.main.fragment_artist_register_second.registerBtn
 import java.lang.StringBuilder
 
 class ArtistRegisterSecondFragment: Fragment(R.layout.fragment_artist_register_second) {
@@ -31,15 +42,28 @@ class ArtistRegisterSecondFragment: Fragment(R.layout.fragment_artist_register_s
     private val artistRegisterViewModel: ArtistRegisterViewModel by lazy { ViewModelProvider(this).get(
         ArtistRegisterViewModel::class.java) }
 
+    private var allControls: List<View> = listOf()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    val musicGenreList  = mutableListOf<MusicGenre>()
 
-        artistRegisterViewModel.retrieveMusicGenres()
-    }
+    lateinit var name: String
+    lateinit var email:String
+    lateinit var password: String
+
+
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        name = arguments?.getString("name").toString()
+        email = arguments?.getString("email").toString()
+        password = arguments?.getString("password").toString()
+
+        artistRegisterViewModel.retrieveMusicGenres()
+
+        allControls = listOf(addAvatarBtn,shortDesc,fbLink,ytLink,spotiLink,musicGenresRV,registerBtn)
+
 
         backBtn.setOnClickListener {
             view.findNavController().popBackStack()
@@ -49,7 +73,9 @@ class ArtistRegisterSecondFragment: Fragment(R.layout.fragment_artist_register_s
             loadPhotoFromGallery()
         }
 
-
+        registerBtn.setOnClickListener {
+            artistRegisterViewModel.registerUser(email,password,name)
+        }
 
         artistRegisterViewModel.musicGenresLiveData.observe(viewLifecycleOwner, Observer {
             when(it) {
@@ -57,18 +83,40 @@ class ArtistRegisterSecondFragment: Fragment(R.layout.fragment_artist_register_s
                 }
 
                 is Resource.Success -> {
-                    val musicGenresList = it.data
-                    val sb = StringBuilder()
 
-                    for (genre in musicGenresList) {
-                        sb.append(genre.name)
-                        sb.append(" ")
+                    for(genre in it.data){
+                        musicGenreList.add(genre)
                     }
-                    musicGenresListTV.text = sb.toString()
+                    setAdapterAndManager()
                 }
 
                 is Resource.Failure-> {
 
+                }
+            }
+        })
+
+        artistRegisterViewModel.successfullyRegisterLiveData.observe(viewLifecycleOwner, Observer {
+            when(it) {
+                is Resource.Loading -> {
+                    showSpinnerAndDisableControls()
+                }
+                is Resource.Success -> {
+                    hideSpinnerAndEnableControls()
+                    this.showToastSuccess(R.string.registerSuccess)
+                    activity?.finish()
+                }
+                is Resource.Failure -> {
+                    hideSpinnerAndEnableControls()
+
+                    when(it.throwable.javaClass.simpleName) {
+                        "FirebaseAuthUserCollisionException" -> {
+                            this.showToastError(R.string.accountExists)
+                        }
+                        else -> {
+                            this.showToastError(R.string.unknownRegisterError)
+                        }
+                    }
                 }
             }
         })
@@ -123,6 +171,21 @@ class ArtistRegisterSecondFragment: Fragment(R.layout.fragment_artist_register_s
             else -> Toast.makeText(activity,getString(R.string.permission_denied_info), Toast.LENGTH_SHORT).show()
 
         }
+    }
+
+    private fun setAdapterAndManager(){
+        musicGenresRV.adapter = GenresAdapter(musicGenreList)
+        musicGenresRV.layoutManager = StaggeredGridLayoutManager(3,StaggeredGridLayoutManager.HORIZONTAL)
+    }
+
+    private fun showSpinnerAndDisableControls() {
+        progressBar.visibility = View.VISIBLE
+        allControls.forEach { v -> v.isEnabled = false }
+    }
+
+    private  fun hideSpinnerAndEnableControls() {
+        progressBar.visibility = View.GONE
+        allControls.forEach { v -> v.isEnabled = true }
     }
 
     companion object{

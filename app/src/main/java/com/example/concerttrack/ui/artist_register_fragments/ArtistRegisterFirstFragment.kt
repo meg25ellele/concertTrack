@@ -3,6 +3,7 @@ package com.example.concerttrack.ui.artist_register_fragments
 import android.os.Bundle
 import android.util.Patterns
 import android.view.View
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -21,6 +22,7 @@ import kotlinx.android.synthetic.main.fragment_artist_register_first.text_input_
 import kotlinx.android.synthetic.main.fragment_artist_register_first.text_input_password
 import kotlinx.android.synthetic.main.fragment_artist_register_first.text_input_repeat_password
 import kotlinx.android.synthetic.main.fragment_artist_register_first.text_input_userName
+import kotlinx.android.synthetic.main.fragment_artist_register_second.*
 
 class ArtistRegisterFirstFragment: Fragment(R.layout.fragment_artist_register_first) {
 
@@ -36,11 +38,12 @@ class ArtistRegisterFirstFragment: Fragment(R.layout.fragment_artist_register_fi
 
 
         nextFragmentBtn.setOnClickListener {view ->
-//            if(areInputValid()){
-//                view.findNavController().navigate(R.id.action_artistRegisterFirstFragment_to_artistRegisterSecondFragment)
-//            }
-
-            view.findNavController().navigate(R.id.action_artistRegisterFirstFragment_to_artistRegisterSecondFragment)
+            if(areInputValid()){
+                val bundle = bundleOf("name" to userName.text.toString(),
+                    "email" to userEmail.text.toString(),
+                    "password" to userPassword.text.toString())
+                view.findNavController().navigate(R.id.action_artistRegisterFirstFragment_to_artistRegisterSecondFragment,bundle)
+            }
         }
 
         artistRegisterViewModel.successfullyRegisterLiveData.observe(viewLifecycleOwner, Observer {
