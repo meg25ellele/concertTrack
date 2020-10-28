@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.util.Patterns
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -20,7 +21,7 @@ class LoginActivity : AppCompatActivity() {
         ViewModelProvider(this).get(LoginViewModel::class.java) }
 
     private var allControls: List<View> = listOf()
-
+    private var userType =  Constants.FAN_TYPE_STR
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,24 +30,101 @@ class LoginActivity : AppCompatActivity() {
         allControls = listOf(text_input_email, text_input_password, logInBtn,registerBtn, forgotPasswordBtn)
 
 
-        loginViewModel.successfullyLoginLiveData.observe(this, Observer { it ->
+        when(intent.getStringExtra(Constants.USER_TYPE)) {
+            Constants.ARTIST_TYPE_STR -> {
+                userType = Constants.ARTIST_TYPE_STR
+                loginInfo.text = getText(R.string.loginArtistInfo)
+                userTypeIcon.setImageResource(R.drawable.star)
+                registerBtn.setOnClickListener {
+                    startActivity(Intent(this,ArtistRegisterActivity::class.java))
+                }
+            }
+            Constants.FAN_TYPE_STR -> {
+                userType = Constants.FAN_TYPE_STR
+                loginInfo.text = getText(R.string.loginFanInfo)
+                userTypeIcon.setImageResource(R.drawable.user)
+                registerBtn.setOnClickListener {
+                    startActivity(Intent(this,FanRegisterActivity::class.java))
+                }
+
+            }
+        }
+
+        loginViewModel.artistFound.observe(this, Observer {
             when(it) {
                 is Resource.Loading -> {
                     showSpinnerAndDisableControls()
                 }
+                is Resource.Success -> {
+                    if(it.data) {
+                        loginViewModel.loginUser(mailLoginET.text.toString(),passwordLoginET.text.toString())
+                    } else {
+                        hideSpinnerAndEnableControls()
+                        this.showToastError(R.string.noSuchAccountArtist)
+                    }
+                }
+                is Resource.Failure -> {
+                    hideSpinnerAndEnableControls()
+                    Toast.makeText(this,it.throwable.toString(),Toast.LENGTH_LONG).show()
+            }
+            }
+        })
+
+        loginViewModel.userFound.observe(this, Observer {
+            when(it) {
+                is Resource.Loading -> {
+                    showSpinnerAndDisableControls()
+                }
+                is Resource.Success -> {
+                    if(it.data) {
+                        loginViewModel.loginUser(mailLoginET.text.toString(),passwordLoginET.text.toString())
+                    } else {
+                        hideSpinnerAndEnableControls()
+                        this.showToastError(R.string.noSuchAccountFan)
+                    }
+                }
+                is Resource.Failure -> {
+                    hideSpinnerAndEnableControls()
+                    Toast.makeText(this,it.throwable.toString(),Toast.LENGTH_LONG).show()
+                }
+            }
+        })
+
+
+        loginViewModel.successfullyLoginLiveData.observe(this, Observer { it ->
+            when(it) {
+                is Resource.Loading -> {
+                }
 
                 is Resource.Success -> {
-                    Log.e("success","success")
-                    val intent = Intent(this,FanMainPageActivity::class.java).apply {
-                        addFlags(
-                            Intent.FLAG_ACTIVITY_CLEAR_TOP or
-                                    Intent.FLAG_ACTIVITY_CLEAR_TASK or
-                                    Intent.FLAG_ACTIVITY_NEW_TASK
-                        )
+
+                    when(userType) {
+                        Constants.FAN_TYPE_STR -> {
+                            val intent = Intent(this,FanMainPageActivity::class.java).apply {
+                                addFlags(
+                                    Intent.FLAG_ACTIVITY_CLEAR_TOP or
+                                            Intent.FLAG_ACTIVITY_CLEAR_TASK or
+                                            Intent.FLAG_ACTIVITY_NEW_TASK
+                                )
+                            }
+                            hideSpinnerAndEnableControls()
+                            this.showToastSuccess(R.string.loginSuccess)
+                            startActivity(intent)
+                        }
+                        Constants.ARTIST_TYPE_STR -> {
+                            val intent = Intent(this,ArtistMainPage::class.java).apply {
+                                addFlags(
+                                    Intent.FLAG_ACTIVITY_CLEAR_TOP or
+                                            Intent.FLAG_ACTIVITY_CLEAR_TASK or
+                                            Intent.FLAG_ACTIVITY_NEW_TASK
+                                )
+                            }
+                            hideSpinnerAndEnableControls()
+                            this.showToastSuccess(R.string.loginSuccess)
+                            startActivity(intent)
+                        }
                     }
-                    hideSpinnerAndEnableControls()
-                    this.showToastSuccess(R.string.loginSuccess)
-                    startActivity(intent)
+
                 }
 
                 is Resource.Failure-> {
@@ -68,32 +146,25 @@ class LoginActivity : AppCompatActivity() {
         })
 
 
-        when(intent.getStringExtra(Constants.USER_TYPE)) {
-            Constants.ARTIST_TYPE_STR -> {
-                loginInfo.text = getText(R.string.loginArtistInfo)
-                userTypeIcon.setImageResource(R.drawable.star)
-                registerBtn.setOnClickListener {
-                    startActivity(Intent(this,ArtistRegisterActivity::class.java))
-                }
-            }
-            Constants.FAN_TYPE_STR -> {
-                loginInfo.text = getText(R.string.loginFanInfo)
-                userTypeIcon.setImageResource(R.drawable.user)
-                registerBtn.setOnClickListener {
-                    startActivity(Intent(this,FanRegisterActivity::class.java))
-                }
-
-            }
-        }
-
         logInBtn.setOnClickListener {
             if( areInputValid()) {
-                loginViewModel.loginUser(mailLoginET.text.toString(),passwordLoginET.text.toString())
+
+                when (userType) {
+                    Constants.ARTIST_TYPE_STR -> {
+                        loginViewModel.findArtist(mailLoginET.text.toString())
+                    }
+                    Constants.FAN_TYPE_STR -> {
+                        loginViewModel.findUser(mailLoginET.text.toString())
+                    }
+                }
             }
         }
 
         forgotPasswordBtn.setOnClickListener{
-            startActivity(Intent(this,ForgotPasswordActivity::class.java))
+            val intent = Intent(this,ForgotPasswordActivity::class.java).apply {
+                putExtra(Constants.USER_TYPE,userType)
+            }
+            startActivity(intent)
         }
     }
 

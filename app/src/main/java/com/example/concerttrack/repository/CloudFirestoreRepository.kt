@@ -1,6 +1,7 @@
 package com.example.concerttrack.repository
 
 import android.app.Application
+import android.util.Log
 import com.example.concerttrack.models.Artist
 
 import com.example.concerttrack.models.MusicGenre
@@ -32,6 +33,20 @@ class CloudFirestoreRepository(private val application: Application) {
         return Resource.Success(true)
     }
 
+    suspend fun findUser(email:String):Resource<Boolean> {
+        val querySnapshot = firebaseFirestore.collection("users")
+            .whereEqualTo("email",email).get().await()
+
+
+        Log.i("query",querySnapshot.documents.toString())
+
+        return if(querySnapshot.documents.isEmpty()) {
+            Resource.Success(false)
+        } else {
+            Resource.Success(true)
+        }
+    }
+
     suspend fun addNewArtist(id:String, email:String, name:String,description:String?,
                              facebookLink:String?, youtubeLink:String?,spotifyLink:String?,myGenres:List<String>?)
                                 : Resource<Boolean>{
@@ -42,5 +57,18 @@ class CloudFirestoreRepository(private val application: Application) {
 
         return Resource.Success(true)
     }
+
+    suspend fun findArtist(email: String): Resource<Boolean> {
+        val querySnapshot = firebaseFirestore.collection("artists")
+            .whereEqualTo("email",email).get().await()
+
+        return if(querySnapshot.documents.isEmpty()) {
+            Resource.Success(false)
+        } else {
+            Resource.Success(true)
+        }
+    }
+
+
  }
 

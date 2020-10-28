@@ -69,4 +69,6 @@ class ArtistRegisterViewModel(application: Application) : AndroidViewModel(appli
         }
     }
 
+
+
 }

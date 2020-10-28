@@ -4,12 +4,11 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Patterns
 import android.view.View
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.concerttrack.R
-import com.example.concerttrack.util.Resource
-import com.example.concerttrack.util.content
-import com.example.concerttrack.util.showToastError
+import com.example.concerttrack.util.*
 import com.example.concerttrack.viewmodel.ForgotPasswordViewModel
 import com.example.concerttrack.viewmodel.LoginViewModel
 import kotlinx.android.synthetic.main.activity_forgot_password.*
@@ -24,6 +23,7 @@ class ForgotPasswordActivity : AppCompatActivity() {
         ViewModelProvider(this).get(ForgotPasswordViewModel::class.java) }
 
     private var allControls: List<View> = listOf()
+    private var userType =  Constants.FAN_TYPE_STR
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,15 +31,59 @@ class ForgotPasswordActivity : AppCompatActivity() {
 
         allControls = listOf(text_input_email, sendEmailBt)
 
+        userType = intent.getStringExtra(Constants.USER_TYPE)!!
 
-        forgotPasswordViewModel.isResetEmailSendLiveData.observe(this, Observer {
+        forgotPasswordViewModel.artistFound.observe(this, Observer {
             when(it) {
                 is Resource.Loading -> {
                     showSpinnerAndDisableControls()
                 }
+                is Resource.Success -> {
+                    if(it.data) {
+                        forgotPasswordViewModel.sendResetPasswordEmail(mailLoginET.text.toString())
+                    } else {
+                        hideSpinnerAndEnableControls()
+                        this.showToastError(R.string.wrongEmailErrorArtist)
+                    }
+                }
+                is Resource.Failure -> {
+                    hideSpinnerAndEnableControls()
+                    Toast.makeText(this,it.throwable.toString(), Toast.LENGTH_LONG).show()
+                }
+            }
+        })
+
+        forgotPasswordViewModel.userFound.observe(this, Observer {
+            when(it) {
+                is Resource.Loading -> {
+                    showSpinnerAndDisableControls()
+                }
+                is Resource.Success -> {
+                    if(it.data) {
+                        forgotPasswordViewModel.sendResetPasswordEmail(mailLoginET.text.toString())
+                    } else {
+                        hideSpinnerAndEnableControls()
+                        this.showToastError(R.string.wrongEmailErrorFan)
+                    }
+                }
+                is Resource.Failure -> {
+                    hideSpinnerAndEnableControls()
+                    Toast.makeText(this,it.throwable.toString(), Toast.LENGTH_LONG).show()
+                }
+            }
+        })
+
+
+        forgotPasswordViewModel.isResetEmailSendLiveData.observe(this, Observer {
+            when(it) {
+
+                is Resource.Loading -> {
+
+                }
 
                 is Resource.Success -> {
                     hideSpinnerAndEnableControls()
+                    this.showToastSuccess(R.string.sendEmailSuccess)
                     finish()
                 }
 
@@ -62,7 +106,15 @@ class ForgotPasswordActivity : AppCompatActivity() {
 
         sendEmailBt.setOnClickListener {
             if(isEmailCorrect()){
-                forgotPasswordViewModel.sendResetPasswordEmail(mailLoginET.text.toString())
+
+                when (userType) {
+                    Constants.ARTIST_TYPE_STR -> {
+                        forgotPasswordViewModel.findArtist(mailLoginET.text.toString())
+                    }
+                    Constants.FAN_TYPE_STR -> {
+                        forgotPasswordViewModel.findUser(mailLoginET.text.toString())
+                    }
+                }
             }
         }
     }

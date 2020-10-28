@@ -3,15 +3,21 @@ package com.example.concerttrack.viewmodel
 import android.app.Application
 import androidx.lifecycle.*
 import com.example.concerttrack.repository.AuthAppRepository
+import com.example.concerttrack.repository.CloudFirestoreRepository
 import com.example.concerttrack.util.Resource
 import kotlinx.coroutines.launch
 import java.lang.Exception
 
 class LoginViewModel(application: Application) : AndroidViewModel(application) {
 
-    val authAppRepository: AuthAppRepository by lazy { AuthAppRepository(application) }
+    private val authAppRepository: AuthAppRepository by lazy { AuthAppRepository(application) }
+    private  val cloudFirestoreRepository: CloudFirestoreRepository by lazy { CloudFirestoreRepository(application) }
+
 
     val successfullyLoginLiveData: MutableLiveData<Resource<Boolean>> = MutableLiveData()
+    val artistFound: MutableLiveData<Resource<Boolean>> = MutableLiveData()
+    val userFound: MutableLiveData<Resource<Boolean>> = MutableLiveData()
+
 
 
 
@@ -26,5 +32,24 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    fun findArtist(email: String)  = viewModelScope.launch {
+        artistFound. postValue(Resource.Loading())
+        try{
+            val firebaseAnswer = cloudFirestoreRepository.findArtist(email)
+            artistFound.postValue(firebaseAnswer)
+        } catch (e:Exception){
+            artistFound.postValue(Resource.Failure(e))
+        }
+    }
+
+    fun findUser(email: String)  = viewModelScope.launch {
+        userFound. postValue(Resource.Loading())
+        try{
+            val firebaseAnswer = cloudFirestoreRepository.findUser(email)
+            userFound.postValue(firebaseAnswer)
+        } catch (e:Exception){
+            userFound.postValue(Resource.Failure(e))
+        }
+    }
 
 }

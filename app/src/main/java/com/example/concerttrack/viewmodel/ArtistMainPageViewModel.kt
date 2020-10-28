@@ -4,10 +4,9 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.example.concerttrack.repository.AuthAppRepository
-import com.example.concerttrack.util.Resource
 import com.google.firebase.auth.FirebaseUser
 
-class FanMainPageViewModel(application: Application) : AndroidViewModel(application) {
+class ArtistMainPageViewModel(application: Application) : AndroidViewModel(application) {
 
     private val authAppRepository: AuthAppRepository by lazy { AuthAppRepository(application) }
 
@@ -21,6 +20,6 @@ class FanMainPageViewModel(application: Application) : AndroidViewModel(applicat
     }
 
     fun getCurrentUser(): FirebaseUser {
-       return authAppRepository.getCurrentUser().data
+        return authAppRepository.getCurrentUser().data
     }
 }

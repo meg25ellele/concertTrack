@@ -22,6 +22,8 @@
     <string name="badlyFormattedEmail">Niepoprawny adres email</string>
     <string name="unknownLoginError">Logowanie nie powiodło się. Coś poszło nie tak!</string>
     <string name="noSuchAccount">Logowanie nie powiodło się. Konto o podanym adresie email nie istnieje!</string>
+    <string name="noSuchAccountArtist">Logowanie nie powiodło się. Konto o podanym adresie email nie istnieje w bazie artystów!</string>
+    <string name="noSuchAccountFan">Logowanie nie powiodło się. Konto o podanym adresie email nie istnieje w bazie fanów!</string>
     <string name="wrongPassword">Logowanie nie powiodło się. Niepoprawne hasło!</string>
     <string name="loginSuccess">Zalogowano!</string>
     <string name="unknownRegisterError">Rejstracja nie powiodła się. Coś poszło nie tak!</string>
@@ -33,6 +35,8 @@
     <string name="sendEmailBtnInfo">Wyślij email</string>
     <string name="sendEmailError">Wysyłanie maila nie powiodło się. Coś poszło nie tak!</string>
     <string name="wrongEmailError">Wysyłanie maila nie powiodło się. Konto o podanym adresie email nie istnieje!</string>
+    <string name="wrongEmailErrorFan">Wysyłanie maila nie powiodło się. Konto o podanym adresie email nie istnieje w bazie fanów!</string>
+    <string name="wrongEmailErrorArtist">Wysyłanie maila nie powiodło się. Konto o podanym adresie email nie istnieje w bazie artystów!</string>
     <string name="sendEmailSuccess">Mail zostal wysłany. Sprawdź swoją skrzynkę aby dokończyć restowanie hasła! </string>
     <string name="createFanAccountInfo">Utwórz nowe konto jako fan</string>
     <string name="createArtistAccountInfo">Utwórz nowe konto jako artysta</string>
