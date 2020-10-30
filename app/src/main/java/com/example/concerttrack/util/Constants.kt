@@ -8,6 +8,7 @@ class Constants {
 
         const val ARTIST_TYPE_STR = "artist"
         const val FAN_TYPE_STR = "fan"
+        const val GUEST_TYPE_STR = "guest"
 
 
         const val GALLERY_REQUEST_CODE = 123

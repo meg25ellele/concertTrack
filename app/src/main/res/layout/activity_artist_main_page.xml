@@ -6,46 +6,36 @@
     android:layout_height="match_parent"
     tools:context=".ui.ArtistMainPage">
 
-    <Button
-        android:id="@+id/logOut"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Wyloguj się"
+    <FrameLayout
+        android:id="@+id/flFragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/bottomNavigationArtistView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <fragment
+            android:id="@+id/artistMainNavHostFragment"
+            android:name="androidx.navigation.fragment.NavHostFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:defaultNavHost="true"
+            app:navGraph="@navigation/artist_main_nav_graph" />
+
+    </FrameLayout>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationArtistView"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        app:menu="@menu/artist_main_page_navigation_menu"
+        app:labelVisibilityMode="labeled"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/currentUser"
-        app:layout_constraintVertical_bias="0.25" />
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"/>
 
-    <TextView
-        android:id="@+id/currentUser"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:text="TextView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/userName" />
-
-    <TextView
-        android:id="@+id/userName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TextView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pageName" />
-
-    <TextView
-        android:id="@+id/pageName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="150dp"
-        android:text="ArtistMainPage"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

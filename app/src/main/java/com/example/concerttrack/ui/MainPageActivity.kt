@@ -33,4 +33,5 @@ class MainPageActivity : AppCompatActivity() {
         }
         startActivity(intent)
     }
+
 }

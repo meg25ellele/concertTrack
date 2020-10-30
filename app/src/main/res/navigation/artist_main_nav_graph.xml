@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/artist_main_nav_graph"
+    app:startDestination="@id/eventsFragment2">
+    <fragment
+        android:id="@+id/eventsFragment2"
+        android:name="com.example.concerttrack.ui.sharedFragments.EventsFragment"
+        android:label="EventsFragment" >
+        <action
+            android:id="@+id/action_eventsFragment2_to_eventFragment3"
+            app:destination="@id/eventFragment3"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+    </fragment>
+    <fragment
+        android:id="@+id/eventFragment3"
+        android:name="com.example.concerttrack.ui.sharedFragments.EventFragment"
+        android:label="EventFragment" />
+    <fragment
+        android:id="@+id/addEventFragment2"
+        android:name="com.example.concerttrack.ui.artistMainPageFragments.AddEventFragment"
+        android:label="AddEventFragment" />
+    <fragment
+        android:id="@+id/artistPanelFragment2"
+        android:name="com.example.concerttrack.ui.artistMainPageFragments.ArtistPanelFragment"
+        android:label="ArtistPanelFragment" />
+</navigation>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/eventsFragment2"
+        android:title="@string/my_events"
+        android:icon="@drawable/event_icon"/>
+
+    <item
+        android:id="@+id/addEventFragment2"
+        android:title="@string/add_event"
+        android:icon="@drawable/add_icon"/>
+
+    <item
+        android:id="@+id/artistPanelFragment2"
+        android:title="@string/my_account"
+        android:icon="@drawable/user_icon"/>
+
+</menu>

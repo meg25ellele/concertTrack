@@ -1,4 +1,4 @@
-package com.example.concerttrack.ui.artist_register_fragments
+package com.example.concerttrack.ui.artistRegisterFragments
 
 import android.os.Bundle
 import android.util.Patterns
@@ -14,7 +14,6 @@ import com.example.concerttrack.util.content
 import com.example.concerttrack.util.showToastError
 import com.example.concerttrack.util.showToastSuccess
 import com.example.concerttrack.viewmodel.ArtistRegisterViewModel
-import com.google.firebase.auth.FirebaseUser
 import kotlinx.android.synthetic.main.fragment_artist_register_first.*
 import kotlinx.android.synthetic.main.fragment_artist_register_first.progressBar
 import kotlinx.android.synthetic.main.fragment_artist_register_first.registerBtn
@@ -22,7 +21,6 @@ import kotlinx.android.synthetic.main.fragment_artist_register_first.text_input_
 import kotlinx.android.synthetic.main.fragment_artist_register_first.text_input_password
 import kotlinx.android.synthetic.main.fragment_artist_register_first.text_input_repeat_password
 import kotlinx.android.synthetic.main.fragment_artist_register_first.text_input_userName
-import kotlinx.android.synthetic.main.fragment_artist_register_second.*
 
 class ArtistRegisterFirstFragment: Fragment(R.layout.fragment_artist_register_first) {
 

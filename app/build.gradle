@@ -47,10 +47,8 @@ dependencies {
 
     // navigation dependencies
     def nav_version = "2.3.0"
-    implementation "androidx.navigation:navigation-fragment:$nav_version"
-    implementation "androidx.navigation:navigation-ui:$nav_version"
-    implementation "androidx.navigation:navigation-dynamic-features-fragment:$nav_version"
-    androidTestImplementation "androidx.navigation:navigation-testing:$nav_version"
+    implementation "androidx.navigation:navigation-fragment-ktx:2.2.1"
+    implementation "androidx.navigation:navigation-ui-ktx:2.2.1"
 
     implementation "org.jetbrains.anko:anko-coroutines:0.10.8"
 

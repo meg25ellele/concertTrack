@@ -13,7 +13,8 @@
         android:roundIcon="@mipmap/ic_channel"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.ArtistMainPage"></activity>
+        <activity android:name=".ui.GuestMainPageActivity"></activity>
+        <activity android:name=".ui.ArtistMainPage" />
         <activity android:name=".ui.ForgotPasswordActivity" />
         <activity android:name=".ui.SplashScreenActivity">
             <intent-filter>

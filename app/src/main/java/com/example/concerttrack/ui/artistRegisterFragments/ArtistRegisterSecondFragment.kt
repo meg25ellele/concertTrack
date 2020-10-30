@@ -1,4 +1,4 @@
-package com.example.concerttrack.ui.artist_register_fragments
+package com.example.concerttrack.ui.artistRegisterFragments
 
 import android.Manifest
 import android.app.Activity

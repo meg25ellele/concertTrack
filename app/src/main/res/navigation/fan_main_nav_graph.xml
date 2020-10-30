@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/fan_main_nav_graph"
+    app:startDestination="@id/eventsFragment">
+
+    <fragment
+        android:id="@+id/eventsFragment"
+        android:name="com.example.concerttrack.ui.sharedFragments.EventsFragment"
+        android:label="EventsFragment" >
+        <action
+            android:id="@+id/action_eventsFragment_to_eventFragment"
+            app:destination="@id/eventFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+    </fragment>
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.example.concerttrack.ui.fanMainPageFragments.SearchFragment"
+        android:label="SearchFragment" >
+        <action
+            android:id="@+id/action_searchFragment_to_eventFragment"
+            app:destination="@id/eventFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+    </fragment>
+    <fragment
+        android:id="@+id/favouritesFragment"
+        android:name="com.example.concerttrack.ui.fanMainPageFragments.FavouritesFragment"
+        android:label="FavouritesFragment" >
+        <action
+            android:id="@+id/action_favouritesFragment_to_eventFragment"
+            app:destination="@id/eventFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+    </fragment>
+    <fragment
+        android:id="@+id/fanPanelFragment"
+        android:name="com.example.concerttrack.ui.fanMainPageFragments.FanPanelFragment"
+        android:label="FanPanelFragment" >
+        <action
+            android:id="@+id/action_fanPanelFragment_to_eventFragment"
+            app:destination="@id/eventFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+    </fragment>
+    <fragment
+        android:id="@+id/favouritesArtistsFragment"
+        android:name="com.example.concerttrack.ui.fanMainPageFragments.FavouritesArtistsFragment"
+        android:label="FavouritesArtistsFragment" >
+        <action
+            android:id="@+id/action_favouritesArtistsFragment_to_eventFragment"
+            app:destination="@id/eventFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+    </fragment>
+    <fragment
+        android:id="@+id/favouritesEventsFragment"
+        android:name="com.example.concerttrack.ui.fanMainPageFragments.FavouritesEventsFragment"
+        android:label="FavouritesEventsFragment" >
+        <action
+            android:id="@+id/action_favouritesEventsFragment_to_favouritesFragment"
+            app:destination="@id/favouritesFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+        <action
+            android:id="@+id/action_favouritesEventsFragment_to_favouritesArtistsFragment"
+            app:destination="@id/favouritesArtistsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+    </fragment>
+    <fragment
+        android:id="@+id/eventFragment"
+        android:name="com.example.concerttrack.ui.sharedFragments.EventFragment"
+        android:label="EventFragment" />
+</navigation>

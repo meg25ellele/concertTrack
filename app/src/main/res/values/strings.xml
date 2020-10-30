@@ -49,4 +49,10 @@
     <string name="name">name</string>
     <string name="email">email</string>
     <string name="password">password</string>
+    <string name="events">Wydarzenia</string>
+    <string name="search">Szukaj</string>
+    <string name="favourites">Ulubione</string>
+    <string name="my_account">Moje konto</string>
+    <string name="add_event">Dodaj wydarzenie</string>
+    <string name="my_events">Moje wydarzenia</string>
 </resources>

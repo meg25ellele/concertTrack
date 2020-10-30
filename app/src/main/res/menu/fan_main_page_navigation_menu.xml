@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/eventsFragment"
+        android:title="@string/events"
+        android:icon="@drawable/event_icon"/>
+
+    <item
+        android:id="@+id/searchFragment"
+        android:title="@string/search"
+        android:icon="@drawable/search_icon"/>
+
+    <item
+        android:id="@+id/favouritesFragment"
+        android:title="@string/favourites"
+        android:icon="@drawable/favourite_icon"/>
+
+    <item
+        android:id="@+id/fanPanelFragment"
+        android:title="@string/my_account"
+        android:icon="@drawable/user_icon"/>
+
+
+</menu>
