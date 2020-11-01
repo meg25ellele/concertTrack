@@ -1,19 +1,12 @@
-package com.example.concerttrack.ui.fanMainPageFragments
+package com.example.concerttrack.ui
 
-import android.content.Intent
 import android.os.Bundle
-import android.provider.SyncStateContract
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import com.example.concerttrack.R
-import com.example.concerttrack.ui.MainPageActivity
 import com.example.concerttrack.util.Constants
-import com.example.concerttrack.viewmodel.FanMainPageViewModel
-import com.example.concerttrack.viewmodel.FanRegisterViewModel
 import kotlinx.android.synthetic.main.guest_info_fragment.*
 
 class FavouritesFragment: Fragment() {

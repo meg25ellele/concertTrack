@@ -2,32 +2,26 @@ package com.example.concerttrack.ui
 
 import android.Manifest
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.text.BoringLayout
 import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker
-import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.concerttrack.R
 import com.example.concerttrack.adapters.GenresAdapter
 import com.example.concerttrack.models.Artist
 import com.example.concerttrack.models.MusicGenre
-import com.example.concerttrack.ui.artistRegisterFragments.ArtistRegisterSecondFragment
 import com.example.concerttrack.util.*
 import com.example.concerttrack.viewmodel.ArtistSettingsViewModel
 import com.squareup.picasso.Picasso
 import com.theartofdev.edmodo.cropper.CropImage
-import kotlinx.android.synthetic.main.activity_artist_main_page.*
 import kotlinx.android.synthetic.main.activity_artist_settings.*
 import kotlinx.android.synthetic.main.activity_artist_settings.addAvatarBtn
 import kotlinx.android.synthetic.main.activity_artist_settings.avatarIV
@@ -40,7 +34,6 @@ import kotlinx.android.synthetic.main.activity_artist_settings.spotiLink
 import kotlinx.android.synthetic.main.activity_artist_settings.text_input_userName
 import kotlinx.android.synthetic.main.activity_artist_settings.userName
 import kotlinx.android.synthetic.main.activity_artist_settings.ytLink
-import kotlinx.android.synthetic.main.fragment_artist_register_first.*
 
 
 class ArtistSettingsActivity : AppCompatActivity() {

@@ -62,4 +62,11 @@
     <string name="nothingToEdit">Nic nie zostało zmienione. Edytuj konto i zapisz lub anuluj zmiany.</string>
     <string name="unknownUpdatingError">Edycja konta nie powiodła się. Coś poszło nie tak</string>
     <string name="successUpdatingData">Zmiany zostały zapisane!</string>
+    <string name="wrong_start_time">Wybrana data i czas nie moga być z przeszłości! </string>
+    <string name="tooLongHeader">Za długi nagłówek</string>
+    <string name="header">header</string>
+    <string name="startDate">startDate</string>
+    <string name="startTime">startTime</string>
+    <string name="description">description</string>
+    <string name="ticketsLink">ticketsLink</string>
 </resources>

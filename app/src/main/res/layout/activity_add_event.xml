@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.ArtistRegisterActivity">
+    tools:context=".ui.AddEventActivity">
 
     <FrameLayout
         android:id="@+id/flFragment"
@@ -13,15 +13,17 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
 
         <fragment
-            android:id="@+id/artistRegisterNavHostFragment"
-            android:name = "androidx.navigation.fragment.NavHostFragment"
+            android:id="@+id/addEventNavHostFragment"
+            android:name="androidx.navigation.fragment.NavHostFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:defaultNavHost="true"
-            app:navGraph="@navigation/artist_register_nav_graph"/>
+            app:navGraph="@navigation/add_event_nav_graph" />
 
     </FrameLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

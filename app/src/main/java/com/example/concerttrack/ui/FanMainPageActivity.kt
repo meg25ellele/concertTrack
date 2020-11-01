@@ -3,16 +3,12 @@ package com.example.concerttrack.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.concerttrack.R
 import androidx.navigation.ui.setupWithNavController
-import com.example.concerttrack.ui.fanMainPageFragments.FanPanelFragment
-import com.example.concerttrack.ui.fanMainPageFragments.FavouritesFragment
 import com.example.concerttrack.util.Constants
 import com.example.concerttrack.viewmodel.FanMainPageViewModel
-import com.example.concerttrack.viewmodel.SplashScreenViewModel
 import kotlinx.android.synthetic.main.activity_fan_main_page.*
 
 class FanMainPageActivity : AppCompatActivity() {

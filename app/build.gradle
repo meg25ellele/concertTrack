@@ -60,12 +60,13 @@ dependencies {
     api 'com.theartofdev.edmodo:android-image-cropper:2.8.+'
     implementation 'com.squareup.picasso:picasso:2.71828'
 
-
-
-
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.1.1'
     implementation 'com.google.firebase:firebase-firestore:21.3.1'
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.2.0-rc03"
     implementation "androidx.lifecycle:lifecycle-extensions:2.1.0"
+
+    //google play services
+    implementation 'com.google.android.gms:play-services-maps:17.0.0'
+
 
 }

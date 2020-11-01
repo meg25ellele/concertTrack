@@ -1,4 +1,4 @@
-package com.example.concerttrack.ui.artistRegisterFragments
+package com.example.concerttrack.ui
 
 import android.Manifest
 import android.app.Activity
@@ -106,7 +106,7 @@ class ArtistRegisterSecondFragment: Fragment(R.layout.fragment_artist_register_s
                         shortDesc.text.toString(),fbLink.text.toString(),
                         ytLink.text.toString(),spotiLink.text.toString(),myGenres)
 
-                    if(mImageUri!=null){
+                    if(mImageUri !=null){
                         artistRegisterViewModel.addPhotoToStorage(mImageUri!!,it.data)
                     }
                     activity?.finish()

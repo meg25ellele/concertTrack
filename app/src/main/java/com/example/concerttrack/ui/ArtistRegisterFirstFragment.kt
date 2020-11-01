@@ -1,4 +1,4 @@
-package com.example.concerttrack.ui.artistRegisterFragments
+package com.example.concerttrack.ui
 
 import android.os.Bundle
 import android.util.Patterns
@@ -21,7 +21,6 @@ import kotlinx.android.synthetic.main.fragment_artist_register_first.text_input_
 import kotlinx.android.synthetic.main.fragment_artist_register_first.text_input_password
 import kotlinx.android.synthetic.main.fragment_artist_register_first.text_input_repeat_password
 import kotlinx.android.synthetic.main.fragment_artist_register_first.text_input_userName
-import java.net.ResponseCache
 
 class ArtistRegisterFirstFragment: Fragment(R.layout.fragment_artist_register_first) {
 
@@ -147,7 +146,6 @@ class ArtistRegisterFirstFragment: Fragment(R.layout.fragment_artist_register_fi
                 true
             }
         }
-
     }
 
     private fun validateEmail(): Boolean {

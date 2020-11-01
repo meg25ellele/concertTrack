@@ -5,7 +5,7 @@
 
     <fragment
         android:id="@+id/artistRegisterFirstFragment"
-        android:name="com.example.concerttrack.ui.artistRegisterFragments.ArtistRegisterFirstFragment"
+        android:name="com.example.concerttrack.ui.ArtistRegisterFirstFragment"
         android:label="ArtistRegisterFirstFragment" >
         <action
             android:id="@+id/action_artistRegisterFirstFragment_to_artistRegisterSecondFragment"
@@ -17,6 +17,6 @@
     </fragment>
     <fragment
         android:id="@+id/artistRegisterSecondFragment"
-        android:name="com.example.concerttrack.ui.artistRegisterFragments.ArtistRegisterSecondFragment"
+        android:name="com.example.concerttrack.ui.ArtistRegisterSecondFragment"
         android:label="ArtistRegisterSecondFragment" />
 </navigation>

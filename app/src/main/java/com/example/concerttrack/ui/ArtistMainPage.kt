@@ -8,12 +8,10 @@ import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.concerttrack.R
 import com.example.concerttrack.models.Artist
-import com.example.concerttrack.ui.artistMainPageFragments.ArtistPanelFragment
 import com.example.concerttrack.util.Resource
 import com.example.concerttrack.viewmodel.ArtistMainPageViewModel
 import kotlinx.android.synthetic.main.activity_artist_main_page.*
@@ -67,11 +65,14 @@ class ArtistMainPage : AppCompatActivity() {
                     showSpinnerAndDisableControls()
                 }
                 is Resource.Success -> {
+                    Log.i("img","img")
                     ArtistPanelFragment.image = it.data
                     ArtistSettingsActivity.image = it.data
                     hideSpinnerAndEnableControls()
                 }
                 is Resource.Failure -> {
+                    ArtistPanelFragment.image = null
+                    ArtistSettingsActivity.image = null
                     hideSpinnerAndEnableControls()
                 }
             }
@@ -94,4 +95,5 @@ class ArtistMainPage : AppCompatActivity() {
         progressBar.visibility = View.GONE
         allControls.forEach { v -> v.isEnabled = true }
     }
+
 }

@@ -10,6 +10,8 @@ class Constants {
         const val FAN_TYPE_STR = "fan"
         const val GUEST_TYPE_STR = "guest"
 
+        val DATE_TIME_FORMAT = "dd-MM-yyyy HH:mm"
+
 
         const val GALLERY_REQUEST_CODE = 123
         const  val PICK_IMAGE_REQUEST = 1

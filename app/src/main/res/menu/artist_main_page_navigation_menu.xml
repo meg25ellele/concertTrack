@@ -7,7 +7,7 @@
         android:icon="@drawable/event_icon"/>
 
     <item
-        android:id="@+id/addEventFragment2"
+        android:id="@+id/addEventActivity"
         android:title="@string/add_event"
         android:icon="@drawable/add_icon"/>
 
