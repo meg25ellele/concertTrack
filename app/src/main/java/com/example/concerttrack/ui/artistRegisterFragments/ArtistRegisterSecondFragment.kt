@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -71,6 +72,11 @@ class ArtistRegisterSecondFragment: Fragment(R.layout.fragment_artist_register_s
             artistRegisterViewModel.registerUser(email,password,name)
         }
 
+        deleteAvatarBtn.setOnClickListener {
+            mImageUri = null
+            avatarIV.setImageDrawable(ContextCompat.getDrawable(activity?.applicationContext!!,R.drawable.default_avatar))
+        }
+
         artistRegisterViewModel.musicGenresLiveData.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is Resource.Loading -> {
@@ -95,14 +101,10 @@ class ArtistRegisterSecondFragment: Fragment(R.layout.fragment_artist_register_s
                 is Resource.Success -> {
 
                     val myGenres = getMusicGenres()
-                    val fbLink =  if (fbLink.text.toString() != "") fbLink.text.toString() else null
-                    val ytLink = if (ytLink.text.toString() != "") ytLink.text.toString() else null
-                    val spotiLink = if (spotiLink.text.toString() != "") spotiLink.text.toString() else null
-                    val description = if(shortDesc.text.toString() !="") shortDesc.text.toString() else null
 
                     artistRegisterViewModel.addNewArtist(it.data,email,name,
-                        description,fbLink,
-                        ytLink,spotiLink,myGenres)
+                        shortDesc.text.toString(),fbLink.text.toString(),
+                        ytLink.text.toString(),spotiLink.text.toString(),myGenres)
 
                     if(mImageUri!=null){
                         artistRegisterViewModel.addPhotoToStorage(mImageUri!!,it.data)

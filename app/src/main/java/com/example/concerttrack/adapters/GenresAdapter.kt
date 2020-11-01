@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.concerttrack.R
 import com.example.concerttrack.models.MusicGenre
@@ -33,6 +34,9 @@ class GenresAdapter( private val musicGenresList: List<MusicGenre>) : RecyclerVi
         val musicGenre = musicGenresList[position]
         holder.itemView.apply {
             genreName.text = musicGenre.name
+            if(musicGenre.chosen) {
+                genreName.setBackgroundColor(resources.getColor(R.color.toggleColor))
+            }
 
             genreName.setOnClickListener {
 

@@ -21,6 +21,7 @@ import kotlinx.android.synthetic.main.fragment_artist_register_first.text_input_
 import kotlinx.android.synthetic.main.fragment_artist_register_first.text_input_password
 import kotlinx.android.synthetic.main.fragment_artist_register_first.text_input_repeat_password
 import kotlinx.android.synthetic.main.fragment_artist_register_first.text_input_userName
+import java.net.ResponseCache
 
 class ArtistRegisterFirstFragment: Fragment(R.layout.fragment_artist_register_first) {
 
@@ -28,6 +29,7 @@ class ArtistRegisterFirstFragment: Fragment(R.layout.fragment_artist_register_fi
         ArtistRegisterViewModel::class.java) }
 
     private var allControls: List<View> = listOf()
+    private var registrationOn: Boolean = false
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -37,12 +39,37 @@ class ArtistRegisterFirstFragment: Fragment(R.layout.fragment_artist_register_fi
 
         nextFragmentBtn.setOnClickListener {view ->
             if(areInputValid()){
-                val bundle = bundleOf(getString(R.string.name) to userName.text.toString(),
-                    getString(R.string.email) to userEmail.text.toString(),
-                    getString(R.string.password) to userPassword.text.toString())
-                view.findNavController().navigate(R.id.action_artistRegisterFirstFragment_to_artistRegisterSecondFragment,bundle)
+                artistRegisterViewModel.alreadyExists(userName.text.toString())
             }
         }
+
+        artistRegisterViewModel.isNameTaken.observe(viewLifecycleOwner, Observer {
+            when(it) {
+                is Resource.Loading -> {
+                    showSpinnerAndDisableControls()
+                }
+                is Resource.Success -> {
+                    if(!it.data) {
+                        if(registrationOn) {
+                            artistRegisterViewModel.registerUser(userEmail.text.toString(),userPassword.text.toString(), userName.text.toString())
+                        }
+                        else {
+                            val bundle = bundleOf(getString(R.string.name) to userName.text.toString(),
+                                getString(R.string.email) to userEmail.text.toString(),
+                                getString(R.string.password) to userPassword.text.toString())
+                            view.findNavController().navigate(R.id.action_artistRegisterFirstFragment_to_artistRegisterSecondFragment,bundle)
+                        }
+                    } else {
+                        hideSpinnerAndEnableControls()
+                        text_input_userName.error = getString(R.string.duplicatedArtistName)
+                    }
+                }
+                is Resource.Failure -> {
+                    hideSpinnerAndEnableControls()
+                    this.showToastError(R.string.unknownRegisterError)
+                }
+            }
+        })
 
         artistRegisterViewModel.registerUIDLiveData.observe(viewLifecycleOwner, Observer {
             when(it) {
@@ -88,7 +115,8 @@ class ArtistRegisterFirstFragment: Fragment(R.layout.fragment_artist_register_fi
 
         registerBtn.setOnClickListener {
             if(areInputValid()){
-                artistRegisterViewModel.registerUser(userEmail.text.toString(),userPassword.text.toString(), userName.text.toString())
+                registrationOn = true
+                artistRegisterViewModel.alreadyExists(userName.text.toString())
             }
         }
     }

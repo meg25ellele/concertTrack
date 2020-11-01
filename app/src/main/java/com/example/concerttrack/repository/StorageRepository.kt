@@ -16,4 +16,14 @@ class StorageRepository(private val application: Application) {
 
         return Resource.Success(true)
     }
+
+    suspend fun getPhotoFromStorage(userUID: String):Resource<Uri> {
+        val image = firebaseStorage.reference.child("$userUID.png").downloadUrl.await()
+        return Resource.Success(image)
+    }
+
+    suspend fun deletePhoto(userUID: String): Resource<Boolean> {
+        firebaseStorage.reference.child("$userUID.png").delete().await()
+        return Resource.Success(true)
+    }
 }

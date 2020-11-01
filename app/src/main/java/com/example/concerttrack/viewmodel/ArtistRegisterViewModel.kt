@@ -23,12 +23,14 @@ class ArtistRegisterViewModel(application: Application) : AndroidViewModel(appli
     val registerUIDLiveData: MutableLiveData<Resource<String>> = MutableLiveData()
     val successfullyAddedPhotoLiveData: MutableLiveData<Resource<Boolean>> = MutableLiveData()
     val successfullyAddedArtist: MutableLiveData<Resource<Boolean>> = MutableLiveData()
+    val isNameTaken: MutableLiveData<Resource<Boolean>> = MutableLiveData()
+
 
 
     fun registerUser(email:String, password: String, name: String) = viewModelScope.launch {
         registerUIDLiveData.postValue(Resource.Loading())
         try {
-            val registerAnswer = authAppRepository.registerUser(email,password,name)
+            val registerAnswer = authAppRepository.registerUser(email,password)
             registerUIDLiveData.postValue(registerAnswer)
         } catch (e: Exception) {
             registerUIDLiveData.postValue(Resource.Failure(e))
@@ -45,6 +47,7 @@ class ArtistRegisterViewModel(application: Application) : AndroidViewModel(appli
             musicGenresLiveData.postValue(Resource.Failure(e))
         }
     }
+
     fun addPhotoToStorage(image: Uri, userUID:String) = viewModelScope.launch {
         successfullyAddedPhotoLiveData.postValue(Resource.Loading())
         try{
@@ -69,6 +72,14 @@ class ArtistRegisterViewModel(application: Application) : AndroidViewModel(appli
         }
     }
 
-
+    fun alreadyExists(name: String) = viewModelScope.launch {
+        isNameTaken.postValue(Resource.Loading())
+        try{
+            val firestoreAnswer = cloudFirestoreRepository.findArtistByName(name)
+            isNameTaken.postValue(firestoreAnswer)
+        } catch (e:Exception) {
+            isNameTaken.postValue(Resource.Failure(e))
+        }
+    }
 
 }

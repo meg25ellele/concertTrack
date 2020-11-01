@@ -8,7 +8,7 @@ data class Artist(
     val email: String,
     val name: String,
     var description:String? = null,
-    var facebooLink:String? = null,
+    var facebookLink:String? = null,
     var youtubeLink:String? = null,
     var spotifyLink: String? = null,
     var myGenres: List<String>? = null

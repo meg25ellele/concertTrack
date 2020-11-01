@@ -19,11 +19,18 @@ class MainPageActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main_page)
 
         fanBtn.setOnClickListener {
-            goToLoginActivity("fan")
+            goToLoginActivity(Constants.FAN_TYPE_STR)
         }
 
         artistBtn.setOnClickListener {
-            goToLoginActivity("artist")
+            goToLoginActivity(Constants.ARTIST_TYPE_STR)
+        }
+
+        useAppWithoutLoginBtn.setOnClickListener {
+            val intent = Intent(this,FanMainPageActivity::class.java).apply {
+                putExtra(Constants.USER_TYPE,Constants.GUEST_TYPE_STR)
+            }
+            startActivity(intent)
         }
     }
 

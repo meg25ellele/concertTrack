@@ -22,7 +22,7 @@ class FanRegisterViewModel(application: Application) : AndroidViewModel(applicat
     fun registerUser(email:String, password: String, name: String) = viewModelScope.launch {
         registerUIDLiveData.postValue(Resource.Loading())
         try {
-            val registerAnswer = authAppRepository.registerUser(email,password,name)
+            val registerAnswer = authAppRepository.registerUser(email,password)
             registerUIDLiveData.postValue(registerAnswer)
         } catch (e: Exception) {
             registerUIDLiveData.postValue(Resource.Failure(e))
