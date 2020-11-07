@@ -5,21 +5,20 @@ import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.provider.Settings.System.DATE_FORMAT
 import android.view.View
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.example.concerttrack.R
+import com.example.concerttrack.util.Constants
 import com.example.concerttrack.util.Constants.Companion.DATE_TIME_FORMAT
 import com.example.concerttrack.util.content
 import com.example.concerttrack.util.showToastError
-import kotlinx.android.synthetic.main.activity_fan_register.*
+import com.google.android.gms.common.ConnectionResult
+import com.google.android.gms.common.GoogleApiAvailability
 import kotlinx.android.synthetic.main.add_event_first_fragment.*
-import kotlinx.android.synthetic.main.artist_panel_fragment.*
-import kotlinx.android.synthetic.main.fragment_artist_register_first.*
-import kotlinx.android.synthetic.main.fragment_artist_register_first.text_input_userName
 import java.text.SimpleDateFormat
 import java.time.ZoneId
 import java.time.ZonedDateTime
@@ -55,7 +54,11 @@ class AddEventFirstFragment:Fragment(R.layout.add_event_first_fragment){
                 getString(R.string.startDate) to datePT.text.toString(), getString(R.string.startTime) to timePT.text.toString(),
                 getString(R.string.description) to eventDescET.text.toString(),
                 getString(R.string.ticketsLink) to ticketsLink.text.toString())
-                view.findNavController().navigate(R.id.action_addEventFirstFragment_to_addEventSecondFragment)
+
+                if(isServicesOK()) {
+                    view.findNavController().navigate(R.id.action_addEventFirstFragment_to_addEventSecondFragment,bundle)
+                }
+
             }
         }
 
@@ -66,6 +69,25 @@ class AddEventFirstFragment:Fragment(R.layout.add_event_first_fragment){
         mContext = context
     }
 
+    private fun isServicesOK():Boolean {
+        val available = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(mContext)
+        when {
+            available == ConnectionResult.SUCCESS -> {
+                return true
+            }
+            GoogleApiAvailability.getInstance().isUserResolvableError(available) -> {
+                val dialog = GoogleApiAvailability.getInstance().getErrorDialog(activity,available,
+                    Constants.ERROR_DIALOG_REQUEST
+                )
+                dialog.show()
+            }
+            else -> {
+                Toast.makeText(activity,"can't connect", Toast.LENGTH_LONG).show()
+            }
+        }
+        return false
+    }
+
     private fun showCalendarAndPickDate() {
         val cal = Calendar.getInstance()
 
@@ -74,8 +96,8 @@ class AddEventFirstFragment:Fragment(R.layout.add_event_first_fragment){
             cal.set(Calendar.MONTH, month)
             cal.set(Calendar.DAY_OF_MONTH, day)
             val date = cal.time
-            val formater  = SimpleDateFormat("dd-MM-yyyy")
-            datePT.text = formater.format(date)
+            val formatter  = SimpleDateFormat("dd-MM-yyyy")
+            datePT.text = formatter.format(date)
         }
 
         DatePickerDialog(
@@ -128,7 +150,7 @@ class AddEventFirstFragment:Fragment(R.layout.add_event_first_fragment){
                 text_input_event_header.error = getString(R.string.notAllowedEmptyField)
                 false
             }
-            text_input_event_header.editText?.length()!! > 15 -> {
+            text_input_event_header.editText?.length()!! > 50 -> {
                 text_input_event_header.error = getString(R.string.tooLongHeader)
                 false
             }

@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.example.concerttrack.models.User
 import com.example.concerttrack.repository.AuthAppRepository
 import com.example.concerttrack.repository.CloudFirestoreRepository
 import com.example.concerttrack.util.Resource
@@ -32,7 +33,8 @@ class FanRegisterViewModel(application: Application) : AndroidViewModel(applicat
     fun addNewUser(id: String, email: String, name: String) = viewModelScope.launch {
         successfullyAddedUser.postValue(Resource.Loading())
         try{
-            val firestoreAnswer = cloudFirestoreRepository.addNewUser(id,email,name)
+            val newUser = User(id,email,name)
+            val firestoreAnswer = cloudFirestoreRepository.addNewUser(newUser)
             successfullyAddedUser.postValue(firestoreAnswer)
         } catch (e:Exception) {
             successfullyAddedUser.postValue(Resource.Failure(e))

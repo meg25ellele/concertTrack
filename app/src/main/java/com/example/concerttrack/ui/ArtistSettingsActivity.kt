@@ -343,6 +343,6 @@ class ArtistSettingsActivity : AppCompatActivity() {
     companion object {
         var currentImage: Uri? = null
         var artist: Artist? = null
-        var image: Uri? =  null
+        var image: Uri? = null
     }
 }

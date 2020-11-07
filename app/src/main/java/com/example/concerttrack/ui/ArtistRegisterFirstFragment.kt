@@ -77,7 +77,7 @@ class ArtistRegisterFirstFragment: Fragment(R.layout.fragment_artist_register_fi
                 }
                 is Resource.Success -> {
                     artistRegisterViewModel.addNewArtist(it.data,userEmail.text.toString(),userName.text.toString(),
-                        null,null,null,null,null)
+                        "","","","",null)
                 }
                 is Resource.Failure -> {
                     hideSpinnerAndEnableControls()

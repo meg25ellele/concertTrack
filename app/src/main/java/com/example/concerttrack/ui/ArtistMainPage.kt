@@ -1,6 +1,7 @@
 package com.example.concerttrack.ui
 
 
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -14,6 +15,7 @@ import com.example.concerttrack.R
 import com.example.concerttrack.models.Artist
 import com.example.concerttrack.util.Resource
 import com.example.concerttrack.viewmodel.ArtistMainPageViewModel
+import com.google.firebase.firestore.DocumentReference
 import kotlinx.android.synthetic.main.activity_artist_main_page.*
 import kotlinx.android.synthetic.main.activity_artist_main_page.progressBar
 
@@ -23,8 +25,6 @@ class ArtistMainPage : AppCompatActivity() {
 
     private val artistMainPageViewModel: ArtistMainPageViewModel by lazy {
         ViewModelProvider(this).get(ArtistMainPageViewModel::class.java) }
-
-    var artist: Artist? = null
 
     private var allControls: List<View> = listOf()
 
@@ -47,7 +47,8 @@ class ArtistMainPage : AppCompatActivity() {
                     showSpinnerAndDisableControls()
                 }
                 is Resource.Success -> {
-                    artist = it.data
+                    artistReference = it.data.first
+                    artist =it.data.second
                     ArtistPanelFragment.artist = artist
                     ArtistSettingsActivity.artist = artist
                     artistMainPageViewModel.getPhotoFromStorage(ArtistPanelFragment.artist!!.id)
@@ -65,12 +66,13 @@ class ArtistMainPage : AppCompatActivity() {
                     showSpinnerAndDisableControls()
                 }
                 is Resource.Success -> {
-                    Log.i("img","img")
-                    ArtistPanelFragment.image = it.data
-                    ArtistSettingsActivity.image = it.data
+                    image = it.data
+                    ArtistPanelFragment.image = image
+                    ArtistSettingsActivity.image= image
                     hideSpinnerAndEnableControls()
                 }
                 is Resource.Failure -> {
+                   image = null
                     ArtistPanelFragment.image = null
                     ArtistSettingsActivity.image = null
                     hideSpinnerAndEnableControls()
@@ -94,6 +96,12 @@ class ArtistMainPage : AppCompatActivity() {
     private  fun hideSpinnerAndEnableControls() {
         progressBar.visibility = View.GONE
         allControls.forEach { v -> v.isEnabled = true }
+    }
+
+    companion object {
+        var artistReference: DocumentReference? = null
+        var artist: Artist? = null
+        var image: Uri? =  null
     }
 
 }

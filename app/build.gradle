@@ -9,12 +9,16 @@ android {
 
     defaultConfig {
         applicationId "com.example.concerttrack"
-        minSdkVersion 28
+        minSdkVersion 26
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
 
     buildTypes {
@@ -41,6 +45,7 @@ dependencies {
 
     implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'com.google.android.libraries.places:places:2.4.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
@@ -65,8 +70,10 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.2.0-rc03"
     implementation "androidx.lifecycle:lifecycle-extensions:2.1.0"
 
-    //google play services
+    //google play services and location
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
+    implementation 'com.google.android.gms:play-services-location:17.1.0'
+
 
 
 }

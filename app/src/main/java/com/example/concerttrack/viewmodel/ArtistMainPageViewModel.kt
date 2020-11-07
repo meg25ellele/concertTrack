@@ -13,6 +13,7 @@ import com.example.concerttrack.repository.CloudFirestoreRepository
 import com.example.concerttrack.repository.StorageRepository
 import com.example.concerttrack.util.Resource
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.DocumentReference
 import kotlinx.coroutines.launch
 import java.lang.Exception
 
@@ -23,7 +24,7 @@ class ArtistMainPageViewModel(application: Application) : AndroidViewModel(appli
     private val storageRepository: StorageRepository by lazy { StorageRepository(application) }
 
     val isUserLoggedOut: MutableLiveData<Boolean> = MutableLiveData()
-    var artistLiveData: MutableLiveData<Resource<Artist?>> = MutableLiveData()
+    var artistLiveData: MutableLiveData<Resource<Pair<DocumentReference?,Artist?>>> = MutableLiveData()
     var photoUriLiveData: MutableLiveData<Resource<Uri>> = MutableLiveData()
 
 

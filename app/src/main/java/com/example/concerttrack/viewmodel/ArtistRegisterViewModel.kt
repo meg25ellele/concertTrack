@@ -4,6 +4,7 @@ import android.app.Application
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.*
+import com.example.concerttrack.models.Artist
 import com.example.concerttrack.models.MusicGenre
 import com.example.concerttrack.repository.AuthAppRepository
 import com.example.concerttrack.repository.CloudFirestoreRepository
@@ -58,14 +59,15 @@ class ArtistRegisterViewModel(application: Application) : AndroidViewModel(appli
         }
     }
 
-    fun addNewArtist(id:String, email:String, name:String,description:String?,
-                     facebookLink:String?, youtubeLink:String?,spotifyLink:String?,
+    fun addNewArtist(id:String, email:String, name:String,description:String,
+                     facebookLink:String, youtubeLink:String,spotifyLink:String,
                      myGenres:List<String>?) = viewModelScope.launch {
         successfullyAddedArtist.postValue(Resource.Loading())
         try{
+            val newArtist =
+                Artist(id, email, name, description, facebookLink, youtubeLink, spotifyLink,myGenres)
             val firestoreAnswer =
-                cloudFirestoreRepository.addNewArtist(id,email,name,description,
-                    facebookLink,youtubeLink,spotifyLink,myGenres)
+                cloudFirestoreRepository.addNewArtist(newArtist)
             successfullyAddedArtist.postValue(firestoreAnswer)
         } catch (e:Exception) {
             successfullyAddedArtist.postValue(Resource.Failure(e))
