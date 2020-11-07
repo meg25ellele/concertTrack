@@ -1,14 +1,12 @@
 package com.example.concerttrack.ui
 
 import android.Manifest
-import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Address
 import android.location.Geocoder
 import android.os.Bundle
-import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -21,12 +19,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.example.concerttrack.R
-import com.example.concerttrack.util.Resource
-import com.example.concerttrack.util.content
-import com.example.concerttrack.util.showToastError
-import com.example.concerttrack.util.showToastSuccess
+import com.example.concerttrack.util.*
 import com.example.concerttrack.viewmodel.AddEventViewModel
-import com.example.concerttrack.viewmodel.ArtistRegisterViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -35,11 +29,13 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.GeoPoint
 import kotlinx.android.synthetic.main.add_event_second_fragment.*
 import kotlinx.android.synthetic.main.add_event_second_fragment.backBtn
 import java.io.IOException
+import java.time.ZonedDateTime
+import java.util.*
 
 
 class AddEventSecondFragment:Fragment(R.layout.add_event_second_fragment), OnMapReadyCallback {
@@ -180,11 +176,19 @@ class AddEventSecondFragment:Fragment(R.layout.add_event_second_fragment), OnMap
 
         addEventBtn.setOnClickListener {
             if(areInputValid()) {
-                addEventViewModel.addNewEvent(header,startTime,startDate,description,ticketsLink,ArtistMainPage.artistReference!!,
+                addEventViewModel.addNewEvent(header,generateTimestamp(),description,ticketsLink,ArtistMainPage.artistReference!!,
                     placeNameET.text.toString(),placeAddressInput.text.toString(),
                     GeoPoint(eventAddress!!.latitude, eventAddress!!.longitude))
             }
         }
+    }
+
+    private fun generateTimestamp():Timestamp {
+        val dateAndTime =startDate + " " + startTime
+        val parsedDate = ZonedDateTime.parse(dateAndTime, Constants.DATE_TIME_FORMATTER)
+        val date = Date.from(parsedDate.toInstant());
+
+        return Timestamp(date)
     }
 
     private fun geoLocate() {

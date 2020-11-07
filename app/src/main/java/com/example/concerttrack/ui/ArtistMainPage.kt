@@ -56,7 +56,8 @@ class ArtistMainPage : AppCompatActivity() {
                     ArtistPanelFragment.artist = artist
                     ArtistSettingsActivity.artist = artist
                     artistMainPageViewModel.getPhotoFromStorage(ArtistPanelFragment.artist!!.id)
-                    artistEventsVieModel.retrieveArtistEvents(it.data.first!!)
+                    artistEventsVieModel.retrieveArtistComingEvents(it.data.first!!)
+                    artistEventsVieModel.retrieveArtistPastEvents(it.data.first!!)
                 }
                 is Resource.Failure -> {
                     hideSpinnerAndEnableControls()

@@ -32,15 +32,13 @@ class ArtistEventsFragment: Fragment(R.layout.artist_events_fragment) {
         comingEventsList.clear()
         pastEventsList.clear()
 
-        ArtistEventsViewModel.artistEventsLiveData.observe(viewLifecycleOwner, Observer {
+        ArtistEventsViewModel.artistComingEventsLiveData.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is Resource.Loading -> {
                 }
                 is Resource.Success -> {
                     comingEventsList.clear()
-                    pastEventsList.clear()
-                    comingEventsList.addAll(0,it.data.first)
-                    pastEventsList.addAll(0,it.data.second)
+                    comingEventsList.addAll(0,it.data)
                     if(comingEventsList.size>0) {
                         noCommingEventsInfo.visibility = View.GONE
                     }
@@ -53,21 +51,45 @@ class ArtistEventsFragment: Fragment(R.layout.artist_events_fragment) {
                     else {
                         noPastEventsInfo.visibility = View.VISIBLE
                     }
-                    setAdapterAndManager()
+                    setComingEventsRecyclerView()
                 }
                 is Resource.Failure-> {
                 }
             }
         })
+
+        ArtistEventsViewModel.artistPastEventsLiveData.observe(viewLifecycleOwner, Observer {
+            when(it) {
+                is Resource.Loading -> {
+                }
+                is Resource.Success -> {
+                    pastEventsList.clear()
+                    pastEventsList.addAll(0,it.data)
+                    if(pastEventsList.size>0) {
+                        noPastEventsInfo.visibility = View.GONE
+                    }
+                    else {
+                        noPastEventsInfo.visibility = View.VISIBLE
+                    }
+                    setPastEventsRecyclerView()
+                }
+                is Resource.Failure-> {
+
+                }
+            }
+        })
+
+
     }
 
-    private fun setAdapterAndManager(){
+    private fun setComingEventsRecyclerView() {
         comingEventsRV.adapter = ArtistEventsAdapter(comingEventsList)
         comingEventsRV.layoutManager =LinearLayoutManager(activity)
+    }
 
+    private fun setPastEventsRecyclerView() {
         pastEventsRV.adapter =ArtistEventsAdapter(pastEventsList)
         pastEventsRV.layoutManager =LinearLayoutManager(activity)
-
     }
 
 }

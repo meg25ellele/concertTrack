@@ -7,8 +7,14 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.concerttrack.R
 import com.example.concerttrack.models.Event
+import com.example.concerttrack.util.Constants.Companion.DATE_FORMAT
+import com.example.concerttrack.util.Constants.Companion.DATE_TIME_FORMAT
+import com.example.concerttrack.util.Constants.Companion.DATE_TIME_FORMATTER
+import com.example.concerttrack.util.Constants.Companion.TIME_FORMAT
 import com.google.firebase.Timestamp
 import kotlinx.android.synthetic.main.artist_event_item.view.*
+import java.text.SimpleDateFormat
+import java.util.logging.SimpleFormatter
 
 class ArtistEventsAdapter(private val artistEventsList: List<Event>) : RecyclerView.Adapter<ArtistEventsAdapter.ArtistEventViewHolder>() {
 
@@ -31,8 +37,11 @@ class ArtistEventsAdapter(private val artistEventsList: List<Event>) : RecyclerV
     override fun onBindViewHolder(holder: ArtistEventViewHolder, position: Int) {
         val artistEvent = artistEventsList[position]
         holder.itemView.apply {
+            val formatter = SimpleDateFormat(DATE_TIME_FORMAT)
+
+
             eventName.text = artistEvent.header
-            whenInput.text = artistEvent.startDate + " " + artistEvent.startTime
+            whenInput.text = formatter.format(artistEvent.startDateTime.toDate())
             whereInput.text = artistEvent.placeName + ", " + artistEvent.placeAddress
 
 

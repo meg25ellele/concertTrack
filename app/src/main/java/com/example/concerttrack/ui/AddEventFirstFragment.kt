@@ -5,6 +5,7 @@ import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -13,13 +14,17 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.example.concerttrack.R
 import com.example.concerttrack.util.Constants
+import com.example.concerttrack.util.Constants.Companion.DATE_FORMAT
 import com.example.concerttrack.util.Constants.Companion.DATE_TIME_FORMAT
 import com.example.concerttrack.util.Constants.Companion.DATE_TIME_FORMATTER
+import com.example.concerttrack.util.Constants.Companion.TIME_FORMAT
 import com.example.concerttrack.util.content
 import com.example.concerttrack.util.showToastError
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
+import com.google.firebase.Timestamp
 import kotlinx.android.synthetic.main.add_event_first_fragment.*
+import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.time.ZoneId
 import java.time.ZonedDateTime
@@ -97,7 +102,7 @@ class AddEventFirstFragment:Fragment(R.layout.add_event_first_fragment){
             cal.set(Calendar.MONTH, month)
             cal.set(Calendar.DAY_OF_MONTH, day)
             val date = cal.time
-            val formatter  = SimpleDateFormat("dd-MM-yyyy")
+            val formatter  = SimpleDateFormat(DATE_FORMAT)
             datePT.text = formatter.format(date)
         }
 
@@ -116,9 +121,9 @@ class AddEventFirstFragment:Fragment(R.layout.add_event_first_fragment){
         val timeSetListener = TimePickerDialog.OnTimeSetListener { _, hour, minute ->
             cal.set(Calendar.HOUR_OF_DAY, hour)
             cal.set(Calendar.MINUTE, minute)
-            val date = cal.time
-            val formater  = SimpleDateFormat("HH:mm")
-            timePT.text = formater.format(date)
+            val time = cal.time
+            val formater  = SimpleDateFormat(TIME_FORMAT)
+            timePT.text = formater.format(time)
         }
 
         TimePickerDialog(

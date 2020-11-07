@@ -8,6 +8,7 @@ import com.example.concerttrack.models.Event
 import com.example.concerttrack.repository.CloudFirestoreRepository
 import com.example.concerttrack.util.Resource
 import com.google.android.gms.maps.model.LatLng
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.GeoPoint
 import kotlinx.coroutines.launch
@@ -20,13 +21,13 @@ class AddEventViewModel(application: Application) : AndroidViewModel(application
     val successfullyAddedEvent: MutableLiveData<Resource<Boolean>> = MutableLiveData()
 
 
-    fun addNewEvent(header: String, startTime:String, startDate: String,
+    fun addNewEvent(header: String, startDateTime:Timestamp,
                     shortDescription: String, ticketsLink: String, artist: DocumentReference,
                     placeName: String, placeAddress: String, placeLatLng:GeoPoint)
                     = viewModelScope.launch {
         successfullyAddedEvent.postValue(Resource.Loading())
         try {
-            val newEvent = Event(header,startTime,startDate,shortDescription,
+            val newEvent = Event(header,startDateTime,shortDescription,
                                 ticketsLink, placeName, placeAddress, placeLatLng, artist)
             val firestoreAnswer = cloudFirestoreRepository.addNewEvent(newEvent)
             successfullyAddedEvent.postValue(firestoreAnswer)

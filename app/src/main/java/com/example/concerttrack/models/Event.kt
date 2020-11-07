@@ -7,9 +7,9 @@ import com.google.firebase.firestore.DocumentReference
 
 data class Event(
     var header: String,
-//    var startDateTime : Timestamp,
-        var startTime: String,
-        var startDate: String,
+    var startDateTime : Timestamp,
+//        var startTime: String,
+//        var startDate: String,
     var shortDescription: String,
     var ticketsLink: String = "",
     //location

@@ -7,10 +7,12 @@ import androidx.lifecycle.viewModelScope
 import com.example.concerttrack.models.Event
 import com.example.concerttrack.repository.CloudFirestoreRepository
 import com.example.concerttrack.util.Constants
+import com.example.concerttrack.util.Constants.Companion.DATE_TIME_FORMAT
 import com.example.concerttrack.util.Resource
 import com.google.firebase.firestore.DocumentReference
 import kotlinx.coroutines.launch
 import java.lang.Exception
+import java.text.SimpleDateFormat
 import java.time.ZonedDateTime
 
 class ArtistEventsViewModel(application: Application) : AndroidViewModel(application) {
@@ -18,32 +20,28 @@ class ArtistEventsViewModel(application: Application) : AndroidViewModel(applica
     private  val cloudFirestoreRepository: CloudFirestoreRepository by lazy { CloudFirestoreRepository(application) }
 
 
-    fun retrieveArtistEvents(artist: DocumentReference) = viewModelScope.launch {
-        artistEventsLiveData.postValue(Resource.Loading())
+    fun retrieveArtistComingEvents(artist: DocumentReference) = viewModelScope.launch {
+        artistComingEventsLiveData.postValue(Resource.Loading())
         try{
-            val artistEvents = cloudFirestoreRepository.retrieveArtistEvents(artist).data
-            //split events to coming and past
-            val comingEventsList  = mutableListOf<Event>()
-            val pastEventsList = mutableListOf<Event>()
-
-            for(event in artistEvents) {
-                val dateAndTime = event.startDate + " " + event.startTime
-                val parsedDate = ZonedDateTime.parse(dateAndTime, Constants.DATE_TIME_FORMATTER)
-
-                if(parsedDate.isBefore(ZonedDateTime.now())) {
-                    pastEventsList.add(event)
-                } else {
-                    comingEventsList.add(event)
-                }
-            }
-            artistEventsLiveData.postValue(Resource.Success(Pair(comingEventsList,pastEventsList)))
+            val artistComingEvents = cloudFirestoreRepository.retrieveArtistComingEvents(artist).data
+            artistComingEventsLiveData.postValue(Resource.Success(artistComingEvents))
         }catch(e:Exception) {
-            artistEventsLiveData.postValue(Resource.Failure(e))
+            artistComingEventsLiveData.postValue(Resource.Failure(e))
         }
     }
 
+    fun retrieveArtistPastEvents(artist: DocumentReference) = viewModelScope.launch {
+        artistPastEventsLiveData.postValue(Resource.Loading())
+        try{
+            val artistComingEvents = cloudFirestoreRepository.retrieveArtistPastEvents(artist).data
+            artistPastEventsLiveData.postValue(Resource.Success(artistComingEvents))
+        }catch(e:Exception) {
+            artistPastEventsLiveData.postValue(Resource.Failure(e))
+        }
+    }
     companion object {
-        val artistEventsLiveData: MutableLiveData<Resource<Pair<MutableList<Event>,MutableList<Event>>>> = MutableLiveData()
+        val artistComingEventsLiveData: MutableLiveData<Resource<MutableList<Event>>> = MutableLiveData()
+        val artistPastEventsLiveData: MutableLiveData<Resource<MutableList<Event>>> = MutableLiveData()
 
     }
 
