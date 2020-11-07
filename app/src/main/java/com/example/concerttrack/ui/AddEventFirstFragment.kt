@@ -14,6 +14,7 @@ import androidx.navigation.findNavController
 import com.example.concerttrack.R
 import com.example.concerttrack.util.Constants
 import com.example.concerttrack.util.Constants.Companion.DATE_TIME_FORMAT
+import com.example.concerttrack.util.Constants.Companion.DATE_TIME_FORMATTER
 import com.example.concerttrack.util.content
 import com.example.concerttrack.util.showToastError
 import com.google.android.gms.common.ConnectionResult
@@ -211,7 +212,7 @@ class AddEventFirstFragment:Fragment(R.layout.add_event_first_fragment){
 
     private fun isDateAndTimeOK():Boolean {
         val dateAndTime =datePT.text.toString() + " " + timePT.text.toString()
-        val parsedDate = ZonedDateTime.parse(dateAndTime, formatterDateTime)
+        val parsedDate = ZonedDateTime.parse(dateAndTime, DATE_TIME_FORMATTER)
 
         return if(parsedDate.isBefore(ZonedDateTime.now())){
             dataInfo.setTextColor(ContextCompat.getColor(activity?.applicationContext!!,R.color.red))
@@ -230,7 +231,4 @@ class AddEventFirstFragment:Fragment(R.layout.add_event_first_fragment){
 
     }
 
-    companion object{
-        val formatterDateTime = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT).withZone(ZoneId.systemDefault())
-    }
 }

@@ -1,6 +1,8 @@
 package com.example.concerttrack.util
 
 import android.widget.EditText
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 class Constants {
     companion object {
@@ -18,6 +20,9 @@ class Constants {
         const val PLACES_AUTOCOMPLETE_REQUEST_CODE = 100
 
         const val ERROR_DIALOG_REQUEST = 9001
+
+        val DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT).withZone(ZoneId.systemDefault())
+
     }
 
 }

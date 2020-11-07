@@ -11,6 +11,7 @@ import com.example.concerttrack.models.User
 import com.example.concerttrack.util.Resource
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.GeoPoint
 import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.tasks.await
 import java.lang.Exception
@@ -153,6 +154,36 @@ class CloudFirestoreRepository(private val application: Application) {
         )
         firebaseFirestore.collection("events").add(data).await()
         return Resource.Success(true)
+    }
+
+    suspend fun retrieveArtistEvents(artist: DocumentReference): Resource.Success<MutableList<Event>> {
+        val artistEvents = mutableListOf<Event>()
+
+        val querySnapshot = firebaseFirestore.collection("events")
+            .whereEqualTo("artist",artist).get().await()
+
+        for(document in querySnapshot) {
+
+            val startDateTimeMap: Map<String,Any> = document.get("startDateTime") as Map<String,Any>
+            val startTime = startDateTimeMap["startTime"].toString()
+            val startDate = startDateTimeMap["startDate"].toString()
+
+            val locationMap = document.get("location") as Map<String, Any>
+            val placeName = locationMap["placeName"].toString()
+            val placeAddress = locationMap["placeAddress"].toString()
+            val placeLatLng = locationMap["placeLatLng"] as GeoPoint
+
+
+            val artistEvent = Event(document.getString("header")!!,
+                startTime,startDate,
+                document.getString("shortDescription")!!,
+                document.getString("ticketsLink")!!,
+                placeName,placeAddress,placeLatLng,
+                document.get("artist") as DocumentReference)
+
+            artistEvents.add(artistEvent)
+            }
+        return Resource.Success(artistEvents)
     }
 
  }

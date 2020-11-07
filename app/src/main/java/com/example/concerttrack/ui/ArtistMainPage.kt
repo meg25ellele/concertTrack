@@ -14,6 +14,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.concerttrack.R
 import com.example.concerttrack.models.Artist
 import com.example.concerttrack.util.Resource
+import com.example.concerttrack.viewmodel.ArtistEventsViewModel
 import com.example.concerttrack.viewmodel.ArtistMainPageViewModel
 import com.google.firebase.firestore.DocumentReference
 import kotlinx.android.synthetic.main.activity_artist_main_page.*
@@ -25,6 +26,9 @@ class ArtistMainPage : AppCompatActivity() {
 
     private val artistMainPageViewModel: ArtistMainPageViewModel by lazy {
         ViewModelProvider(this).get(ArtistMainPageViewModel::class.java) }
+
+    private val artistEventsVieModel: ArtistEventsViewModel by lazy { ViewModelProvider(this).get(
+        ArtistEventsViewModel::class.java) }
 
     private var allControls: List<View> = listOf()
 
@@ -52,6 +56,7 @@ class ArtistMainPage : AppCompatActivity() {
                     ArtistPanelFragment.artist = artist
                     ArtistSettingsActivity.artist = artist
                     artistMainPageViewModel.getPhotoFromStorage(ArtistPanelFragment.artist!!.id)
+                    artistEventsVieModel.retrieveArtistEvents(it.data.first!!)
                 }
                 is Resource.Failure -> {
                     hideSpinnerAndEnableControls()

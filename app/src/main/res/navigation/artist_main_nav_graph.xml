@@ -6,7 +6,7 @@
     app:startDestination="@id/eventsFragment2">
     <fragment
         android:id="@+id/eventsFragment2"
-        android:name="com.example.concerttrack.ui.EventsFragment"
+        android:name="com.example.concerttrack.ui.ArtistEventsFragment"
         android:label="EventsFragment" >
         <action
             android:id="@+id/action_eventsFragment2_to_eventFragment3"

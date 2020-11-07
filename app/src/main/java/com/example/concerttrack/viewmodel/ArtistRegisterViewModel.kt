@@ -39,7 +39,6 @@ class ArtistRegisterViewModel(application: Application) : AndroidViewModel(appli
     }
 
     fun retrieveMusicGenres() = viewModelScope.launch {
-        Log.i("retrieve","retrieve")
         musicGenresLiveData.postValue(Resource.Loading())
         try{
             val musicGenresList = cloudFirestoreRepository.retrieveMusicGenres()
