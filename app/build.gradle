@@ -75,5 +75,5 @@ dependencies {
     implementation 'com.google.android.gms:play-services-location:17.1.0'
 
 
-
+    implementation 'it.xabaras.android:recyclerview-swipedecorator:1.2.3'
 }

@@ -39,6 +39,23 @@ class ArtistEventsViewModel(application: Application) : AndroidViewModel(applica
             artistPastEventsLiveData.postValue(Resource.Failure(e))
         }
     }
+
+    fun deleteArtistEvent(event: Event) = viewModelScope.launch {
+        try{
+            cloudFirestoreRepository.deleteEvent(event)
+        } catch(e: Exception) {
+
+        }
+    }
+
+    fun addArtistEvent(event:Event) = viewModelScope.launch {
+        try {
+            cloudFirestoreRepository.addNewEvent(event)
+        } catch(e: Exception) {
+
+        }
+    }
+
     companion object {
         val artistComingEventsLiveData: MutableLiveData<Resource<MutableList<Event>>> = MutableLiveData()
         val artistPastEventsLiveData: MutableLiveData<Resource<MutableList<Event>>> = MutableLiveData()

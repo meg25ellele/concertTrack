@@ -11,6 +11,7 @@ import com.example.concerttrack.models.User
 import com.example.concerttrack.util.Constants
 import com.example.concerttrack.util.Resource
 import com.google.firebase.firestore.*
+import kotlinx.coroutines.processNextEventInCurrentThread
 import kotlinx.coroutines.tasks.await
 import java.lang.Exception
 import java.text.SimpleDateFormat
@@ -154,6 +155,32 @@ class CloudFirestoreRepository(private val application: Application) {
         return Resource.Success(true)
     }
 
+    suspend fun deleteEvent(event: Event): Resource<Boolean> {
+        val locationMap = mapOf<String,Any>( "placeAddress" to event.placeAddress,
+                                        "placeLatLng" to event.placeLatLng,
+                                        "placeName" to event.placeName)
+
+
+        val eventQuery = firebaseFirestore.collection("events")
+            .whereEqualTo("artist",event.artist)
+            .whereEqualTo("header",event.header)
+            .whereEqualTo("shortDescription",event.shortDescription)
+            .whereEqualTo("startDateTime",event.startDateTime)
+            .whereEqualTo("ticketsLink", event.ticketsLink)
+            .whereEqualTo("location",locationMap)
+            .get().await()
+
+        return if(eventQuery.documents.isNotEmpty()) {
+            for(document in eventQuery) {
+                firebaseFirestore.collection("events").document(document.id).delete().await()
+            }
+
+            Resource.Success(true)
+        } else {
+            Resource.Success(false)
+        }
+    }
+
     suspend fun retrieveArtistComingEvents(artist: DocumentReference): Resource.Success<MutableList<Event>> {
         val artistEvents = mutableListOf<Event>()
 
@@ -166,7 +193,7 @@ class CloudFirestoreRepository(private val application: Application) {
 
 
         for(document in querySnapshot) {
-            Log.i("document",document.toString())
+
             val locationMap = document.get("location") as Map<String, Any>
             val placeName = locationMap["placeName"].toString()
             val placeAddress = locationMap["placeAddress"].toString()

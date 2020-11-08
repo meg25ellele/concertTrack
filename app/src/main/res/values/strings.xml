@@ -80,4 +80,6 @@
     <string name="empty">   </string>
     <string name="newEventAddedSuccessfully">Dodano nowe wydarzenie muzyczne!</string>
     <string name="newEventAddedError">Dodawnaie wydarznie nie powiodło się. Coś poszło nie tak!</string>
+    <string name="undo">Cofinj</string>
+    <string name="eventDeleted">Usunięto wydarzenie</string>
 </resources>
