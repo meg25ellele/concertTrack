@@ -151,7 +151,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="50dp"
+        android:layout_marginEnd="70dp"
         android:text="@string/unknownAddress"
         android:textColor="@color/black"
         android:textSize="16sp"

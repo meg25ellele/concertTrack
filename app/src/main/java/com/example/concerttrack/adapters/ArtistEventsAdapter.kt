@@ -38,16 +38,21 @@ class ArtistEventsAdapter(private val artistEventsList: List<Event>) : RecyclerV
         val artistEvent = artistEventsList[position]
         holder.itemView.apply {
             val formatter = SimpleDateFormat(DATE_TIME_FORMAT)
-
-
             eventName.text = artistEvent.header
             whenInput.text = formatter.format(artistEvent.startDateTime.toDate())
             whereInput.text = artistEvent.placeName + ", " + artistEvent.placeAddress
-
-
             if(position+1 == artistEventsList.size) {
                 seperateLine.visibility = View.GONE
             }
+            setOnClickListener {
+                onItemClickListener?.let {it(artistEvent)}
+            }
         }
+    }
+
+    private var onItemClickListener: ((Event) -> Unit)? = null
+
+    fun setOnItemClickListener(listener: (Event) -> Unit) {
+        onItemClickListener = listener
     }
 }

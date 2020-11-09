@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -163,12 +164,36 @@ class ArtistEventsFragment: Fragment(R.layout.artist_events_fragment) {
         comingEventsAdapter = ArtistEventsAdapter(comingEventsList)
         comingEventsRV.adapter = comingEventsAdapter
         comingEventsRV.layoutManager =LinearLayoutManager(activity)
+
+        comingEventsAdapter.setOnItemClickListener {
+            val bundle = Bundle().apply {
+                putSerializable("event", it)
+                putBoolean("isArtistEvent",true)
+                putBoolean("isPastEvent",false)
+            }
+            findNavController().navigate(
+                R.id.action_eventsFragment2_to_eventFragment3,
+                bundle
+            )
+        }
     }
 
     private fun setPastEventsRecyclerView() {
         pastEventsAdapter =ArtistEventsAdapter(pastEventsList)
         pastEventsRV.adapter =pastEventsAdapter
         pastEventsRV.layoutManager =LinearLayoutManager(activity)
+
+        pastEventsAdapter.setOnItemClickListener {
+            val bundle = Bundle().apply {
+                putSerializable("event", it)
+                putBoolean("isArtistEvent",true)
+                putBoolean("isPastEvent",true)
+            }
+            findNavController().navigate(
+                R.id.action_eventsFragment2_to_eventFragment3,
+                bundle
+            )
+        }
     }
 
 }

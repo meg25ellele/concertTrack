@@ -4,12 +4,11 @@ package com.example.concerttrack.models
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.GeoPoint
 import com.google.firebase.firestore.DocumentReference
+import java.io.Serializable
 
 data class Event(
     var header: String,
     var startDateTime : Timestamp,
-//        var startTime: String,
-//        var startDate: String,
     var shortDescription: String,
     var ticketsLink: String = "",
     //location
@@ -17,4 +16,4 @@ data class Event(
         var placeAddress: String,
         var placeLatLng: GeoPoint,
     val artist: DocumentReference
-)
+) : Serializable

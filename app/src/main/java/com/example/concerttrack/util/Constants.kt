@@ -16,6 +16,8 @@ class Constants {
         const val DATE_FORMAT = "dd-MM-yyyy"
         const val TIME_FORMAT = "HH:mm"
 
+        const val FIREBASE_EXCEPTION_TAG = "firebaseError"
+
 
         const val GALLERY_REQUEST_CODE = 123
         const  val PICK_IMAGE_REQUEST = 1

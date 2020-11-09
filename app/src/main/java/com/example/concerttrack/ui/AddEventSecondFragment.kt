@@ -254,7 +254,6 @@ class AddEventSecondFragment:Fragment(R.layout.add_event_second_fragment), OnMap
                     }
                 }
             }
-
         } catch(e: SecurityException) {
             Toast.makeText(activity,e.message,Toast.LENGTH_LONG).show()
         }
