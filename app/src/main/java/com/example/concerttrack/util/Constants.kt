@@ -26,6 +26,10 @@ class Constants {
 
         val DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT).withZone(ZoneId.systemDefault())
 
+        val FINE_LOCATION = android.Manifest.permission.ACCESS_FINE_LOCATION
+        val COARSE_LOCATION = android.Manifest.permission.ACCESS_COARSE_LOCATION
+        val LOCATION_PERMISSION_REQUEST_CODE = 1234
+        val DEFAULT_ZOOM = 15f
     }
 
 }

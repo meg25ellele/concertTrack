@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.concerttrack.R
+import com.example.concerttrack.dialogs.DeleteEventDialog
 import com.example.concerttrack.models.Artist
 import com.example.concerttrack.util.Resource
 import com.example.concerttrack.viewmodel.ArtistEventsViewModel
@@ -22,7 +23,7 @@ import kotlinx.android.synthetic.main.activity_artist_main_page.progressBar
 
 
 
-class ArtistMainPage : AppCompatActivity() {
+class ArtistMainPage : AppCompatActivity(){
 
     private val artistMainPageViewModel: ArtistMainPageViewModel by lazy {
         ViewModelProvider(this).get(ArtistMainPageViewModel::class.java) }

@@ -219,7 +219,7 @@
         android:layout_marginTop="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ticketInfo"
-        app:srcCompat="@drawable/ticket_icon" />
+        app:srcCompat="@drawable/ticket_icon_black" />
 
     <EditText
         android:id="@+id/ticketsLink"
@@ -230,7 +230,6 @@
         android:layout_marginEnd="32dp"
         android:background="@drawable/edit_text_background"
         android:ems="10"
-        android:inputType="textPassword"
         android:paddingStart="5dp"
         android:paddingEnd="5dp"
         app:layout_constraintEnd_toEndOf="parent"

@@ -1,6 +1,5 @@
 package com.example.concerttrack.repository
 
-import android.accounts.AuthenticatorDescription
 import android.app.Application
 import android.util.Log
 import com.example.concerttrack.models.Artist
@@ -10,10 +9,10 @@ import com.example.concerttrack.models.MusicGenre
 import com.example.concerttrack.models.User
 import com.example.concerttrack.util.Constants
 import com.example.concerttrack.util.Resource
+import com.google.android.gms.maps.model.LatLng
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.*
-import kotlinx.coroutines.processNextEventInCurrentThread
 import kotlinx.coroutines.tasks.await
-import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.time.ZonedDateTime
 import java.util.*
@@ -137,35 +136,107 @@ class CloudFirestoreRepository(private val application: Application) {
         return Resource.Success(true)
     }
 
+    suspend fun updateEventData(oldEvent:Event,newEvent: Event): Resource<Boolean> {
+        val artistReference = firebaseFirestore.document(oldEvent.artistReferencePath)
+        //oldData
+        val placeGeoPointOld = GeoPoint(oldEvent.placeLat,oldEvent.placeLng)
 
-    suspend fun addNewEvent(newEvent: Event): Resource<Boolean>{
+        val locationMapOld = mapOf<String,Any>( "placeAddress" to oldEvent.placeAddress,
+            "placeLatLng" to placeGeoPointOld,
+            "placeName" to oldEvent.placeName)
+
+        val parsedDateOld = ZonedDateTime.parse(oldEvent.startDateTime, Constants.DATE_TIME_FORMATTER)
+        val oldDate = Date.from(parsedDateOld.toInstant())
+
+        val eventQuery = firebaseFirestore.collection("events")
+            .whereEqualTo("artist",artistReference)
+            .whereEqualTo("header",oldEvent.header)
+            .whereEqualTo("shortDescription",oldEvent.shortDescription)
+            .whereEqualTo("startDateTime",Timestamp(oldDate))
+            .whereEqualTo("ticketsLink", oldEvent.ticketsLink)
+            .whereEqualTo("location",locationMapOld)
+            .get().await()
+
+
+        Log.i("error",eventQuery.toString())
+        //newData
+        val placeGeoPointNew = GeoPoint(newEvent.placeLat,newEvent.placeLng)
+
+        val locationMapNew = mapOf<String,Any>( "placeAddress" to newEvent.placeAddress,
+            "placeLatLng" to placeGeoPointNew,
+            "placeName" to newEvent.placeName)
+
+        val parsedDateNew = ZonedDateTime.parse(newEvent.startDateTime, Constants.DATE_TIME_FORMATTER)
+        val newDate = Date.from(parsedDateNew.toInstant())
+
+
         val data = hashMapOf<String,Any>(
             "header" to newEvent.header,
-            "startDateTime" to newEvent.startDateTime,
+            "startDateTime" to Timestamp(newDate),
+            "shortDescription" to newEvent.shortDescription,
+            "ticketsLink" to newEvent.ticketsLink,
+            "location" to locationMapNew,
+            "artist" to artistReference
+        )
+
+        return if(eventQuery.documents.isNotEmpty()) {
+            for(document in eventQuery) {
+                firebaseFirestore.collection("events").document(document.id).set(
+                    data,
+                    SetOptions.merge()
+                ).await()
+            }
+            Resource.Success(true)
+        } else {
+            Resource.Success(false)
+        }
+    }
+
+
+    suspend fun addNewEvent(newEvent: Event): Resource<Boolean>{
+        val artist = firebaseFirestore.document(newEvent.artistReferencePath)
+
+        val placeGeoPoint = GeoPoint(newEvent.placeLat,newEvent.placeLng)
+        val parsedDate = ZonedDateTime.parse(newEvent.startDateTime, Constants.DATE_TIME_FORMATTER)
+        val date = Date.from(parsedDate.toInstant())
+
+
+
+        val data = hashMapOf<String,Any>(
+            "header" to newEvent.header,
+            "startDateTime" to Timestamp(date),
             "shortDescription" to newEvent.shortDescription,
             "ticketsLink" to newEvent.ticketsLink,
             "location" to hashMapOf<String,Any>(
                 "placeName" to newEvent.placeName,
                 "placeAddress" to newEvent.placeAddress,
-                "placeLatLng" to newEvent.placeLatLng
+                "placeLatLng" to placeGeoPoint
             ),
-            "artist" to newEvent.artist
+            "artist" to artist
         )
         firebaseFirestore.collection("events").add(data).await()
         return Resource.Success(true)
     }
 
     suspend fun deleteEvent(event: Event): Resource<Boolean> {
+        val artist = firebaseFirestore.document(event.artistReferencePath)
+
+        val placeGeoPoint = GeoPoint(event.placeLat,event.placeLng)
+
+
         val locationMap = mapOf<String,Any>( "placeAddress" to event.placeAddress,
-                                        "placeLatLng" to event.placeLatLng,
+                                        "placeLatLng" to placeGeoPoint,
                                         "placeName" to event.placeName)
+
+        val parsedDate = ZonedDateTime.parse(event.startDateTime, Constants.DATE_TIME_FORMATTER)
+        val date = Date.from(parsedDate.toInstant())
 
 
         val eventQuery = firebaseFirestore.collection("events")
-            .whereEqualTo("artist",event.artist)
+            .whereEqualTo("artist",artist)
             .whereEqualTo("header",event.header)
             .whereEqualTo("shortDescription",event.shortDescription)
-            .whereEqualTo("startDateTime",event.startDateTime)
+            .whereEqualTo("startDateTime",Timestamp(date))
             .whereEqualTo("ticketsLink", event.ticketsLink)
             .whereEqualTo("location",locationMap)
             .get().await()
@@ -192,20 +263,24 @@ class CloudFirestoreRepository(private val application: Application) {
             .get().await()
 
 
+
         for(document in querySnapshot) {
 
             val locationMap = document.get("location") as Map<String, Any>
             val placeName = locationMap["placeName"].toString()
             val placeAddress = locationMap["placeAddress"].toString()
-            val placeLatLng = locationMap["placeLatLng"] as GeoPoint
+            val placeGeoPoint = locationMap["placeLatLng"] as GeoPoint
+
+            val formatter = SimpleDateFormat(Constants.DATE_TIME_FORMAT)
+            val startDateTime =  formatter.format(document.getTimestamp("startDateTime")!!.toDate())
 
 
             val artistEvent = Event(document.getString("header")!!,
-                document.getTimestamp("startDateTime")!!,
+                startDateTime,
                 document.getString("shortDescription")!!,
                 document.getString("ticketsLink")!!,
-                placeName,placeAddress,placeLatLng,
-                document.get("artist") as DocumentReference)
+                placeName,placeAddress,placeGeoPoint.latitude,placeGeoPoint.longitude,
+                (document.get("artist") as DocumentReference).path)
 
             artistEvents.add(artistEvent)
             }
@@ -228,15 +303,19 @@ class CloudFirestoreRepository(private val application: Application) {
             val locationMap = document.get("location") as Map<String, Any>
             val placeName = locationMap["placeName"].toString()
             val placeAddress = locationMap["placeAddress"].toString()
-            val placeLatLng = locationMap["placeLatLng"] as GeoPoint
+            val placeGeoPoint = locationMap["placeLatLng"] as GeoPoint
+
+
+            val formatter = SimpleDateFormat(Constants.DATE_TIME_FORMAT)
+            val startDateTime =  formatter.format(document.getTimestamp("startDateTime")!!.toDate())
 
 
             val artistEvent = Event(document.getString("header")!!,
-                document.getTimestamp("startDateTime")!!,
+                startDateTime,
                 document.getString("shortDescription")!!,
                 document.getString("ticketsLink")!!,
-                placeName,placeAddress,placeLatLng,
-                document.get("artist") as DocumentReference)
+                placeName,placeAddress,placeGeoPoint.latitude,placeGeoPoint.longitude,
+                (document.get("artist") as DocumentReference).path)
 
             artistEvents.add(artistEvent)
         }

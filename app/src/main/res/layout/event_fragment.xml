@@ -21,7 +21,7 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="32dp"
+        android:layout_marginEnd="16dp"
         android:background="@drawable/delete_icon_red"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -38,7 +38,7 @@
 
     <TextView
         android:id="@+id/eventName"
-        android:layout_width="wrap_content"
+        android:layout_width="230dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="24dp"
@@ -113,7 +113,7 @@
                 android:layout_width="120dp"
                 android:layout_height="21dp"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="24dp"
                 android:text="organizator: "
                 android:textColor="@color/black"
                 android:textSize="16sp"
@@ -125,7 +125,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="14dp"
+                android:layout_marginTop="22dp"
                 android:text="ABBA"
                 android:textColor="@color/black"
                 android:textSize="18sp"
@@ -135,10 +135,10 @@
 
             <TextView
                 android:id="@+id/when"
-                android:layout_width="120dp"
-                android:layout_height="wrap_content"
+                android:layout_width="50dp"
+                android:layout_height="21dp"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="16dp"
                 android:text="kiedy? "
                 android:textColor="@color/black"
                 android:textSize="16sp"
@@ -150,7 +150,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="15dp"
                 android:text="21-11-2020 18:30"
                 android:textColor="@color/black"
                 android:textSize="18sp"
@@ -160,7 +160,7 @@
 
             <TextView
                 android:id="@+id/where"
-                android:layout_width="wrap_content"
+                android:layout_width="50dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
@@ -174,14 +174,14 @@
                 android:id="@+id/placeNameInput"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="7dp"
                 android:text="Stary Klasztor"
                 android:textColor="@color/black"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/where" />
+                app:layout_constraintStart_toEndOf="@+id/where"
+                app:layout_constraintTop_toBottomOf="@+id/whenInput" />
 
             <RelativeLayout
                 android:id="@+id/relativeLayout"
@@ -284,6 +284,20 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
+    <Button
+        android:id="@+id/ticketLinkBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="16dp"
+        android:background="@color/buttonColor"
+        android:drawableStart="@drawable/ticket_icon_black"
+        android:paddingStart="5dp"
+        android:paddingEnd="5dp"
+        android:text="Kup bilet"
+        android:textAllCaps="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editEventBtn" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -37,9 +37,10 @@ class ArtistEventsAdapter(private val artistEventsList: List<Event>) : RecyclerV
     override fun onBindViewHolder(holder: ArtistEventViewHolder, position: Int) {
         val artistEvent = artistEventsList[position]
         holder.itemView.apply {
-            val formatter = SimpleDateFormat(DATE_TIME_FORMAT)
             eventName.text = artistEvent.header
-            whenInput.text = formatter.format(artistEvent.startDateTime.toDate())
+            val formatter = SimpleDateFormat(DATE_TIME_FORMAT)
+            //whenInput.text = formatter.format(artistEvent.startDateTime.toDate())
+            whenInput.text = artistEvent.startDateTime
             whereInput.text = artistEvent.placeName + ", " + artistEvent.placeAddress
             if(position+1 == artistEventsList.size) {
                 seperateLine.visibility = View.GONE

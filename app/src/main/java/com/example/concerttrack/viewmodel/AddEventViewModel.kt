@@ -21,14 +21,14 @@ class AddEventViewModel(application: Application) : AndroidViewModel(application
     val successfullyAddedEvent: MutableLiveData<Resource<Boolean>> = MutableLiveData()
 
 
-    fun addNewEvent(header: String, startDateTime:Timestamp,
-                    shortDescription: String, ticketsLink: String, artist: DocumentReference,
-                    placeName: String, placeAddress: String, placeLatLng:GeoPoint)
+    fun addNewEvent(header: String, startDateTime:String,
+                    shortDescription: String, ticketsLink: String, artistReferencePath: String,
+                    placeName: String, placeAddress: String, placeLat: Double, placeLng: Double)
                     = viewModelScope.launch {
         successfullyAddedEvent.postValue(Resource.Loading())
         try {
             val newEvent = Event(header,startDateTime,shortDescription,
-                                ticketsLink, placeName, placeAddress, placeLatLng, artist)
+                                ticketsLink, placeName, placeAddress, placeLat,placeLng, artistReferencePath)
             val firestoreAnswer = cloudFirestoreRepository.addNewEvent(newEvent)
             successfullyAddedEvent.postValue(firestoreAnswer)
 

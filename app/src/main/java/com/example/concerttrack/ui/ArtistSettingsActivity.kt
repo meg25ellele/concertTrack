@@ -86,7 +86,7 @@ class ArtistSettingsActivity : AppCompatActivity() {
                 }
                 is Resource.Failure -> {
                     hideSpinnerAndEnableControls()
-                    this.showToastError(R.string.unknownUpdatingError)
+                    this.showToastError(R.string.unknownUpdatingArtistError)
                 }
             }
         })
@@ -112,12 +112,13 @@ class ArtistSettingsActivity : AppCompatActivity() {
                         }
                     }
                     else {
-                        this.showToastError(R.string.unknownUpdatingError)
+                        hideSpinnerAndEnableControls()
+                        this.showToastError(R.string.unknownUpdatingArtistError)
                     }
                 }
                 is Resource.Failure -> {
                     hideSpinnerAndEnableControls()
-                    this.showToastError(R.string.unknownUpdatingError)
+                    this.showToastError(R.string.unknownUpdatingArtistError)
                 }
             }
         })
@@ -134,7 +135,7 @@ class ArtistSettingsActivity : AppCompatActivity() {
                 }
                 is Resource.Failure -> {
                     hideSpinnerAndEnableControls()
-                    this.showToastError(R.string.unknownUpdatingError)
+                    this.showToastError(R.string.unknownUpdatingArtistError)
                 }
             }
         })
@@ -152,7 +153,7 @@ class ArtistSettingsActivity : AppCompatActivity() {
                 }
                 is Resource.Failure -> {
                     hideSpinnerAndEnableControls()
-                    this.showToastError(R.string.unknownUpdatingError)
+                    this.showToastError(R.string.unknownUpdatingArtistError)
                 }
             }
         })

@@ -20,6 +20,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.example.concerttrack.R
 import com.example.concerttrack.util.*
+import com.example.concerttrack.util.Constants.Companion.COARSE_LOCATION
+import com.example.concerttrack.util.Constants.Companion.DEFAULT_ZOOM
+import com.example.concerttrack.util.Constants.Companion.FINE_LOCATION
+import com.example.concerttrack.util.Constants.Companion.LOCATION_PERMISSION_REQUEST_CODE
 import com.example.concerttrack.viewmodel.AddEventViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -73,7 +77,7 @@ class AddEventSecondFragment:Fragment(R.layout.add_event_second_fragment), OnMap
 
         getLocationPermission()
 
-        allControls = listOf(backBtn,text_input_placeName,currentLocationBtn,addEventBtn,placeLocationBtn)
+        allControls = listOf(backBtn,text_input_placeName,currentLocationBtn,addEventBtn,placeLocationBtn,searchPlaceET)
 
 
         addEventViewModel.successfullyAddedEvent.observe(viewLifecycleOwner, Observer {
@@ -176,19 +180,11 @@ class AddEventSecondFragment:Fragment(R.layout.add_event_second_fragment), OnMap
 
         addEventBtn.setOnClickListener {
             if(areInputValid()) {
-                addEventViewModel.addNewEvent(header,generateTimestamp(),description,ticketsLink,ArtistMainPage.artistReference!!,
+                addEventViewModel.addNewEvent(header,startDate + " " + startTime,description,ticketsLink,ArtistMainPage.artistReference!!.path,
                     placeNameET.text.toString(),placeAddressInput.text.toString(),
-                    GeoPoint(eventAddress!!.latitude, eventAddress!!.longitude))
+                    eventAddress!!.latitude, eventAddress!!.longitude)
             }
         }
-    }
-
-    private fun generateTimestamp():Timestamp {
-        val dateAndTime =startDate + " " + startTime
-        val parsedDate = ZonedDateTime.parse(dateAndTime, Constants.DATE_TIME_FORMATTER)
-        val date = Date.from(parsedDate.toInstant());
-
-        return Timestamp(date)
     }
 
     private fun geoLocate() {
@@ -319,11 +315,6 @@ class AddEventSecondFragment:Fragment(R.layout.add_event_second_fragment), OnMap
 
 
     companion object {
-        val FINE_LOCATION = android.Manifest.permission.ACCESS_FINE_LOCATION
-        val COARSE_LOCATION = android.Manifest.permission.ACCESS_COARSE_LOCATION
-        val LOCATION_PERMISSION_REQUEST_CODE = 1234
-        val DEFAULT_ZOOM = 15f
-
         var eventAddress: Address? = null
     }
 

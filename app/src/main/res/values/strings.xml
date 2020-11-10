@@ -1,6 +1,6 @@
 <resources>
     <string name="maps_api_key">AIzaSyC8eB1ibOsn66hj95216LzORQL0f8dC84w</string>
-    
+
     <string name="app_name">concertTrack</string>
     <string name="mainPageInfo">Korzystaj z aplikacji jako artysta lub fan."\n" Zaloguj się na swoje konto lub utwórz nowe.</string>
     <string name="loginArtistInfo">Zaloguj się jako artysta aby używać aplikacji.</string>
@@ -62,7 +62,9 @@
     <string name="duplicatedArtistName">Artysta o takiej nazwie już istnieje</string>
     <string name="settingsInfo">Uzupełnij lub zmień swoje dane,"\n"aby Twój profil był atrakcyjniejszy"\n"i łatwiejszy do znalezienia.</string>
     <string name="nothingToEdit">Nic nie zostało zmienione. Edytuj konto i zapisz lub anuluj zmiany.</string>
-    <string name="unknownUpdatingError">Edycja konta nie powiodła się. Coś poszło nie tak</string>
+    <string name="nothingToEditEvent">Nic nie zostało zmienione. Edytuj wydarzenie i zapisz lub anuluj zmiany.</string>
+    <string name="unknownUpdatingArtistError">Edycja konta nie powiodła się. Coś poszło nie tak</string>
+    <string name="unknownUpdatingEventError">Edycja wydarzenia nie powiodła się. Coś poszło nie tak</string>
     <string name="successUpdatingData">Zmiany zostały zapisane!</string>
     <string name="wrong_start_time">Wybrana data i czas nie moga być z przeszłości! </string>
     <string name="tooLongHeader">Za długi nagłówek</string>
