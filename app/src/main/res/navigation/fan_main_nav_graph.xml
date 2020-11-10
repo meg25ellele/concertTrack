@@ -1,20 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/fan_main_nav_graph"
-    app:startDestination="@id/eventsFragment">
+    app:startDestination="@id/eventsFragment3">
 
-    <fragment
-        android:id="@+id/eventsFragment"
-        android:name="com.example.concerttrack.ui.ArtistEventsFragment"
-        android:label="EventsFragment" >
-        <action
-            android:id="@+id/action_eventsFragment_to_eventFragment"
-            app:destination="@id/eventFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"/>
-    </fragment>
     <fragment
         android:id="@+id/searchFragment"
         android:name="com.example.concerttrack.ui.SearchFragment"
@@ -86,4 +74,16 @@
         android:id="@+id/eventFragment"
         android:name="com.example.concerttrack.ui.EventFragment"
         android:label="EventFragment" />
+    <fragment
+        android:id="@+id/eventsFragment3"
+        android:name="com.example.concerttrack.ui.EventsFragment"
+        android:label="EventsFragment" >
+        <action
+            android:id="@+id/action_eventsFragment3_to_eventFragment"
+            app:destination="@id/eventFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+    </fragment>
 </navigation>

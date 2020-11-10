@@ -84,4 +84,5 @@
     <string name="newEventAddedError">Dodawnaie wydarznie nie powiodło się. Coś poszło nie tak!</string>
     <string name="undo">Cofinj</string>
     <string name="eventDeleted">Usunięto wydarzenie</string>
+    <string name="iWasThere">Byłem/byłam tam</string>
 </resources>

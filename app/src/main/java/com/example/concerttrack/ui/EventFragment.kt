@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
@@ -33,10 +34,12 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.event_fragment.*
 import kotlinx.android.synthetic.main.event_fragment.currentLocationBtn
 import kotlinx.android.synthetic.main.event_fragment.placeAddressInput
 import kotlinx.android.synthetic.main.event_fragment.placeLocationBtn
+import kotlinx.android.synthetic.main.event_item.view.*
 import java.text.SimpleDateFormat
 
 class EventFragment: Fragment(R.layout.event_fragment), OnMapReadyCallback, DeleteEventDialog.DeleteEventDialogListener {
@@ -60,11 +63,11 @@ class EventFragment: Fragment(R.layout.event_fragment), OnMapReadyCallback, Dele
         event = arguments?.getSerializable("event") as Event
 
         if(arguments?.getBoolean("isArtistEvent")!!) {
+            IwasThereBtn.visibility = View.GONE
             interestedBtn.visibility = View.GONE
             takePartBtn.visibility = View.GONE
 
             artist = ArtistMainPage.artist!!
-            artistInput.text = artist.name
 
             ticketLinkBtn.visibility = View.GONE
 
@@ -72,15 +75,33 @@ class EventFragment: Fragment(R.layout.event_fragment), OnMapReadyCallback, Dele
             deleteEventBtn.visibility = View.GONE
             editEventBtn.visibility = View.GONE
             setLayoutParams()
+
+            artist = arguments?.getSerializable("artist") as Artist
+            artistInput.setTextColor(resources.getColor(R.color.colorAccent))
+
+//            val imgPath = arguments?.getSerializable("imgPath") as String?
+//            if(imgPath!=null) {
+//                Picasso.get().load(imgPath.toUri()).into(eventIcon)
+//            }
+            if(!arguments?.getBoolean("isFan")!!) {
+                interestedBtn.visibility = View.GONE
+                takePartBtn.visibility = View.GONE
+                IwasThereBtn.visibility = View.GONE
+            }
         }
 
         if(!arguments?.getBoolean("isPastEvent")!!) {
             pastEventInfo.visibility = View.GONE
+            IwasThereBtn.visibility = View.GONE
         } else  {
+            interestedBtn.visibility = View.GONE
+            takePartBtn.visibility = View.GONE
             deleteEventBtn.visibility = View.GONE
             editEventBtn.visibility = View.GONE
+            ticketLinkBtn.visibility = View.GONE
             setLayoutParams()
         }
+
         setTextData()
 
         getLocationPermission()
@@ -239,6 +260,7 @@ class EventFragment: Fragment(R.layout.event_fragment), OnMapReadyCallback, Dele
     }
 
     private fun setTextData() {
+        artistInput.text = artist.name
         shortDescInput.text = event.shortDescription
         placeNameInput.text = event.placeName
         placeAddressInput.text = event.placeAddress
@@ -249,11 +271,11 @@ class EventFragment: Fragment(R.layout.event_fragment), OnMapReadyCallback, Dele
 
     private fun setLayoutParams() {
         val iconParams: ConstraintLayout.LayoutParams = eventIcon.layoutParams as ConstraintLayout.LayoutParams
-        iconParams.setMargins(16,100,0,0)
+        iconParams.setMargins(16,110,0,0)
         eventIcon.layoutParams = iconParams
 
         val nameParams: ConstraintLayout.LayoutParams = eventName.layoutParams as ConstraintLayout.LayoutParams
-        nameParams.setMargins(8,120,0,0)
+        nameParams.setMargins(8,130,0,0)
         eventName.layoutParams = nameParams
 
     }

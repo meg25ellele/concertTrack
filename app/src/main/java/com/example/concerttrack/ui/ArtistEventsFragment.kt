@@ -44,6 +44,11 @@ class ArtistEventsFragment: Fragment(R.layout.artist_events_fragment) {
         comingEventsList.clear()
         pastEventsList.clear()
 
+        noCommingEventsInfo.visibility = View.GONE
+        noPastEventsInfo.visibility = View.GONE
+        commingEventsInfo.visibility = View.GONE
+        pastEventsInfo.visibility = View.GONE
+
 
         val itemTouchHelperCallback =object:ItemTouchHelper.SimpleCallback(0,
             ItemTouchHelper.LEFT)
@@ -114,18 +119,7 @@ class ArtistEventsFragment: Fragment(R.layout.artist_events_fragment) {
                 is Resource.Success -> {
                     comingEventsList.clear()
                     comingEventsList.addAll(0,it.data)
-                    if(comingEventsList.size>0) {
-                        noCommingEventsInfo.visibility = View.GONE
-                    }
-                    else {
-                        noCommingEventsInfo.visibility = View.VISIBLE
-                    }
-                    if(pastEventsList.size>0) {
-                        noPastEventsInfo.visibility = View.GONE
-                    }
-                    else {
-                        noPastEventsInfo.visibility = View.VISIBLE
-                    }
+
                     setComingEventsRecyclerView()
                 }
                 is Resource.Failure-> {
@@ -140,12 +134,6 @@ class ArtistEventsFragment: Fragment(R.layout.artist_events_fragment) {
                 is Resource.Success -> {
                     pastEventsList.clear()
                     pastEventsList.addAll(0,it.data)
-                    if(pastEventsList.size>0) {
-                        noPastEventsInfo.visibility = View.GONE
-                    }
-                    else {
-                        noPastEventsInfo.visibility = View.VISIBLE
-                    }
                     setPastEventsRecyclerView()
                 }
                 is Resource.Failure-> {
@@ -165,10 +153,20 @@ class ArtistEventsFragment: Fragment(R.layout.artist_events_fragment) {
         comingEventsRV.adapter = comingEventsAdapter
         comingEventsRV.layoutManager =LinearLayoutManager(activity)
 
+        commingEventsInfo.visibility = View.VISIBLE
+
+        if(comingEventsList.size>0) {
+            noCommingEventsInfo.visibility = View.GONE
+        }
+        else {
+            noCommingEventsInfo.visibility = View.VISIBLE
+        }
+
         comingEventsAdapter.setOnItemClickListener {
             val bundle = Bundle().apply {
                 putSerializable("event", it)
                 putBoolean("isArtistEvent",true)
+                putBoolean("isFan",false)
                 putBoolean("isPastEvent",false)
             }
             findNavController().navigate(
@@ -183,10 +181,19 @@ class ArtistEventsFragment: Fragment(R.layout.artist_events_fragment) {
         pastEventsRV.adapter =pastEventsAdapter
         pastEventsRV.layoutManager =LinearLayoutManager(activity)
 
+        pastEventsInfo.visibility = View.VISIBLE
+        if(pastEventsList.size>0) {
+            noPastEventsInfo.visibility = View.GONE
+        }
+        else {
+            noPastEventsInfo.visibility = View.VISIBLE
+        }
+
         pastEventsAdapter.setOnItemClickListener {
             val bundle = Bundle().apply {
                 putSerializable("event", it)
                 putBoolean("isArtistEvent",true)
+                putBoolean("isFan",false)
                 putBoolean("isPastEvent",true)
             }
             findNavController().navigate(

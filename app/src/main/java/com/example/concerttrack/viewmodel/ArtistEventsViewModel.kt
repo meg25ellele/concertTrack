@@ -61,7 +61,6 @@ class ArtistEventsViewModel(application: Application) : AndroidViewModel(applica
     companion object {
         val artistComingEventsLiveData: MutableLiveData<Resource<MutableList<Event>>> = MutableLiveData()
         val artistPastEventsLiveData: MutableLiveData<Resource<MutableList<Event>>> = MutableLiveData()
-
     }
 
 }

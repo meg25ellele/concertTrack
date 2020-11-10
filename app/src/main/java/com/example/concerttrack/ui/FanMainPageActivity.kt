@@ -8,15 +8,12 @@ import androidx.navigation.fragment.findNavController
 import com.example.concerttrack.R
 import androidx.navigation.ui.setupWithNavController
 import com.example.concerttrack.util.Constants
+import com.example.concerttrack.viewmodel.ArtistEventsViewModel
+import com.example.concerttrack.viewmodel.EventsViewModel
 import com.example.concerttrack.viewmodel.FanMainPageViewModel
 import kotlinx.android.synthetic.main.activity_fan_main_page.*
 
 class FanMainPageActivity : AppCompatActivity() {
-
-    private val fanMainPageViewModel: FanMainPageViewModel by lazy {
-        ViewModelProvider(this).get(FanMainPageViewModel::class.java) }
-
-    var userType = Constants.FAN_TYPE_STR
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,9 +25,13 @@ class FanMainPageActivity : AppCompatActivity() {
         FavouritesFragment.userType = userType
         FanPanelFragment.userType = userType
 
-
-
         bottomNavigationFanView.setupWithNavController(fanMainNavHostFragment.findNavController())
 
     }
+
+    companion object {
+        var userType = Constants.FAN_TYPE_STR
+    }
+
+
 }

@@ -260,9 +260,8 @@ class CloudFirestoreRepository(private val application: Application) {
         val querySnapshot = firebaseFirestore.collection("events")
             .whereEqualTo("artist",artist)
             .whereGreaterThan("startDateTime",now)
+            .orderBy("startDateTime",Query.Direction.ASCENDING)
             .get().await()
-
-
 
         for(document in querySnapshot) {
 
@@ -295,6 +294,7 @@ class CloudFirestoreRepository(private val application: Application) {
         val querySnapshot = firebaseFirestore.collection("events")
             .whereEqualTo("artist",artist)
             .whereLessThan("startDateTime",now)
+            .orderBy("startDateTime",Query.Direction.DESCENDING)
             .get().await()
 
 
@@ -322,5 +322,104 @@ class CloudFirestoreRepository(private val application: Application) {
         return Resource.Success(artistEvents)
     }
 
+    suspend fun retrieveComingEvents(): Resource.Success<MutableList<Event>> {
+        val artistEvents = mutableListOf<Event>()
+
+        val now = Date.from(ZonedDateTime.now().toInstant())
+
+        val querySnapshot = firebaseFirestore.collection("events")
+            .whereGreaterThan("startDateTime",now)
+            .orderBy("startDateTime",Query.Direction.ASCENDING)
+            .get().await()
+
+        for(document in querySnapshot) {
+
+            val locationMap = document.get("location") as Map<String, Any>
+            val placeName = locationMap["placeName"].toString()
+            val placeAddress = locationMap["placeAddress"].toString()
+            val placeGeoPoint = locationMap["placeLatLng"] as GeoPoint
+
+            val formatter = SimpleDateFormat(Constants.DATE_TIME_FORMAT)
+            val startDateTime =  formatter.format(document.getTimestamp("startDateTime")!!.toDate())
+
+
+            val artistEvent = Event(document.getString("header")!!,
+                startDateTime,
+                document.getString("shortDescription")!!,
+                document.getString("ticketsLink")!!,
+                placeName,placeAddress,placeGeoPoint.latitude,placeGeoPoint.longitude,
+                (document.get("artist") as DocumentReference).path)
+
+            artistEvents.add(artistEvent)
+        }
+        return Resource.Success(artistEvents)
+    }
+
+    suspend fun retrievePastEvents(): Resource.Success<MutableList<Event>> {
+        val artistEvents = mutableListOf<Event>()
+
+        val now = Date.from(ZonedDateTime.now().toInstant())
+
+        val querySnapshot = firebaseFirestore.collection("events")
+            .whereLessThan("startDateTime",now)
+            .orderBy("startDateTime",Query.Direction.DESCENDING)
+            .get().await()
+
+
+        for(document in querySnapshot) {
+            Log.i("document",document.toString())
+            val locationMap = document.get("location") as Map<String, Any>
+            val placeName = locationMap["placeName"].toString()
+            val placeAddress = locationMap["placeAddress"].toString()
+            val placeGeoPoint = locationMap["placeLatLng"] as GeoPoint
+
+
+            val formatter = SimpleDateFormat(Constants.DATE_TIME_FORMAT)
+            val startDateTime =  formatter.format(document.getTimestamp("startDateTime")!!.toDate())
+
+
+            val artistEvent = Event(document.getString("header")!!,
+                startDateTime,
+                document.getString("shortDescription")!!,
+                document.getString("ticketsLink")!!,
+                placeName,placeAddress,placeGeoPoint.latitude,placeGeoPoint.longitude,
+                (document.get("artist") as DocumentReference).path)
+
+            artistEvents.add(artistEvent)
+        }
+        return Resource.Success(artistEvents)
+    }
+
+    suspend fun getArtistsMap():Resource<Map<String,Artist>> {
+        val artistsMap = mutableMapOf<String,Artist>()
+
+        val artists = firebaseFirestore.collection("artists").get().await()
+
+        for(artistSnapshot in artists) {
+            Log.i("artist",artistSnapshot.getString("email").toString())
+            Log.i("artist",artistSnapshot.getString("name").toString())
+            Log.i("artist",artistSnapshot.getString("description").toString())
+            Log.i("artist",artistSnapshot.getString("facebookLink").toString())
+            Log.i("artist",artistSnapshot.getString("youtubeLink").toString())
+            Log.i("artist",artistSnapshot.getString("spotifyLink").toString())
+            //Log.i("artist",artistSnapshot.getString("myGenres").toString())
+
+
+            val artist = Artist(artistSnapshot.id,
+                artistSnapshot.getString("email"),
+                artistSnapshot.getString("name")!!,
+                artistSnapshot.getString("description")!!,
+                artistSnapshot.getString("facebookLink")!!,
+                artistSnapshot.getString("youtubeLink")!!,
+                artistSnapshot.getString("spotifyLink")!!,
+                artistSnapshot.get("myGenres") as List<String>?)
+
+            Log.i("artist",artist.toString())
+
+            artistsMap.set("artists/" + artistSnapshot.id,artist)
+        }
+
+        return Resource.Success(artistsMap)
+    }
  }
 

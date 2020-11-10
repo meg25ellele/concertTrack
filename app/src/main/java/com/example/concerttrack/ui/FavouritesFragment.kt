@@ -15,14 +15,12 @@ class FavouritesFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if(FanPanelFragment.userType == Constants.GUEST_TYPE_STR) {
+        if(userType == Constants.GUEST_TYPE_STR) {
             goToMainPageBtn.setOnClickListener {
                 activity?.finish()
             }
         }
     }
-
-
 
     override fun onCreateView(
         inflater: LayoutInflater,

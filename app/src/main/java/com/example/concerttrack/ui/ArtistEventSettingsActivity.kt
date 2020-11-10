@@ -156,7 +156,7 @@ class ArtistEventSettingsActivity : AppCompatActivity(), OnMapReadyCallback {
         val shortDescription = eventDescET.text.toString()
         val ticketsLink = ticketsLink.text.toString()
         val placeName = placeNameET.text.toString()
-        val placeAddress = placeAddressInput.text.toString()
+        val placeAddress = placeAddressInput.text.toString().replace(",Polska","")
         val placeLat = eventAddress!!.latitude
         val placeLng = eventAddress!!.longitude
 
