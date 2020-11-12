@@ -4,7 +4,6 @@ package com.example.concerttrack.ui
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.Observer
@@ -12,7 +11,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.concerttrack.R
-import com.example.concerttrack.dialogs.DeleteEventDialog
 import com.example.concerttrack.models.Artist
 import com.example.concerttrack.util.Resource
 import com.example.concerttrack.viewmodel.ArtistEventsViewModel
@@ -28,7 +26,7 @@ class ArtistMainPage : AppCompatActivity(){
     private val artistMainPageViewModel: ArtistMainPageViewModel by lazy {
         ViewModelProvider(this).get(ArtistMainPageViewModel::class.java) }
 
-    private val artistEventsVieModel: ArtistEventsViewModel by lazy { ViewModelProvider(this).get(
+    val artistEventsViewModel: ArtistEventsViewModel by lazy { ViewModelProvider(this).get(
         ArtistEventsViewModel::class.java) }
 
     private var allControls: List<View> = listOf()
@@ -57,8 +55,8 @@ class ArtistMainPage : AppCompatActivity(){
                     ArtistPanelFragment.artist = artist
                     ArtistSettingsActivity.artist = artist
                     artistMainPageViewModel.getPhotoFromStorage(ArtistPanelFragment.artist!!.id)
-                    artistEventsVieModel.retrieveArtistComingEvents(it.data.first!!)
-                    artistEventsVieModel.retrieveArtistPastEvents(it.data.first!!)
+                    artistEventsViewModel.retrieveArtistComingEvents(artist!!)
+                    artistEventsViewModel.retrieveArtistPastEvents(artist!!)
                 }
                 is Resource.Failure -> {
                     hideSpinnerAndEnableControls()

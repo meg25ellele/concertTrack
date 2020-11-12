@@ -252,7 +252,9 @@ class CloudFirestoreRepository(private val application: Application) {
         }
     }
 
-    suspend fun retrieveArtistComingEvents(artist: DocumentReference): Resource.Success<MutableList<Event>> {
+    suspend fun retrieveArtistComingEvents(artist: Artist): Resource.Success<MutableList<Event>> {
+        val artist = firebaseFirestore.document("artists/"+ artist.id)
+
         val artistEvents = mutableListOf<Event>()
 
         val now = Date.from(ZonedDateTime.now().toInstant())
@@ -286,7 +288,9 @@ class CloudFirestoreRepository(private val application: Application) {
         return Resource.Success(artistEvents)
     }
 
-    suspend fun retrieveArtistPastEvents(artist: DocumentReference): Resource.Success<MutableList<Event>> {
+    suspend fun retrieveArtistPastEvents(artist: Artist): Resource.Success<MutableList<Event>> {
+        val artist = firebaseFirestore.document("artists/"+ artist.id)
+
         val artistEvents = mutableListOf<Event>()
 
         val now = Date.from(ZonedDateTime.now().toInstant())

@@ -81,9 +81,6 @@ class ArtistPanelFragment: Fragment(R.layout.artist_panel_fragment) {
     }
 
     private fun loadData() {
-
-
-
         nameTV.text = artist!!.name
         descTV.text = artist!!.description
 

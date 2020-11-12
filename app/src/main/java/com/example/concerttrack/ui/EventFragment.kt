@@ -15,6 +15,7 @@ import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.example.concerttrack.R
 import com.example.concerttrack.dialogs.DeleteEventDialog
 import com.example.concerttrack.models.Artist
@@ -62,6 +63,9 @@ class EventFragment: Fragment(R.layout.event_fragment), OnMapReadyCallback, Dele
 
         event = arguments?.getSerializable("event") as Event
 
+        val isFan = arguments?.getBoolean("isFan")
+
+
         if(arguments?.getBoolean("isArtistEvent")!!) {
             IwasThereBtn.visibility = View.GONE
             interestedBtn.visibility = View.GONE
@@ -79,11 +83,25 @@ class EventFragment: Fragment(R.layout.event_fragment), OnMapReadyCallback, Dele
             artist = arguments?.getSerializable("artist") as Artist
             artistInput.setTextColor(resources.getColor(R.color.colorAccent))
 
-//            val imgPath = arguments?.getSerializable("imgPath") as String?
+            val imgPath = arguments?.getSerializable("imgPath") as String?
+
+            artistInput.setOnClickListener {
+                val bundle = Bundle().apply {
+                    putSerializable("artist",artist)
+                    putSerializable("isFan",isFan)
+                    putString("imgPath",imgPath)
+                }
+                findNavController().navigate(
+                    R.id.action_eventFragment_to_artistViewFragment,
+                    bundle
+                )
+            }
+
 //            if(imgPath!=null) {
 //                Picasso.get().load(imgPath.toUri()).into(eventIcon)
 //            }
-            if(!arguments?.getBoolean("isFan")!!) {
+
+            if(!isFan!!) {
                 interestedBtn.visibility = View.GONE
                 takePartBtn.visibility = View.GONE
                 IwasThereBtn.visibility = View.GONE

@@ -7,7 +7,7 @@
     android:paddingStart="10dp"
     android:paddingTop="10dp"
     android:paddingEnd="10dp"
-    android:paddingBottom="10dp">
+    android:paddingBottom="0dp">
 
     <ImageView
         android:id="@+id/eventIcon"
@@ -82,12 +82,12 @@
         android:id="@+id/seperateLine"
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="3dp"
         android:background="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/whereInput"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/whereInput" />
 </androidx.constraintlayout.widget.ConstraintLayout>

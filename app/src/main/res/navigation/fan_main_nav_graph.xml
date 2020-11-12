@@ -73,13 +73,34 @@
     <fragment
         android:id="@+id/eventFragment"
         android:name="com.example.concerttrack.ui.EventFragment"
-        android:label="EventFragment" />
+        android:label="EventFragment" >
+        <action
+            android:id="@+id/action_eventFragment_to_artistViewFragment"
+            app:destination="@id/artistViewFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+    </fragment>
     <fragment
         android:id="@+id/eventsFragment3"
         android:name="com.example.concerttrack.ui.EventsFragment"
         android:label="EventsFragment" >
         <action
             android:id="@+id/action_eventsFragment3_to_eventFragment"
+            app:destination="@id/eventFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+    </fragment>
+    <fragment
+        android:id="@+id/artistViewFragment"
+        android:name="com.example.concerttrack.ui.ArtistViewFragment"
+        android:label="ArtistViewFragment"
+        >
+        <action
+            android:id="@+id/action_artistViewFragment_to_eventFragment"
             app:destination="@id/eventFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"

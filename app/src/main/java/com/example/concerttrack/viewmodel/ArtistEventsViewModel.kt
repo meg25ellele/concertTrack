@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.example.concerttrack.models.Artist
 import com.example.concerttrack.models.Event
 import com.example.concerttrack.repository.CloudFirestoreRepository
 import com.example.concerttrack.util.Constants
@@ -21,24 +22,33 @@ class ArtistEventsViewModel(application: Application) : AndroidViewModel(applica
 
     private  val cloudFirestoreRepository: CloudFirestoreRepository by lazy { CloudFirestoreRepository(application) }
 
+    val artistComingEventsLiveData: MutableLiveData<Resource<MutableList<Event>>> = MutableLiveData()
+    val artistPastEventsLiveData: MutableLiveData<Resource<MutableList<Event>>> = MutableLiveData()
 
-    fun retrieveArtistComingEvents(artist: DocumentReference) = viewModelScope.launch {
+    fun retrieveArtistComingEvents(artist: Artist) = viewModelScope.launch {
         artistComingEventsLiveData.postValue(Resource.Loading())
+        ArtistEventsViewModel.artistComingEventsLiveData.postValue(Resource.Loading())
         try{
             val artistComingEvents = cloudFirestoreRepository.retrieveArtistComingEvents(artist).data
             artistComingEventsLiveData.postValue(Resource.Success(artistComingEvents))
+            ArtistEventsViewModel.artistComingEventsLiveData.postValue(Resource.Success(artistComingEvents))
+
         }catch(e:Exception) {
             artistComingEventsLiveData.postValue(Resource.Failure(e))
+            ArtistEventsViewModel.artistComingEventsLiveData.postValue(Resource.Failure(e))
         }
     }
 
-    fun retrieveArtistPastEvents(artist: DocumentReference) = viewModelScope.launch {
+    fun retrieveArtistPastEvents(artist: Artist) = viewModelScope.launch {
         artistPastEventsLiveData.postValue(Resource.Loading())
+        ArtistEventsViewModel.artistPastEventsLiveData.postValue(Resource.Loading())
         try{
             val artistComingEvents = cloudFirestoreRepository.retrieveArtistPastEvents(artist).data
             artistPastEventsLiveData.postValue(Resource.Success(artistComingEvents))
+            ArtistEventsViewModel.artistPastEventsLiveData.postValue(Resource.Success(artistComingEvents))
         }catch(e:Exception) {
             artistPastEventsLiveData.postValue(Resource.Failure(e))
+            ArtistEventsViewModel.artistPastEventsLiveData.postValue(Resource.Failure(e))
         }
     }
 

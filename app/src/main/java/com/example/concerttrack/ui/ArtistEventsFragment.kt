@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.concerttrack.R
 import com.example.concerttrack.adapters.ArtistEventsAdapter
 import com.example.concerttrack.adapters.GenresAdapter
+import com.example.concerttrack.models.Artist
 import com.example.concerttrack.models.Event
 import com.example.concerttrack.models.MusicGenre
 import com.example.concerttrack.util.Resource
@@ -149,7 +150,7 @@ class ArtistEventsFragment: Fragment(R.layout.artist_events_fragment) {
     }
 
     private fun setComingEventsRecyclerView() {
-        comingEventsAdapter = ArtistEventsAdapter(comingEventsList)
+        comingEventsAdapter = ArtistEventsAdapter(comingEventsList,ArtistMainPage.artist!!,null)
         comingEventsRV.adapter = comingEventsAdapter
         comingEventsRV.layoutManager =LinearLayoutManager(activity)
 
@@ -162,9 +163,9 @@ class ArtistEventsFragment: Fragment(R.layout.artist_events_fragment) {
             noCommingEventsInfo.visibility = View.VISIBLE
         }
 
-        comingEventsAdapter.setOnItemClickListener {
+        comingEventsAdapter.setOnItemClickListener { event: Event, artist: Artist?, s: String? ->
             val bundle = Bundle().apply {
-                putSerializable("event", it)
+                putSerializable("event", event)
                 putBoolean("isArtistEvent",true)
                 putBoolean("isFan",false)
                 putBoolean("isPastEvent",false)
@@ -177,7 +178,7 @@ class ArtistEventsFragment: Fragment(R.layout.artist_events_fragment) {
     }
 
     private fun setPastEventsRecyclerView() {
-        pastEventsAdapter =ArtistEventsAdapter(pastEventsList)
+        pastEventsAdapter =ArtistEventsAdapter(pastEventsList,ArtistMainPage.artist!!,null)
         pastEventsRV.adapter =pastEventsAdapter
         pastEventsRV.layoutManager =LinearLayoutManager(activity)
 
@@ -189,9 +190,9 @@ class ArtistEventsFragment: Fragment(R.layout.artist_events_fragment) {
             noPastEventsInfo.visibility = View.VISIBLE
         }
 
-        pastEventsAdapter.setOnItemClickListener {
+        pastEventsAdapter.setOnItemClickListener { event: Event, artist: Artist?, s: String? ->
             val bundle = Bundle().apply {
-                putSerializable("event", it)
+                putSerializable("event", event)
                 putBoolean("isArtistEvent",true)
                 putBoolean("isFan",false)
                 putBoolean("isPastEvent",true)
