@@ -27,7 +27,7 @@
 
         <activity android:name=".ui.AddEventActivity" />
         <activity android:name=".ui.ArtistSettingsActivity" />
-        <activity android:name=".ui.ArtistMainPage" />
+        <activity android:name=".ui.ArtistMainPageActivity" />
         <activity android:name=".ui.ForgotPasswordActivity" />
         <activity android:name=".ui.SplashScreenActivity">
             <intent-filter>

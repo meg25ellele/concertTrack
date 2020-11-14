@@ -12,17 +12,13 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.concerttrack.R
 import com.example.concerttrack.adapters.ArtistEventsAdapter
-import com.example.concerttrack.adapters.GenresAdapter
 import com.example.concerttrack.models.Artist
 import com.example.concerttrack.models.Event
-import com.example.concerttrack.models.MusicGenre
 import com.example.concerttrack.util.Resource
 import com.example.concerttrack.viewmodel.ArtistEventsViewModel
 import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.firestore.DocumentReference
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import kotlinx.android.synthetic.main.artist_events_fragment.*
 
@@ -150,7 +146,7 @@ class ArtistEventsFragment: Fragment(R.layout.artist_events_fragment) {
     }
 
     private fun setComingEventsRecyclerView() {
-        comingEventsAdapter = ArtistEventsAdapter(comingEventsList,ArtistMainPage.artist!!,null)
+        comingEventsAdapter = ArtistEventsAdapter(comingEventsList,ArtistMainPageActivity.artist!!,null)
         comingEventsRV.adapter = comingEventsAdapter
         comingEventsRV.layoutManager =LinearLayoutManager(activity)
 
@@ -178,7 +174,7 @@ class ArtistEventsFragment: Fragment(R.layout.artist_events_fragment) {
     }
 
     private fun setPastEventsRecyclerView() {
-        pastEventsAdapter =ArtistEventsAdapter(pastEventsList,ArtistMainPage.artist!!,null)
+        pastEventsAdapter =ArtistEventsAdapter(pastEventsList,ArtistMainPageActivity.artist!!,null)
         pastEventsRV.adapter =pastEventsAdapter
         pastEventsRV.layoutManager =LinearLayoutManager(activity)
 

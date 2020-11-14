@@ -6,10 +6,9 @@ import com.example.concerttrack.models.Artist
 import com.example.concerttrack.models.Event
 
 import com.example.concerttrack.models.MusicGenre
-import com.example.concerttrack.models.User
+import com.example.concerttrack.models.Fan
 import com.example.concerttrack.util.Constants
 import com.example.concerttrack.util.Resource
-import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.*
 import kotlinx.coroutines.tasks.await
@@ -43,18 +42,21 @@ class CloudFirestoreRepository(private val application: Application) {
         return Resource.Success(musicGenresList)
     }
 
-    suspend fun addNewUser(newUser: User): Resource<Boolean> {
+    suspend fun addNewFan(newFan: Fan): Resource<Boolean> {
        val data = hashMapOf<String,Any>(
-           "email" to newUser.email,
-           "name" to newUser.name
+           "email" to newFan.email,
+           "name" to newFan.name,
+           "favouritesArtists" to newFan.favouritesArtists,
+           "interestedEvents" to newFan.interestedEvents,
+           "myEvents" to newFan.myEvents
        )
-        firebaseFirestore.collection("users").document(newUser.id).set(data).await()
+        firebaseFirestore.collection("fans").document(newFan.id).set(data).await()
 
         return Resource.Success(true)
     }
 
-    suspend fun findUser(email:String):Resource<Boolean> {
-        val querySnapshot = firebaseFirestore.collection("users")
+    suspend fun findFan(email:String):Resource<Boolean> {
+        val querySnapshot = firebaseFirestore.collection("fans")
             .whereEqualTo("email",email).get().await()
 
         Log.i("query",querySnapshot.documents.toString())
@@ -64,6 +66,36 @@ class CloudFirestoreRepository(private val application: Application) {
         } else {
             Resource.Success(true)
         }
+    }
+
+    suspend fun getFan(email:String): Resource<Fan> {
+        val querySnapshot = firebaseFirestore.collection("fans")
+            .whereEqualTo("email",email).get().await()
+
+        val document = querySnapshot.documents.first()
+
+        val favouritesArtists = mutableListOf<String>()
+        val interestedEvents = mutableListOf<String>()
+        val myEvents = mutableListOf<String>()
+
+
+        for(artistReference in document.get("favouritesArtists") as List<DocumentReference>) {
+            favouritesArtists.add(artistReference.path)
+        }
+        for(artistReference in document.get("interestedEvents") as List<DocumentReference>) {
+            interestedEvents.add(artistReference.path)
+        }
+        for(artistReference in document.get("myEvents") as List<DocumentReference>) {
+            myEvents.add(artistReference.path)
+        }
+        val fan = Fan(document.id,
+                    document.getString("email")!!,
+                    document.getString("name")!!,
+                    interestedEvents,
+                    favouritesArtists,
+                    myEvents)
+
+        return Resource.Success(fan)
     }
 
     suspend fun addNewArtist(newArtist: Artist): Resource<Boolean> {
@@ -222,8 +254,6 @@ class CloudFirestoreRepository(private val application: Application) {
         val artist = firebaseFirestore.document(event.artistReferencePath)
 
         val placeGeoPoint = GeoPoint(event.placeLat,event.placeLng)
-
-
         val locationMap = mapOf<String,Any>( "placeAddress" to event.placeAddress,
                                         "placeLatLng" to placeGeoPoint,
                                         "placeName" to event.placeName)
@@ -281,7 +311,8 @@ class CloudFirestoreRepository(private val application: Application) {
                 document.getString("shortDescription")!!,
                 document.getString("ticketsLink")!!,
                 placeName,placeAddress,placeGeoPoint.latitude,placeGeoPoint.longitude,
-                (document.get("artist") as DocumentReference).path)
+                (document.get("artist") as DocumentReference).path,
+                document.id)
 
             artistEvents.add(artistEvent)
             }
@@ -319,7 +350,8 @@ class CloudFirestoreRepository(private val application: Application) {
                 document.getString("shortDescription")!!,
                 document.getString("ticketsLink")!!,
                 placeName,placeAddress,placeGeoPoint.latitude,placeGeoPoint.longitude,
-                (document.get("artist") as DocumentReference).path)
+                (document.get("artist") as DocumentReference).path,
+                document.id)
 
             artistEvents.add(artistEvent)
         }
@@ -352,7 +384,8 @@ class CloudFirestoreRepository(private val application: Application) {
                 document.getString("shortDescription")!!,
                 document.getString("ticketsLink")!!,
                 placeName,placeAddress,placeGeoPoint.latitude,placeGeoPoint.longitude,
-                (document.get("artist") as DocumentReference).path)
+                (document.get("artist") as DocumentReference).path,
+                document.id)
 
             artistEvents.add(artistEvent)
         }
@@ -371,7 +404,6 @@ class CloudFirestoreRepository(private val application: Application) {
 
 
         for(document in querySnapshot) {
-            Log.i("document",document.toString())
             val locationMap = document.get("location") as Map<String, Any>
             val placeName = locationMap["placeName"].toString()
             val placeAddress = locationMap["placeAddress"].toString()
@@ -387,7 +419,8 @@ class CloudFirestoreRepository(private val application: Application) {
                 document.getString("shortDescription")!!,
                 document.getString("ticketsLink")!!,
                 placeName,placeAddress,placeGeoPoint.latitude,placeGeoPoint.longitude,
-                (document.get("artist") as DocumentReference).path)
+                (document.get("artist") as DocumentReference).path,
+                document.id)
 
             artistEvents.add(artistEvent)
         }
@@ -400,14 +433,6 @@ class CloudFirestoreRepository(private val application: Application) {
         val artists = firebaseFirestore.collection("artists").get().await()
 
         for(artistSnapshot in artists) {
-            Log.i("artist",artistSnapshot.getString("email").toString())
-            Log.i("artist",artistSnapshot.getString("name").toString())
-            Log.i("artist",artistSnapshot.getString("description").toString())
-            Log.i("artist",artistSnapshot.getString("facebookLink").toString())
-            Log.i("artist",artistSnapshot.getString("youtubeLink").toString())
-            Log.i("artist",artistSnapshot.getString("spotifyLink").toString())
-            //Log.i("artist",artistSnapshot.getString("myGenres").toString())
-
 
             val artist = Artist(artistSnapshot.id,
                 artistSnapshot.getString("email"),
@@ -425,5 +450,167 @@ class CloudFirestoreRepository(private val application: Application) {
 
         return Resource.Success(artistsMap)
     }
+
+    suspend fun addArtistToFavourites(fanID: String, artistID: String): Resource<Boolean> {
+        val artist = firebaseFirestore.document("artists/"+ artistID)
+
+        var fan = firebaseFirestore.collection("fans").document(fanID)
+
+        fan.update("favouritesArtists",FieldValue.arrayUnion(artist)).await()
+        return Resource.Success(true)
+    }
+
+    suspend fun removeArtistFromFavourites(fanID: String,artistID: String) : Resource<Boolean> {
+        val artist = firebaseFirestore.document("artists/"+ artistID)
+
+        var fan = firebaseFirestore.collection("fans").document(fanID)
+
+        fan.update("favouritesArtists", FieldValue.arrayRemove(artist)).await()
+        return Resource.Success(true)
+    }
+
+    suspend fun addEventToInterested(fanID: String,event: Event) : Resource<Boolean> {
+        val artist = firebaseFirestore.document(event.artistReferencePath)
+
+        val placeGeoPoint = GeoPoint(event.placeLat,event.placeLng)
+        val locationMap = mapOf<String,Any>( "placeAddress" to event.placeAddress,
+            "placeLatLng" to placeGeoPoint,
+            "placeName" to event.placeName)
+
+        val parsedDate = ZonedDateTime.parse(event.startDateTime, Constants.DATE_TIME_FORMATTER)
+        val date = Date.from(parsedDate.toInstant())
+
+
+        val eventQuery = firebaseFirestore.collection("events")
+            .whereEqualTo("artist",artist)
+            .whereEqualTo("header",event.header)
+            .whereEqualTo("shortDescription",event.shortDescription)
+            .whereEqualTo("startDateTime",Timestamp(date))
+            .whereEqualTo("ticketsLink", event.ticketsLink)
+            .whereEqualTo("location",locationMap)
+            .get().await()
+
+        val event = eventQuery.documents.first().reference
+
+        var fan = firebaseFirestore.collection("fans").document(fanID)
+        fan.update("interestedEvents",FieldValue.arrayUnion(event)).await()
+        return Resource.Success(true)
+    }
+
+    suspend fun removeEventFromInterested(fanID: String,event: Event) : Resource<Boolean> {
+        val artist = firebaseFirestore.document(event.artistReferencePath)
+
+        val placeGeoPoint = GeoPoint(event.placeLat,event.placeLng)
+        val locationMap = mapOf<String,Any>( "placeAddress" to event.placeAddress,
+            "placeLatLng" to placeGeoPoint,
+            "placeName" to event.placeName)
+
+        val parsedDate = ZonedDateTime.parse(event.startDateTime, Constants.DATE_TIME_FORMATTER)
+        val date = Date.from(parsedDate.toInstant())
+
+
+        val eventQuery = firebaseFirestore.collection("events")
+            .whereEqualTo("artist",artist)
+            .whereEqualTo("header",event.header)
+            .whereEqualTo("shortDescription",event.shortDescription)
+            .whereEqualTo("startDateTime",Timestamp(date))
+            .whereEqualTo("ticketsLink", event.ticketsLink)
+            .whereEqualTo("location",locationMap)
+            .get().await()
+
+        val event = eventQuery.documents.first().reference
+
+        var fan = firebaseFirestore.collection("fans").document(fanID)
+        fan.update("interestedEvents",FieldValue.arrayRemove(event)).await()
+        return Resource.Success(true)
+    }
+
+    suspend fun addEventToMine(fanID: String,event: Event) : Resource<Boolean> {
+        val artist = firebaseFirestore.document(event.artistReferencePath)
+
+        val placeGeoPoint = GeoPoint(event.placeLat,event.placeLng)
+        val locationMap = mapOf<String,Any>( "placeAddress" to event.placeAddress,
+            "placeLatLng" to placeGeoPoint,
+            "placeName" to event.placeName)
+
+        val parsedDate = ZonedDateTime.parse(event.startDateTime, Constants.DATE_TIME_FORMATTER)
+        val date = Date.from(parsedDate.toInstant())
+
+
+        val eventQuery = firebaseFirestore.collection("events")
+            .whereEqualTo("artist",artist)
+            .whereEqualTo("header",event.header)
+            .whereEqualTo("shortDescription",event.shortDescription)
+            .whereEqualTo("startDateTime",Timestamp(date))
+            .whereEqualTo("ticketsLink", event.ticketsLink)
+            .whereEqualTo("location",locationMap)
+            .get().await()
+
+        val event = eventQuery.documents.first().reference
+
+        var fan = firebaseFirestore.collection("fans").document(fanID)
+        fan.update("myEvents",FieldValue.arrayUnion(event)).await()
+        return Resource.Success(true)
+    }
+
+    suspend fun removeEventFromMine(fanID: String,event: Event) : Resource<Boolean> {
+        val artist = firebaseFirestore.document(event.artistReferencePath)
+
+        val placeGeoPoint = GeoPoint(event.placeLat,event.placeLng)
+        val locationMap = mapOf<String,Any>( "placeAddress" to event.placeAddress,
+            "placeLatLng" to placeGeoPoint,
+            "placeName" to event.placeName)
+
+        val parsedDate = ZonedDateTime.parse(event.startDateTime, Constants.DATE_TIME_FORMATTER)
+        val date = Date.from(parsedDate.toInstant())
+
+
+        val eventQuery = firebaseFirestore.collection("events")
+            .whereEqualTo("artist",artist)
+            .whereEqualTo("header",event.header)
+            .whereEqualTo("shortDescription",event.shortDescription)
+            .whereEqualTo("startDateTime",Timestamp(date))
+            .whereEqualTo("ticketsLink", event.ticketsLink)
+            .whereEqualTo("location",locationMap)
+            .get().await()
+
+        val event = eventQuery.documents.first().reference
+
+        var fan = firebaseFirestore.collection("fans").document(fanID)
+        fan.update("myEvents",FieldValue.arrayRemove(event)).await()
+        return Resource.Success(true)
+    }
+
+    suspend fun retrieveFanEvents(fanID: String): Resource.Success<MutableList<Event>>{
+        val fanEvents = mutableListOf<Event>()
+
+        val fanDocumentReference = firebaseFirestore.collection("fans").document(fanID).get().await()
+        val eventsReferences = fanDocumentReference.get("myEvents") as List<DocumentReference>
+
+        for(eventReference in eventsReferences) {
+            val document = firebaseFirestore.document(eventReference.path).get().await()
+
+            val locationMap = document.get("location") as Map<String, Any>
+            val placeName = locationMap["placeName"].toString()
+            val placeAddress = locationMap["placeAddress"].toString()
+            val placeGeoPoint = locationMap["placeLatLng"] as GeoPoint
+
+
+            val formatter = SimpleDateFormat(Constants.DATE_TIME_FORMAT)
+            val startDateTime =  formatter.format(document.getTimestamp("startDateTime")!!.toDate())
+
+            val fanEvent = Event(document.getString("header")!!,
+                startDateTime,
+                document.getString("shortDescription")!!,
+                document.getString("ticketsLink")!!,
+                placeName,placeAddress,placeGeoPoint.latitude,placeGeoPoint.longitude,
+                (document.get("artist") as DocumentReference).path,
+                document.id)
+
+            fanEvents.add(fanEvent)
+        }
+        return Resource.Success(fanEvents)
+    }
+
  }
 

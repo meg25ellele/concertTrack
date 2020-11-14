@@ -2,7 +2,6 @@ package com.example.concerttrack.ui
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.util.Patterns
 import android.view.View
 import android.widget.Toast
@@ -70,7 +69,7 @@ class LoginActivity : AppCompatActivity() {
             }
         })
 
-        loginViewModel.userFound.observe(this, Observer {
+        loginViewModel.fanFound.observe(this, Observer {
             when(it) {
                 is Resource.Loading -> {
                     showSpinnerAndDisableControls()
@@ -112,7 +111,7 @@ class LoginActivity : AppCompatActivity() {
                             startActivity(intent)
                         }
                         Constants.ARTIST_TYPE_STR -> {
-                            val intent = Intent(this,ArtistMainPage::class.java).apply {
+                            val intent = Intent(this,ArtistMainPageActivity::class.java).apply {
                                 addFlags(
                                     Intent.FLAG_ACTIVITY_CLEAR_TOP or
                                             Intent.FLAG_ACTIVITY_CLEAR_TASK or
@@ -154,7 +153,7 @@ class LoginActivity : AppCompatActivity() {
                         loginViewModel.findArtist(mailLoginET.text.toString())
                     }
                     Constants.FAN_TYPE_STR -> {
-                        loginViewModel.findUser(mailLoginET.text.toString())
+                        loginViewModel.findFan(mailLoginET.text.toString())
                     }
                 }
             }

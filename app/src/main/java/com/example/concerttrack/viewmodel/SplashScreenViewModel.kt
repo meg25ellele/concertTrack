@@ -17,7 +17,7 @@ class SplashScreenViewModel(application: Application) : AndroidViewModel(applica
 
     var userEmailLoginLiveData: MutableLiveData<String?> = MutableLiveData()
     val artistFound: MutableLiveData<Resource<Boolean>> = MutableLiveData()
-    val userFound: MutableLiveData<Resource<Boolean>> = MutableLiveData()
+    val fanFound: MutableLiveData<Resource<Boolean>> = MutableLiveData()
 
 
 
@@ -36,13 +36,13 @@ class SplashScreenViewModel(application: Application) : AndroidViewModel(applica
         }
     }
 
-    fun findUser(email: String)  = viewModelScope.launch {
-        userFound. postValue(Resource.Loading())
+    fun findFan(email: String)  = viewModelScope.launch {
+        fanFound. postValue(Resource.Loading())
         try{
-            val firebaseAnswer = cloudFirestoreRepository.findUser(email)
-            userFound.postValue(firebaseAnswer)
+            val firebaseAnswer = cloudFirestoreRepository.findFan(email)
+            fanFound.postValue(firebaseAnswer)
         } catch (e: Exception){
-            userFound.postValue(Resource.Failure(e))
+            fanFound.postValue(Resource.Failure(e))
         }
     }
 

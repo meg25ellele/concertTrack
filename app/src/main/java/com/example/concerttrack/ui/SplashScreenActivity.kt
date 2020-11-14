@@ -8,11 +8,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.concerttrack.R
 import com.example.concerttrack.util.Resource
-import com.example.concerttrack.util.showToastError
-import com.example.concerttrack.viewmodel.LoginViewModel
 import com.example.concerttrack.viewmodel.SplashScreenViewModel
-import com.google.firebase.auth.FirebaseUser
-import kotlinx.android.synthetic.main.activity_login.*
 
 class SplashScreenActivity : AppCompatActivity() {
 
@@ -28,7 +24,7 @@ class SplashScreenActivity : AppCompatActivity() {
         splashScreenViewModel.userEmailLoginLiveData.observe(this, Observer<String?>{ loginUserEmail ->
             if(loginUserEmail!==null) {
                 splashScreenViewModel.findArtist(loginUserEmail)
-                splashScreenViewModel.findUser(loginUserEmail)
+                splashScreenViewModel.findFan(loginUserEmail)
             } else {
                 startActivity(Intent(this,MainPageActivity::class.java))
                 finish()
@@ -42,7 +38,7 @@ class SplashScreenActivity : AppCompatActivity() {
                 }
                 is Resource.Success -> {
                     if(it.data) {
-                        startActivity(Intent(this,ArtistMainPage::class.java))
+                        startActivity(Intent(this,ArtistMainPageActivity::class.java))
                         finish()                    }
                 }
                 is Resource.Failure -> {
@@ -51,7 +47,7 @@ class SplashScreenActivity : AppCompatActivity() {
             }
         })
 
-        splashScreenViewModel.userFound.observe(this, Observer {
+        splashScreenViewModel.fanFound.observe(this, Observer {
             when(it) {
                 is Resource.Loading -> {
                 }

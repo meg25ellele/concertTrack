@@ -53,7 +53,6 @@ import kotlinx.android.synthetic.main.activity_artist_event_settings.text_input_
 import kotlinx.android.synthetic.main.activity_artist_event_settings.ticketsLink
 import kotlinx.android.synthetic.main.activity_artist_event_settings.timeBtn
 import kotlinx.android.synthetic.main.activity_artist_event_settings.timePT
-import kotlinx.android.synthetic.main.activity_artist_settings.*
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -133,7 +132,7 @@ class ArtistEventSettingsActivity : AppCompatActivity(), OnMapReadyCallback {
                     if(it.data){
                         this.showToastSuccess(R.string.successUpdatingData)
                         hideSpinnerAndEnableControls()
-                        startActivity(Intent(this,ArtistMainPage::class.java))
+                        startActivity(Intent(this,ArtistMainPageActivity::class.java))
                         finish()
                     }else {
                         hideSpinnerAndEnableControls()

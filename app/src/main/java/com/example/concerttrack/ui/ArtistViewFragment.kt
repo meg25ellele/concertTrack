@@ -1,6 +1,5 @@
 package com.example.concerttrack.ui
 
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -19,6 +18,7 @@ import com.example.concerttrack.models.Event
 import com.example.concerttrack.util.Constants
 import com.example.concerttrack.util.Resource
 import com.example.concerttrack.viewmodel.ArtistEventsViewModel
+import com.example.concerttrack.viewmodel.FanFavouritesArtistsViewModel
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.artist_view_fragment.*
 
@@ -27,7 +27,12 @@ class ArtistViewFragment: Fragment(R.layout.artist_view_fragment) {
     private val artistEventsViewModel: ArtistEventsViewModel by lazy { ViewModelProvider(this).get(
         ArtistEventsViewModel::class.java) }
 
+    private val fanFavouritesArtistsViewModel: FanFavouritesArtistsViewModel by lazy { ViewModelProvider(this).get(
+        FanFavouritesArtistsViewModel::class.java) }
+
     lateinit var artist: Artist
+
+    var favouriteArtist = false
 
     lateinit var comingEventsAdapter: ArtistEventsAdapter
     lateinit var pastEventsAdapter: ArtistEventsAdapter
@@ -91,6 +96,8 @@ class ArtistViewFragment: Fragment(R.layout.artist_view_fragment) {
                 }
             }
         })
+
+
     }
 
     private fun loadData() {
@@ -118,6 +125,26 @@ class ArtistViewFragment: Fragment(R.layout.artist_view_fragment) {
 
         if(!arguments?.getBoolean("isFan")!!) {
             likeBtn.visibility = View.GONE
+        } else {
+            favouriteArtist = FanMainPageActivity.fan!!.favouritesArtists.contains("artists/" + artist.id)
+
+            if(favouriteArtist) {
+                likeBtn.setImageDrawable(resources.getDrawable(R.drawable.heart_red))
+            }
+
+            likeBtn.setOnClickListener{
+                if(favouriteArtist) {
+                    likeBtn.setImageDrawable(resources.getDrawable(R.drawable.heart_empty))
+                    fanFavouritesArtistsViewModel.removeArtistFromFavourites(FanMainPageActivity.fan!!.id,artist.id)
+                    FanMainPageActivity.fan?.favouritesArtists?.remove("artists/" + artist.id)
+                    favouriteArtist = false
+                } else {
+                    fanFavouritesArtistsViewModel.addArtistToFavourites(FanMainPageActivity.fan!!.id,artist.id)
+                    FanMainPageActivity.fan?.favouritesArtists?.add("artists/" + artist.id)
+                    likeBtn.setImageDrawable(resources.getDrawable(R.drawable.heart_red))
+                    favouriteArtist = true
+                }
+            }
         }
     }
 

@@ -33,13 +33,9 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import com.google.firebase.Timestamp
-import com.google.firebase.firestore.GeoPoint
 import kotlinx.android.synthetic.main.add_event_second_fragment.*
 import kotlinx.android.synthetic.main.add_event_second_fragment.backBtn
 import java.io.IOException
-import java.time.ZonedDateTime
-import java.util.*
 
 
 class AddEventSecondFragment:Fragment(R.layout.add_event_second_fragment), OnMapReadyCallback {
@@ -88,7 +84,7 @@ class AddEventSecondFragment:Fragment(R.layout.add_event_second_fragment), OnMap
                 is Resource.Success -> {
                     hideSpinnerAndEnableControls()
                     this.showToastSuccess(R.string.newEventAddedSuccessfully)
-                    startActivity(Intent(activity,ArtistMainPage::class.java))
+                    startActivity(Intent(activity,ArtistMainPageActivity::class.java))
                     activity?.finish()
 
                 }
@@ -180,7 +176,7 @@ class AddEventSecondFragment:Fragment(R.layout.add_event_second_fragment), OnMap
 
         addEventBtn.setOnClickListener {
             if(areInputValid()) {
-                addEventViewModel.addNewEvent(header,startDate + " " + startTime,description,ticketsLink,ArtistMainPage.artistReference!!.path,
+                addEventViewModel.addNewEvent(header,startDate + " " + startTime,description,ticketsLink,ArtistMainPageActivity.artistReference!!.path,
                     placeNameET.text.toString(),placeAddressInput.text.toString(),
                     eventAddress!!.latitude, eventAddress!!.longitude)
             }

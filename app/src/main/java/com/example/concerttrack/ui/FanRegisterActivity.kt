@@ -37,7 +37,7 @@ class FanRegisterActivity : AppCompatActivity() {
                     showSpinnerAndDisableControls()
                 }
                 is Resource.Success -> {
-                    fanRegisterViewModel.addNewUser(it.data,userEmail.text.toString(),userName.text.toString())
+                    fanRegisterViewModel.addNewFan(it.data,userEmail.text.toString(),userName.text.toString())
                 }
                 is Resource.Failure -> {
                     hideSpinnerAndEnableControls()
@@ -54,7 +54,7 @@ class FanRegisterActivity : AppCompatActivity() {
             }
         })
 
-        fanRegisterViewModel.successfullyAddedUser.observe(this, Observer {
+        fanRegisterViewModel.successfullyAddedFan.observe(this, Observer {
             when(it) {
                 is Resource.Loading -> {
                 }

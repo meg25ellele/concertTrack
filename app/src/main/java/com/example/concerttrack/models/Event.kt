@@ -14,5 +14,6 @@ data class Event(
         var placeAddress: String,
         var placeLat: Double,
         var placeLng: Double,
-    val artistReferencePath: String
+    val artistReferencePath: String,
+    val id: String? = null
 ) : Serializable

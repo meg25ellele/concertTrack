@@ -4,11 +4,10 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.example.concerttrack.models.User
+import com.example.concerttrack.models.Fan
 import com.example.concerttrack.repository.AuthAppRepository
 import com.example.concerttrack.repository.CloudFirestoreRepository
 import com.example.concerttrack.util.Resource
-import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.launch
 import java.lang.Exception
 
@@ -18,7 +17,7 @@ class FanRegisterViewModel(application: Application) : AndroidViewModel(applicat
     private val cloudFirestoreRepository: CloudFirestoreRepository by lazy { CloudFirestoreRepository(application) }
 
     val registerUIDLiveData: MutableLiveData<Resource<String>> = MutableLiveData()
-    val successfullyAddedUser: MutableLiveData<Resource<Boolean>> = MutableLiveData()
+    val successfullyAddedFan: MutableLiveData<Resource<Boolean>> = MutableLiveData()
 
     fun registerUser(email:String, password: String, name: String) = viewModelScope.launch {
         registerUIDLiveData.postValue(Resource.Loading())
@@ -30,14 +29,14 @@ class FanRegisterViewModel(application: Application) : AndroidViewModel(applicat
         }
     }
 
-    fun addNewUser(id: String, email: String, name: String) = viewModelScope.launch {
-        successfullyAddedUser.postValue(Resource.Loading())
+    fun addNewFan(id: String, email: String, name: String) = viewModelScope.launch {
+        successfullyAddedFan.postValue(Resource.Loading())
         try{
-            val newUser = User(id,email,name)
-            val firestoreAnswer = cloudFirestoreRepository.addNewUser(newUser)
-            successfullyAddedUser.postValue(firestoreAnswer)
+            val newUser = Fan(id,email,name)
+            val firestoreAnswer = cloudFirestoreRepository.addNewFan(newUser)
+            successfullyAddedFan.postValue(firestoreAnswer)
         } catch (e:Exception) {
-            successfullyAddedUser.postValue(Resource.Failure(e))
+            successfullyAddedFan.postValue(Resource.Failure(e))
         }
     }
 

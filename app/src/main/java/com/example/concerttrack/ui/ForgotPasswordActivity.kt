@@ -53,7 +53,7 @@ class ForgotPasswordActivity : AppCompatActivity() {
             }
         })
 
-        forgotPasswordViewModel.userFound.observe(this, Observer {
+        forgotPasswordViewModel.fanFound.observe(this, Observer {
             when(it) {
                 is Resource.Loading -> {
                     showSpinnerAndDisableControls()
@@ -112,7 +112,7 @@ class ForgotPasswordActivity : AppCompatActivity() {
                         forgotPasswordViewModel.findArtist(mailLoginET.text.toString())
                     }
                     Constants.FAN_TYPE_STR -> {
-                        forgotPasswordViewModel.findUser(mailLoginET.text.toString())
+                        forgotPasswordViewModel.findFan(mailLoginET.text.toString())
                     }
                 }
             }

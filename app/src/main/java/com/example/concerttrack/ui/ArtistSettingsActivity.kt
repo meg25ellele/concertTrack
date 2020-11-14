@@ -107,7 +107,7 @@ class ArtistSettingsActivity : AppCompatActivity() {
 
                             this.showToastSuccess(R.string.successUpdatingData)
                             hideSpinnerAndEnableControls()
-                            startActivity(Intent(this,ArtistMainPage::class.java))
+                            startActivity(Intent(this,ArtistMainPageActivity::class.java))
                             finish()
                         }
                     }

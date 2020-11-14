@@ -21,7 +21,7 @@ import kotlinx.android.synthetic.main.activity_artist_main_page.progressBar
 
 
 
-class ArtistMainPage : AppCompatActivity(){
+class ArtistMainPageActivity : AppCompatActivity(){
 
     private val artistMainPageViewModel: ArtistMainPageViewModel by lazy {
         ViewModelProvider(this).get(ArtistMainPageViewModel::class.java) }

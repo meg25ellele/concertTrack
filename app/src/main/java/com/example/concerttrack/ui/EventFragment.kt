@@ -11,22 +11,20 @@ import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.example.concerttrack.R
 import com.example.concerttrack.dialogs.DeleteEventDialog
 import com.example.concerttrack.models.Artist
 import com.example.concerttrack.models.Event
-import com.example.concerttrack.util.Constants
 import com.example.concerttrack.util.Constants.Companion.COARSE_LOCATION
 import com.example.concerttrack.util.Constants.Companion.DEFAULT_ZOOM
 import com.example.concerttrack.util.Constants.Companion.FINE_LOCATION
 import com.example.concerttrack.util.Constants.Companion.LOCATION_PERMISSION_REQUEST_CODE
-import com.example.concerttrack.viewmodel.ArtistSettingsViewModel
 import com.example.concerttrack.viewmodel.EventSettingsViewModel
+import com.example.concerttrack.viewmodel.FanGoingEventsViewModel
+import com.example.concerttrack.viewmodel.FanInterestedEventsViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -35,21 +33,28 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.event_fragment.*
 import kotlinx.android.synthetic.main.event_fragment.currentLocationBtn
 import kotlinx.android.synthetic.main.event_fragment.placeAddressInput
 import kotlinx.android.synthetic.main.event_fragment.placeLocationBtn
-import kotlinx.android.synthetic.main.event_item.view.*
-import java.text.SimpleDateFormat
 
 class EventFragment: Fragment(R.layout.event_fragment), OnMapReadyCallback, DeleteEventDialog.DeleteEventDialogListener {
 
     private val eventSettingsViewModel: EventSettingsViewModel by lazy {
         ViewModelProvider(this).get(EventSettingsViewModel::class.java) }
 
+    private val fanGoingEventsViewModel: FanGoingEventsViewModel by lazy { ViewModelProvider(this).get(
+        FanGoingEventsViewModel::class.java) }
+
+    private val fanInterestedEventsViewModel: FanInterestedEventsViewModel by lazy { ViewModelProvider(this).get(
+        FanInterestedEventsViewModel::class.java) }
+
     lateinit var event: Event
     lateinit var artist: Artist
+
+    var goingToEvent = false
+    var interestedEvent = false
+    var iWasThereEvent = false
 
     private var mContext: Context? = null
 
@@ -71,7 +76,7 @@ class EventFragment: Fragment(R.layout.event_fragment), OnMapReadyCallback, Dele
             interestedBtn.visibility = View.GONE
             takePartBtn.visibility = View.GONE
 
-            artist = ArtistMainPage.artist!!
+            artist = ArtistMainPageActivity.artist!!
 
             ticketLinkBtn.visibility = View.GONE
 
@@ -97,14 +102,62 @@ class EventFragment: Fragment(R.layout.event_fragment), OnMapReadyCallback, Dele
                 )
             }
 
-//            if(imgPath!=null) {
-//                Picasso.get().load(imgPath.toUri()).into(eventIcon)
-//            }
-
             if(!isFan!!) {
                 interestedBtn.visibility = View.GONE
                 takePartBtn.visibility = View.GONE
                 IwasThereBtn.visibility = View.GONE
+            } else {
+                goingToEvent = FanMainPageActivity.fan!!.myEvents.contains("events/" + event.id)
+                interestedEvent = FanMainPageActivity.fan!!.interestedEvents.contains("events/" + event.id)
+
+                if(goingToEvent) {
+                    takePartBtn.setBackgroundColor(resources.getColor(R.color.colorAccent))
+                }
+                if(interestedEvent) {
+                    interestedBtn.setBackgroundColor(resources.getColor(R.color.colorAccent))
+                }
+
+                takePartBtn.setOnClickListener {
+                    if(goingToEvent) {
+                        takePartBtn.setBackgroundColor(resources.getColor(R.color.buttonColor))
+                        fanGoingEventsViewModel.removeEventFromMine(FanMainPageActivity.fan!!.id,event)
+                        FanMainPageActivity.fan?.myEvents?.remove("events/" + event.id)
+                        goingToEvent = false
+                    } else {
+                        takePartBtn.setBackgroundColor(resources.getColor(R.color.colorAccent))
+                        fanGoingEventsViewModel.addEventToMine(FanMainPageActivity.fan!!.id,event)
+                        FanMainPageActivity.fan?.myEvents?.add("events/" + event.id)
+                        goingToEvent = true
+
+                        if(interestedEvent){
+                            interestedBtn.setBackgroundColor(resources.getColor(R.color.buttonColor))
+                            fanInterestedEventsViewModel.removeEventFromInterested(FanMainPageActivity.fan!!.id,event)
+                            FanMainPageActivity.fan?.interestedEvents?.remove("events/" + event.id)
+                            interestedEvent = false
+                        }
+                    }
+                }
+
+                interestedBtn.setOnClickListener {
+                    if(interestedEvent){
+                        interestedBtn.setBackgroundColor(resources.getColor(R.color.buttonColor))
+                        fanInterestedEventsViewModel.removeEventFromInterested(FanMainPageActivity.fan!!.id,event)
+                        FanMainPageActivity.fan?.interestedEvents?.remove("events/" + event.id)
+                        interestedEvent = false
+                    } else {
+                        interestedBtn.setBackgroundColor(resources.getColor(R.color.colorAccent))
+                        fanInterestedEventsViewModel.addEventToInterested(FanMainPageActivity.fan!!.id,event)
+                        FanMainPageActivity.fan?.interestedEvents?.add("events/" + event.id)
+                        interestedEvent = true
+
+                        if(goingToEvent) {
+                            takePartBtn.setBackgroundColor(resources.getColor(R.color.buttonColor))
+                            fanGoingEventsViewModel.removeEventFromMine(FanMainPageActivity.fan!!.id,event)
+                            FanMainPageActivity.fan?.myEvents?.remove("events/" + event.id)
+                            goingToEvent = false
+                        }
+                    }
+                }
             }
         }
 
@@ -112,6 +165,29 @@ class EventFragment: Fragment(R.layout.event_fragment), OnMapReadyCallback, Dele
             pastEventInfo.visibility = View.GONE
             IwasThereBtn.visibility = View.GONE
         } else  {
+
+            if(isFan!!) {
+                iWasThereEvent = FanMainPageActivity.fan!!.myEvents.contains("events/" + event.id)
+
+                if(iWasThereEvent){
+                    IwasThereBtn.setBackgroundColor(resources.getColor(R.color.colorAccent))
+                }
+                IwasThereBtn.setOnClickListener {
+                    if(iWasThereEvent) {
+                        IwasThereBtn.setBackgroundColor(resources.getColor(R.color.buttonColor))
+                        fanGoingEventsViewModel.removeEventFromMine(FanMainPageActivity.fan!!.id,event)
+                        FanMainPageActivity.fan?.myEvents?.remove("events/" + event.id)
+                        iWasThereEvent = false
+                    } else {
+                        IwasThereBtn.setBackgroundColor(resources.getColor(R.color.colorAccent))
+                        fanGoingEventsViewModel.addEventToMine(FanMainPageActivity.fan!!.id,event)
+                        FanMainPageActivity.fan?.myEvents?.add("events/" + event.id)
+                        iWasThereEvent = true
+                    }
+
+                }
+            }
+
             interestedBtn.visibility = View.GONE
             takePartBtn.visibility = View.GONE
             deleteEventBtn.visibility = View.GONE
@@ -141,7 +217,6 @@ class EventFragment: Fragment(R.layout.event_fragment), OnMapReadyCallback, Dele
                 startActivity(browserIntent)
             }
         }
-
     }
 
     private fun openDeleteDialog() {
@@ -302,7 +377,7 @@ class EventFragment: Fragment(R.layout.event_fragment), OnMapReadyCallback, Dele
     override fun onYesClicked() {
         eventSettingsViewModel.deleteArtistEvent(event)
         activity?.finish()
-        startActivity(Intent(mContext,ArtistMainPage::class.java))
+        startActivity(Intent(mContext,ArtistMainPageActivity::class.java))
     }
 }
 

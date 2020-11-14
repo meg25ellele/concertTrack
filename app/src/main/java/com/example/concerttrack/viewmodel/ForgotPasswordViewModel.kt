@@ -18,7 +18,7 @@ class ForgotPasswordViewModel(application: Application) :AndroidViewModel(applic
 
     val isResetEmailSendLiveData: MutableLiveData<Resource<Boolean>> = MutableLiveData()
     val artistFound: MutableLiveData<Resource<Boolean>> = MutableLiveData()
-    val userFound: MutableLiveData<Resource<Boolean>> = MutableLiveData()
+    val fanFound: MutableLiveData<Resource<Boolean>> = MutableLiveData()
 
 
     fun sendResetPasswordEmail(email: String) = viewModelScope.launch {
@@ -40,13 +40,13 @@ class ForgotPasswordViewModel(application: Application) :AndroidViewModel(applic
         }
     }
 
-    fun findUser(email: String)  = viewModelScope.launch {
-        userFound. postValue(Resource.Loading())
+    fun findFan(email: String)  = viewModelScope.launch {
+        fanFound. postValue(Resource.Loading())
         try{
-            val firebaseAnswer = cloudFirestoreRepository.findUser(email)
-            userFound.postValue(firebaseAnswer)
+            val firebaseAnswer = cloudFirestoreRepository.findFan(email)
+            fanFound.postValue(firebaseAnswer)
         } catch (e:Exception){
-            userFound.postValue(Resource.Failure(e))
+            fanFound.postValue(Resource.Failure(e))
         }
     }
 

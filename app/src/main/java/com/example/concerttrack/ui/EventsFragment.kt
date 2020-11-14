@@ -23,6 +23,7 @@ import kotlinx.android.synthetic.main.events_fragment.*
 import kotlinx.android.synthetic.main.events_fragment.comingEventsRV
 import kotlinx.android.synthetic.main.events_fragment.noCommingEventsInfo
 import kotlinx.android.synthetic.main.events_fragment.noPastEventsInfo
+import kotlinx.android.synthetic.main.events_fragment.progressBar
 
 class EventsFragment: Fragment(R.layout.events_fragment) {
 
@@ -69,7 +70,6 @@ class EventsFragment: Fragment(R.layout.events_fragment) {
                     comingEventsList.clear()
                     comingEventsList.addAll(0,it.data)
                     eventsViewModel.retrieveArtistPastEvents()
-
                 }
                 is Resource.Failure-> {
                     hideSpinnerAndEnableControls()
