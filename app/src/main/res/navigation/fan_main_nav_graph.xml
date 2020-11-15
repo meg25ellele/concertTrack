@@ -16,55 +16,12 @@
             app:popExitAnim="@anim/slide_out_right"/>
     </fragment>
     <fragment
-        android:id="@+id/favouritesFragment"
-        android:name="com.example.concerttrack.ui.FavouritesFragment"
-        android:label="FavouritesFragment" >
-        <action
-            android:id="@+id/action_favouritesFragment_to_eventFragment"
-            app:destination="@id/eventFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"/>
-    </fragment>
-    <fragment
         android:id="@+id/fanPanelFragment"
         android:name="com.example.concerttrack.ui.FanPanelFragment"
         android:label="FanPanelFragment" >
         <action
             android:id="@+id/action_fanPanelFragment_to_eventFragment"
             app:destination="@id/eventFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"/>
-    </fragment>
-    <fragment
-        android:id="@+id/favouritesArtistsFragment"
-        android:name="com.example.concerttrack.ui.FavouritesArtistsFragment"
-        android:label="FavouritesArtistsFragment" >
-        <action
-            android:id="@+id/action_favouritesArtistsFragment_to_eventFragment"
-            app:destination="@id/eventFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"/>
-    </fragment>
-    <fragment
-        android:id="@+id/favouritesEventsFragment"
-        android:name="com.example.concerttrack.ui.FavouritesEventsFragment"
-        android:label="FavouritesEventsFragment" >
-        <action
-            android:id="@+id/action_favouritesEventsFragment_to_favouritesFragment"
-            app:destination="@id/favouritesFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"/>
-        <action
-            android:id="@+id/action_favouritesEventsFragment_to_favouritesArtistsFragment"
-            app:destination="@id/favouritesArtistsFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
@@ -102,6 +59,25 @@
         <action
             android:id="@+id/action_artistViewFragment_to_eventFragment"
             app:destination="@id/eventFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+    </fragment>
+    <fragment
+        android:id="@+id/favouritesFragment2"
+        android:name="com.example.concerttrack.ui.FavouritesFragment"
+        android:label="FavouritesFragment" >
+        <action
+            android:id="@+id/action_favouritesFragment2_to_eventFragment"
+            app:destination="@id/eventFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+        <action
+            android:id="@+id/action_favouritesFragment2_to_artistViewFragment"
+            app:destination="@id/artistViewFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"

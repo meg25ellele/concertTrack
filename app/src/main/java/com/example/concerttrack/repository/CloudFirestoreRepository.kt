@@ -612,5 +612,36 @@ class CloudFirestoreRepository(private val application: Application) {
         return Resource.Success(fanEvents)
     }
 
+    suspend fun retrieveInterestedEvents(fanID: String): Resource.Success<MutableList<Event>> {
+        val fanEvents = mutableListOf<Event>()
+
+        val fanDocumentReference = firebaseFirestore.collection("fans").document(fanID).get().await()
+        val eventsReferences = fanDocumentReference.get("interestedEvents") as List<DocumentReference>
+
+        for(eventReference in eventsReferences) {
+            val document = firebaseFirestore.document(eventReference.path).get().await()
+
+            val locationMap = document.get("location") as Map<String, Any>
+            val placeName = locationMap["placeName"].toString()
+            val placeAddress = locationMap["placeAddress"].toString()
+            val placeGeoPoint = locationMap["placeLatLng"] as GeoPoint
+
+
+            val formatter = SimpleDateFormat(Constants.DATE_TIME_FORMAT)
+            val startDateTime =  formatter.format(document.getTimestamp("startDateTime")!!.toDate())
+
+            val fanEvent = Event(document.getString("header")!!,
+                startDateTime,
+                document.getString("shortDescription")!!,
+                document.getString("ticketsLink")!!,
+                placeName,placeAddress,placeGeoPoint.latitude,placeGeoPoint.longitude,
+                (document.get("artist") as DocumentReference).path,
+                document.id)
+
+            fanEvents.add(fanEvent)
+        }
+        return Resource.Success(fanEvents)
+    }
+
  }
 

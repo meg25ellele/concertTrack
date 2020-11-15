@@ -12,7 +12,7 @@
         android:icon="@drawable/search_icon"/>
 
     <item
-        android:id="@+id/favouritesFragment"
+        android:id="@+id/favouritesFragment2"
         android:title="@string/favourites"
         android:icon="@drawable/favourite_icon"/>
 

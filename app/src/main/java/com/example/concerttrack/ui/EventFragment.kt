@@ -183,6 +183,10 @@ class EventFragment: Fragment(R.layout.event_fragment), OnMapReadyCallback, Dele
                         fanGoingEventsViewModel.addEventToMine(FanMainPageActivity.fan!!.id,event)
                         FanMainPageActivity.fan?.myEvents?.add("events/" + event.id)
                         iWasThereEvent = true
+
+                        if(FanMainPageActivity.fan!!.interestedEvents.contains("events/" + event.id)) {
+                            fanInterestedEventsViewModel.removeEventFromInterested(FanMainPageActivity.fan!!.id,event)
+                        }
                     }
 
                 }

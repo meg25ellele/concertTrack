@@ -20,8 +20,6 @@ import com.example.concerttrack.util.Resource
 import com.example.concerttrack.viewmodel.EventsViewModel
 import kotlinx.android.synthetic.main.activity_fan_main_page.*
 import kotlinx.android.synthetic.main.events_fragment.*
-import kotlinx.android.synthetic.main.events_fragment.comingEventsRV
-import kotlinx.android.synthetic.main.events_fragment.noCommingEventsInfo
 import kotlinx.android.synthetic.main.events_fragment.noPastEventsInfo
 import kotlinx.android.synthetic.main.events_fragment.progressBar
 
@@ -51,10 +49,10 @@ class EventsFragment: Fragment(R.layout.events_fragment) {
 
         eventsViewModel.retrieveComingEvents()
 
-        commingEventsInfo.visibility = View.GONE
+        comingEventsInfo.visibility = View.GONE
         pastEventsInfo.visibility = View.GONE
         noPastEventsInfo.visibility = View.GONE
-        noCommingEventsInfo.visibility = View.GONE
+        noComingEventsInfo.visibility = View.GONE
 
         comingEventsList.clear()
         pastEventsList.clear()
@@ -148,12 +146,12 @@ class EventsFragment: Fragment(R.layout.events_fragment) {
         comingEventsRV.adapter = comingEventsAdapter
         comingEventsRV.layoutManager = LinearLayoutManager(activity)
 
-        commingEventsInfo.visibility = View.VISIBLE
+        comingEventsInfo.visibility = View.VISIBLE
         if(comingEventsList.size>0) {
-            noCommingEventsInfo.visibility = View.GONE
+            noComingEventsInfo.visibility = View.GONE
         }
         else {
-            noCommingEventsInfo.visibility = View.VISIBLE
+            noComingEventsInfo.visibility = View.VISIBLE
         }
 
         comingEventsAdapter.setOnItemClickListener { event: Event, artist: Artist, imgPath:String? ->

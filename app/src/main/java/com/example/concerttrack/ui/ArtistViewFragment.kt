@@ -51,10 +51,10 @@ class ArtistViewFragment: Fragment(R.layout.artist_view_fragment) {
         loadData()
         setLinksButtons()
 
-        commingEventsInfo.visibility = View.GONE
+        comingEventsInfo.visibility = View.GONE
         pastEventsInfo.visibility = View.GONE
         noPastEventsInfo.visibility = View.GONE
-        noCommingEventsInfo.visibility = View.GONE
+        noComingEventsInfo.visibility = View.GONE
 
         comingEventsList.clear()
         pastEventsList.clear()
@@ -192,13 +192,13 @@ class ArtistViewFragment: Fragment(R.layout.artist_view_fragment) {
         comingEventsRV.adapter = comingEventsAdapter
         comingEventsRV.layoutManager = LinearLayoutManager(activity)
 
-        commingEventsInfo.visibility = View.VISIBLE
+        comingEventsInfo.visibility = View.VISIBLE
 
         if(comingEventsList.size>0) {
-            noCommingEventsInfo.visibility = View.GONE
+            noComingEventsInfo.visibility = View.GONE
         }
         else {
-            noCommingEventsInfo.visibility = View.VISIBLE
+            noComingEventsInfo.visibility = View.VISIBLE
         }
         comingEventsAdapter.setOnItemClickListener { event: Event, artist: Artist?, imgPath:String? ->
             val bundle = Bundle().apply {

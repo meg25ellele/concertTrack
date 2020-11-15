@@ -1,18 +1,16 @@
 package com.example.concerttrack.ui
 
-import android.content.Intent
 import android.graphics.Canvas
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,57 +22,145 @@ import com.example.concerttrack.models.Event
 import com.example.concerttrack.models.Fan
 import com.example.concerttrack.util.Constants
 import com.example.concerttrack.util.Resource
-import com.example.concerttrack.viewmodel.FanGoingEventsViewModel
+import com.example.concerttrack.viewmodel.FanInterestedEventsViewModel
 import com.example.concerttrack.viewmodel.FanMainPageViewModel
 import com.google.android.material.snackbar.Snackbar
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
-
 import kotlinx.android.synthetic.main.fan_panel_fragment.*
-import kotlinx.android.synthetic.main.fan_panel_fragment.noPastEventsInfo
-import kotlinx.android.synthetic.main.fan_panel_fragment.pastEventsInfo
-import kotlinx.android.synthetic.main.fan_panel_fragment.pastEventsRV
-import kotlinx.android.synthetic.main.fan_panel_fragment.progressBar
-import kotlinx.android.synthetic.main.guest_info_fragment.*
-import java.text.SimpleDateFormat
+import kotlinx.android.synthetic.main.favourites_fragment.*
+import kotlinx.android.synthetic.main.interested_events_fragment.*
+import kotlinx.android.synthetic.main.interested_events_fragment.comingEventsInfo
+import kotlinx.android.synthetic.main.interested_events_fragment.comingEventsRV
+import kotlinx.android.synthetic.main.interested_events_fragment.noComingEventsInfo
+import kotlinx.android.synthetic.main.interested_events_fragment.noPastEventsInfo
+import kotlinx.android.synthetic.main.interested_events_fragment.pastEventsInfo
+import kotlinx.android.synthetic.main.interested_events_fragment.pastEventsRV
+import kotlinx.android.synthetic.main.interested_events_fragment.progressBar
 import java.time.ZonedDateTime
-import java.util.*
 
-class FanPanelFragment: Fragment() {
+
+class InterestedEventsFragment: Fragment(R.layout.interested_events_fragment) {
+
+    private val fanInterestedEventsViewModel: FanInterestedEventsViewModel by lazy { ViewModelProvider(this).get(
+        FanInterestedEventsViewModel::class.java) }
 
     private val fanMainPageViewModel: FanMainPageViewModel by lazy { ViewModelProvider(this).get(
         FanMainPageViewModel::class.java) }
 
-    private val fanGoingEventsViewModel: FanGoingEventsViewModel by lazy { ViewModelProvider(this).get(
-        FanGoingEventsViewModel::class.java) }
-
     private var allControls: List<View> = listOf()
+
+    val comingEventsList  = mutableListOf<Event>()
+    val pastEventsList = mutableListOf<Event>()
+
+    val interestedEventsList  = mutableListOf<Event>()
+    val artistsMap = mutableMapOf<String, Artist>()
+    val imagesMap = mutableMapOf<String, Uri>()
 
     lateinit var comingEventsAdapter: EventsAdapter
     lateinit var pastEventsAdapter: EventsAdapter
 
-    val comingEventsList  = mutableListOf<Event>()
-    val pastEventsList = mutableListOf<Event>()
-    val artistsMap = mutableMapOf<String, Artist>()
-    val imagesMap = mutableMapOf<String, Uri>()
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        allControls = listOf(logOutBtn)
+        allControls = listOf(favouritesArtistsBtn,interestedEventsBtn)
 
+        noInterestedEventsInfo.visibility = View.GONE
+        interestefEventsInfo.visibility = View.GONE
         comingEventsInfo.visibility = View.GONE
         pastEventsInfo.visibility = View.GONE
         noPastEventsInfo.visibility = View.GONE
         noComingEventsInfo.visibility = View.GONE
 
-        comingEventsList.clear()
-        pastEventsList.clear()
+
+        interestedEventsList.clear()
         artistsMap.clear()
         imagesMap.clear()
 
         val user = fanMainPageViewModel.getCurrentUser()
         fanMainPageViewModel.getFanData(user.email!!)
 
+        fanMainPageViewModel.fanLiveData.observe(viewLifecycleOwner, Observer {
+            when(it) {
+                is Resource.Loading -> {
+                    showSpinnerAndDisableControls()
+                }
+                is Resource.Success -> {
+                    fan = it.data
+                    fanInterestedEventsViewModel.retrieveInterestedEvents(it.data.id)
+                }
+                is Resource.Failure -> {
+                    hideSpinnerAndEnableControls()
+                    Toast.makeText(activity,it.throwable.message, Toast.LENGTH_LONG).show()
+                }
+            }
+        })
+
+        fanInterestedEventsViewModel.fanInterestedEventsLiveData.observe(viewLifecycleOwner, Observer {
+            when(it) {
+                is Resource.Loading -> {
+                }
+                is Resource.Success -> {
+                    comingEventsList.clear()
+                    pastEventsList.clear()
+                    for(event in it.data){
+                        val parsedDate = ZonedDateTime.parse(event.startDateTime, Constants.DATE_TIME_FORMATTER)
+                        if(parsedDate.isBefore(ZonedDateTime.now())) {
+                            pastEventsList.add(event)
+                        } else {
+                            comingEventsList.add(event)
+                        }
+                    }
+                    if(it.data.size == 0) {
+                        noInterestedEventsInfo.visibility = View.VISIBLE
+                        interestefEventsInfo.visibility = View.VISIBLE
+                        hideSpinnerAndEnableControls()
+                    } else {
+                        fanInterestedEventsViewModel.getArtistsMap()
+                    }
+                }
+                is Resource.Failure -> {
+                    hideSpinnerAndEnableControls()
+                    Toast.makeText(activity,it.throwable.message,Toast.LENGTH_LONG).show()
+                }
+            }
+        })
+
+        fanInterestedEventsViewModel.artistsMap.observe(viewLifecycleOwner, Observer {
+            when(it) {
+                is Resource.Loading -> {
+                }
+                is Resource.Success -> {
+                    artistsMap.putAll(it.data)
+                    fanInterestedEventsViewModel.getArtistPhotos()
+                }
+                is Resource.Failure -> {
+                    hideSpinnerAndEnableControls()
+                }
+            }
+        })
+
+        fanInterestedEventsViewModel.imagesMap.observe(viewLifecycleOwner, Observer {
+            when(it) {
+                is Resource.Loading -> {
+                }
+                is Resource.Success -> {
+                    imagesMap.putAll(it.data)
+
+                    interestefEventsInfo.visibility = View.VISIBLE
+                    if(comingEventsList.size>0 && pastEventsList.size == 0) {
+                        setComingEventsRecyclerView()
+                    } else {
+                        setComingEventsRecyclerView()
+                        setPastEventsRecyclerView()
+                    }
+
+                    hideSpinnerAndEnableControls()
+                }
+                is Resource.Failure -> {
+                    hideSpinnerAndEnableControls()
+                }
+            }
+        })
 
         val itemTouchHelperCallbackComing =object: ItemTouchHelper.SimpleCallback(0,
             ItemTouchHelper.LEFT)
@@ -92,7 +178,7 @@ class FanPanelFragment: Fragment() {
                 val event = comingEventsList[position]
                 comingEventsList.removeAt(position)
                 comingEventsAdapter.notifyItemRemoved(position)
-                fanGoingEventsViewModel.removeEventFromMine(fan!!.id,event)
+                fanInterestedEventsViewModel.removeEventFromInterested(fan!!.id,event)
                 if(comingEventsList.size>0) {
                     noComingEventsInfo.visibility = View.GONE
                 }
@@ -104,7 +190,7 @@ class FanPanelFragment: Fragment() {
                     setAction(getString(R.string.undo)) {
                         comingEventsList.add(position,event)
                         comingEventsAdapter.notifyItemInserted(position)
-                        fanGoingEventsViewModel.addEventToMine(fan!!.id,event)
+                        fanInterestedEventsViewModel.addEventToInterested(fan!!.id,event)
                         if(comingEventsList.size>0) {
                             noComingEventsInfo.visibility = View.GONE
                         }
@@ -153,7 +239,7 @@ class FanPanelFragment: Fragment() {
                 val event = pastEventsList[position]
                 pastEventsList.removeAt(position)
                 pastEventsAdapter.notifyItemRemoved(position)
-                fanGoingEventsViewModel.removeEventFromMine(fan!!.id,event)
+                fanInterestedEventsViewModel.removeEventFromInterested(fan!!.id,event)
                 if(pastEventsList.size>0) {
                     noComingEventsInfo.visibility = View.GONE
                 }
@@ -165,7 +251,7 @@ class FanPanelFragment: Fragment() {
                     setAction(getString(R.string.undo)) {
                         pastEventsList.add(position,event)
                         pastEventsAdapter.notifyItemInserted(position)
-                        fanGoingEventsViewModel.addEventToMine(fan!!.id,event)
+                        fanInterestedEventsViewModel.addEventToInterested(fan!!.id,event)
                         if(pastEventsList.size>0) {
                             noComingEventsInfo.visibility = View.GONE
                         }
@@ -198,107 +284,6 @@ class FanPanelFragment: Fragment() {
             attachToRecyclerView(pastEventsRV)
         }
 
-
-        fanMainPageViewModel.isFanLoggedOut.observe(viewLifecycleOwner, Observer<Boolean>{ loggedOut ->
-            if(loggedOut) {
-                startActivity(Intent(activity, MainPageActivity::class.java))
-                activity?.finish()
-            }
-
-        })
-
-        fanMainPageViewModel.fanLiveData.observe(viewLifecycleOwner, Observer {
-            when(it) {
-                is Resource.Loading -> {
-                    showSpinnerAndDisableControls()
-                }
-                is Resource.Success -> {
-                    welcomeTxt.text = """Cześć ${it.data.name}!"""
-                    fan = it.data
-                    fanGoingEventsViewModel.retrieveFanEvents(it.data.id)
-                }
-                is Resource.Failure -> {
-                    hideSpinnerAndEnableControls()
-                    Toast.makeText(activity,it.throwable.message,Toast.LENGTH_LONG).show()
-                }
-            }
-        })
-
-        fanGoingEventsViewModel.fanEventsLiveData.observe(viewLifecycleOwner, Observer {
-            when(it) {
-                is Resource.Loading -> {
-                }
-                is Resource.Success -> {
-                    comingEventsList.clear()
-                    pastEventsList.clear()
-                    for(event in it.data){
-                        val parsedDate = ZonedDateTime.parse(event.startDateTime, Constants.DATE_TIME_FORMATTER)
-                        if(parsedDate.isBefore(ZonedDateTime.now())) {
-                            pastEventsList.add(event)
-                        } else {
-                            comingEventsList.add(event)
-                        }
-                    }
-                    if(it.data.size == 0) {
-                        comingEventsInfo.visibility = View.VISIBLE
-                        pastEventsInfo.visibility = View.VISIBLE
-                        noComingEventsInfo.visibility = View.VISIBLE
-                        noPastEventsInfo.visibility = View.VISIBLE
-                        hideSpinnerAndEnableControls()
-                    } else {
-                        fanGoingEventsViewModel.getArtistsMap()
-                    }
-                }
-                is Resource.Failure -> {
-                    hideSpinnerAndEnableControls()
-                    Toast.makeText(activity,it.throwable.message,Toast.LENGTH_LONG).show()
-                }
-            }
-        })
-
-        fanGoingEventsViewModel.artistsMap.observe(viewLifecycleOwner, Observer {
-            when(it) {
-                is Resource.Loading -> {
-                    Log.i("fan","3")
-                }
-                is Resource.Success -> {
-                    artistsMap.putAll(it.data)
-                    fanGoingEventsViewModel.getArtistPhotos()
-                }
-                is Resource.Failure -> {
-                    hideSpinnerAndEnableControls()
-                }
-            }
-        })
-
-        fanGoingEventsViewModel.imagesMap.observe(viewLifecycleOwner, Observer {
-            when(it) {
-                is Resource.Loading -> {
-                }
-                is Resource.Success -> {
-                    imagesMap.putAll(it.data)
-                    setComingEventsRecyclerView()
-                    setPastEventsRecyclerView()
-                    hideSpinnerAndEnableControls()
-                }
-                is Resource.Failure -> {
-                    hideSpinnerAndEnableControls()
-                }
-            }
-        })
-
-        if(userType == Constants.FAN_TYPE_STR) {
-            logOutBtn.setOnClickListener {
-                fanMainPageViewModel.logOut()
-            }
-        }
-
-        if(userType == Constants.GUEST_TYPE_STR) {
-            goToMainPageBtn.setOnClickListener {
-                activity?.finish()
-            }
-        }
-
     }
 
     private fun setComingEventsRecyclerView() {
@@ -323,8 +308,8 @@ class FanPanelFragment: Fragment() {
                 putBoolean("isFan",true)
                 putBoolean("isPastEvent",false)
             }
-            findNavController().navigate(
-                R.id.action_fanPanelFragment_to_eventFragment,
+            parentFragment!!.findNavController().navigate(
+                R.id.action_favouritesFragment2_to_eventFragment,
                 bundle
             )
         }
@@ -352,8 +337,8 @@ class FanPanelFragment: Fragment() {
                 putBoolean("isFan",true)
                 putBoolean("isPastEvent",true)
             }
-            findNavController().navigate(
-                R.id.action_fanPanelFragment_to_eventFragment,
+            parentFragment!!.findNavController().navigate(
+                R.id.action_favouritesFragment2_to_eventFragment,
                 bundle
             )
         }
@@ -361,28 +346,15 @@ class FanPanelFragment: Fragment() {
 
     private fun showSpinnerAndDisableControls() {
         progressBar.visibility = View.VISIBLE
-        allControls.forEach { v -> v.isEnabled = false }
+//        allControls.forEach { v -> v.isEnabled = false }
     }
 
     private  fun hideSpinnerAndEnableControls() {
         progressBar.visibility = View.GONE
-        allControls.forEach { v -> v.isEnabled = true }
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return if(userType == Constants.GUEST_TYPE_STR) {
-            inflater.inflate(R.layout.guest_info_fragment,container,false)
-        } else {
-            inflater.inflate(R.layout.fan_panel_fragment,container,false)
-        }
+        //allControls.forEach { v -> v.isEnabled = true }
     }
 
     companion object {
-        var userType = Constants.FAN_TYPE_STR
         var fan: Fan? = null
     }
 }

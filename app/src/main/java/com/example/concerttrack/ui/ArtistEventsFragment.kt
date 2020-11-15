@@ -41,9 +41,9 @@ class ArtistEventsFragment: Fragment(R.layout.artist_events_fragment) {
         comingEventsList.clear()
         pastEventsList.clear()
 
-        noCommingEventsInfo.visibility = View.GONE
+        noComingEventsInfo.visibility = View.GONE
         noPastEventsInfo.visibility = View.GONE
-        commingEventsInfo.visibility = View.GONE
+        noComingEventsInfo.visibility = View.GONE
         pastEventsInfo.visibility = View.GONE
 
 
@@ -65,10 +65,10 @@ class ArtistEventsFragment: Fragment(R.layout.artist_events_fragment) {
                 comingEventsAdapter.notifyItemRemoved(position)
                 artistEventsVieModel.deleteArtistEvent(event)
                 if(comingEventsList.size>0) {
-                    noCommingEventsInfo.visibility = View.GONE
+                    noComingEventsInfo.visibility = View.GONE
                 }
                 else {
-                    noCommingEventsInfo.visibility = View.VISIBLE
+                    noComingEventsInfo.visibility = View.VISIBLE
                 }
 
                 Snackbar.make(view,getString(R.string.eventDeleted), Snackbar.LENGTH_LONG).apply {
@@ -77,10 +77,10 @@ class ArtistEventsFragment: Fragment(R.layout.artist_events_fragment) {
                         comingEventsAdapter.notifyItemInserted(position)
                         artistEventsVieModel.addArtistEvent(event)
                         if(comingEventsList.size>0) {
-                            noCommingEventsInfo.visibility = View.GONE
+                            noComingEventsInfo.visibility = View.GONE
                         }
                         else {
-                            noCommingEventsInfo.visibility = View.VISIBLE
+                            noComingEventsInfo.visibility = View.VISIBLE
                         }
 
                     }
@@ -150,13 +150,13 @@ class ArtistEventsFragment: Fragment(R.layout.artist_events_fragment) {
         comingEventsRV.adapter = comingEventsAdapter
         comingEventsRV.layoutManager =LinearLayoutManager(activity)
 
-        commingEventsInfo.visibility = View.VISIBLE
+        comingEventsInfo.visibility = View.VISIBLE
 
         if(comingEventsList.size>0) {
-            noCommingEventsInfo.visibility = View.GONE
+            noComingEventsInfo.visibility = View.GONE
         }
         else {
-            noCommingEventsInfo.visibility = View.VISIBLE
+            noComingEventsInfo.visibility = View.VISIBLE
         }
 
         comingEventsAdapter.setOnItemClickListener { event: Event, artist: Artist?, s: String? ->
