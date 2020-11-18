@@ -52,7 +52,7 @@ class InterestedEventsFragment: Fragment(R.layout.interested_events_fragment) {
     val comingEventsList  = mutableListOf<Event>()
     val pastEventsList = mutableListOf<Event>()
 
-    val interestedEventsList  = mutableListOf<Event>()
+
     val artistsMap = mutableMapOf<String, Artist>()
     val imagesMap = mutableMapOf<String, Uri>()
 
@@ -71,8 +71,8 @@ class InterestedEventsFragment: Fragment(R.layout.interested_events_fragment) {
         noPastEventsInfo.visibility = View.GONE
         noComingEventsInfo.visibility = View.GONE
 
-
-        interestedEventsList.clear()
+        pastEventsList.clear()
+        comingEventsList.clear()
         artistsMap.clear()
         imagesMap.clear()
 
@@ -102,15 +102,11 @@ class InterestedEventsFragment: Fragment(R.layout.interested_events_fragment) {
                 is Resource.Success -> {
                     comingEventsList.clear()
                     pastEventsList.clear()
-                    for(event in it.data){
-                        val parsedDate = ZonedDateTime.parse(event.startDateTime, Constants.DATE_TIME_FORMATTER)
-                        if(parsedDate.isBefore(ZonedDateTime.now())) {
-                            pastEventsList.add(event)
-                        } else {
-                            comingEventsList.add(event)
-                        }
-                    }
-                    if(it.data.size == 0) {
+
+                    comingEventsList.addAll(0,it.data.first)
+                    pastEventsList.addAll(0,it.data.second)
+
+                    if(it.data.first.size == 0 && it.data.second.size ==0) {
                         noInterestedEventsInfo.visibility = View.VISIBLE
                         interestefEventsInfo.visibility = View.VISIBLE
                         hideSpinnerAndEnableControls()

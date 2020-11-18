@@ -1,7 +1,6 @@
 package com.example.concerttrack.models
 
-import android.net.Uri
-import java.io.FileDescriptor
+
 import java.io.Serializable
 
 data class Artist(

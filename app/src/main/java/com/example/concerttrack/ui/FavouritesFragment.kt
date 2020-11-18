@@ -1,6 +1,7 @@
 package com.example.concerttrack.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,13 +22,16 @@ class FavouritesFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
         if(userType == Constants.GUEST_TYPE_STR) {
             goToMainPageBtn.setOnClickListener {
                 activity?.finish()
             }
         }
-
         if(userType == Constants.FAN_TYPE_STR) {
+            eventsBtnSelected = false
+            artistsBtnSelected = false
+
             var selectedFragment: Fragment
             selectedFragment = InterestedEventsFragment()
             val ft : FragmentTransaction = childFragmentManager.beginTransaction()

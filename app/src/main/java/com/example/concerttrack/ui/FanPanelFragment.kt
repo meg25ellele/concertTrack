@@ -231,15 +231,12 @@ class FanPanelFragment: Fragment() {
                 is Resource.Success -> {
                     comingEventsList.clear()
                     pastEventsList.clear()
-                    for(event in it.data){
-                        val parsedDate = ZonedDateTime.parse(event.startDateTime, Constants.DATE_TIME_FORMATTER)
-                        if(parsedDate.isBefore(ZonedDateTime.now())) {
-                            pastEventsList.add(event)
-                        } else {
-                            comingEventsList.add(event)
-                        }
-                    }
-                    if(it.data.size == 0) {
+
+                    comingEventsList.addAll(0,it.data.first)
+                    pastEventsList.addAll(0,it.data.second)
+
+
+                    if(it.data.first.size == 0 && it.data.second.size ==0) {
                         comingEventsInfo.visibility = View.VISIBLE
                         pastEventsInfo.visibility = View.VISIBLE
                         noComingEventsInfo.visibility = View.VISIBLE

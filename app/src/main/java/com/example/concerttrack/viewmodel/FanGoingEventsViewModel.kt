@@ -23,7 +23,7 @@ class FanGoingEventsViewModel(application: Application) : AndroidViewModel(appli
     val successfullyAddedEventToMine: MutableLiveData<Resource<Boolean>> = MutableLiveData()
     val successfullyRemovedEventFromMine: MutableLiveData<Resource<Boolean>> = MutableLiveData()
 
-    val fanEventsLiveData: MutableLiveData<Resource<MutableList<Event>>> = MutableLiveData()
+    val fanEventsLiveData: MutableLiveData<Resource<Pair<MutableList<Event>,MutableList<Event>>>> = MutableLiveData()
     val artistsMap: MutableLiveData<Resource<Map<String, Artist>>> = MutableLiveData()
     val imagesMap: MutableLiveData<Resource<Map<String, Uri>>> = MutableLiveData()
 
@@ -49,15 +49,12 @@ class FanGoingEventsViewModel(application: Application) : AndroidViewModel(appli
 
     fun retrieveFanEvents(fanID: String) = viewModelScope.launch {
         fanEventsLiveData.postValue(Resource.Loading())
-        ArtistEventsViewModel.artistComingEventsLiveData.postValue(Resource.Loading())
         try{
             val artistComingEvents = cloudFirestoreRepository.retrieveFanEvents(fanID).data
             fanEventsLiveData.postValue(Resource.Success(artistComingEvents))
-            ArtistEventsViewModel.artistComingEventsLiveData.postValue(Resource.Success(artistComingEvents))
 
         }catch(e:Exception) {
             fanEventsLiveData.postValue(Resource.Failure(e))
-            ArtistEventsViewModel.artistComingEventsLiveData.postValue(Resource.Failure(e))
         }
     }
 

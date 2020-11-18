@@ -85,5 +85,6 @@
     <string name="undo">Cofinj</string>
     <string name="eventDeleted">Usunięto wydarzenie</string>
     <string name="iWasThere">Byłem/byłam tam</string>
-    <string name="interestedEventsInfo">Twoje wydarzenia oznaczone  jako \"Jestem zainteresowany/a\"</string>
+    <string name="interestedEventsInfo">Twoje wydarzenia oznaczone  jako \"Jestem zainteresowany/a\":</string>
+    <string name="favouritesArtistsInfo">Artyści, których obserwujesz:</string>
 </resources>

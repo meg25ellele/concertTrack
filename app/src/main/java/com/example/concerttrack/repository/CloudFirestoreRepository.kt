@@ -443,7 +443,6 @@ class CloudFirestoreRepository(private val application: Application) {
                 artistSnapshot.getString("spotifyLink")!!,
                 artistSnapshot.get("myGenres") as List<String>?)
 
-            Log.i("artist",artist.toString())
 
             artistsMap.set("artists/" + artistSnapshot.id,artist)
         }
@@ -461,10 +460,13 @@ class CloudFirestoreRepository(private val application: Application) {
     }
 
     suspend fun removeArtistFromFavourites(fanID: String,artistID: String) : Resource<Boolean> {
+        Log.i("artist","in")
         val artist = firebaseFirestore.document("artists/"+ artistID)
 
+        Log.i("artist",artist.toString())
         var fan = firebaseFirestore.collection("fans").document(fanID)
 
+        Log.i("artist",fan.toString())
         fan.update("favouritesArtists", FieldValue.arrayRemove(artist)).await()
         return Resource.Success(true)
     }
@@ -581,8 +583,9 @@ class CloudFirestoreRepository(private val application: Application) {
         return Resource.Success(true)
     }
 
-    suspend fun retrieveFanEvents(fanID: String): Resource.Success<MutableList<Event>>{
-        val fanEvents = mutableListOf<Event>()
+    suspend fun retrieveFanEvents(fanID: String): Resource.Success<Pair<MutableList<Event>,MutableList<Event>>>{
+        val fanComingEvents = mutableListOf<Event>()
+        val fanPastEvents = mutableListOf<Event>()
 
         val fanDocumentReference = firebaseFirestore.collection("fans").document(fanID).get().await()
         val eventsReferences = fanDocumentReference.get("myEvents") as List<DocumentReference>
@@ -607,19 +610,35 @@ class CloudFirestoreRepository(private val application: Application) {
                 (document.get("artist") as DocumentReference).path,
                 document.id)
 
-            fanEvents.add(fanEvent)
+            val parsedDate = ZonedDateTime.parse(fanEvent.startDateTime, Constants.DATE_TIME_FORMATTER)
+            if(parsedDate.isBefore(ZonedDateTime.now())) {
+                fanPastEvents.add(fanEvent)
+            } else {
+                fanComingEvents.add(fanEvent)
+            }
+
         }
-        return Resource.Success(fanEvents)
+
+        fanPastEvents.sortWith(kotlin.Comparator { o1, o2 ->
+            ZonedDateTime.parse(o2.startDateTime, Constants.DATE_TIME_FORMATTER).
+            compareTo(ZonedDateTime.parse(o1.startDateTime, Constants.DATE_TIME_FORMATTER))})
+        fanComingEvents.sortWith(kotlin.Comparator { o1, o2 ->
+            ZonedDateTime.parse(o1.startDateTime, Constants.DATE_TIME_FORMATTER).
+            compareTo(ZonedDateTime.parse(o2.startDateTime, Constants.DATE_TIME_FORMATTER)) })
+
+        return Resource.Success(Pair(fanComingEvents,fanPastEvents))
     }
 
-    suspend fun retrieveInterestedEvents(fanID: String): Resource.Success<MutableList<Event>> {
-        val fanEvents = mutableListOf<Event>()
+    suspend fun retrieveInterestedEvents(fanID: String): Resource.Success<Pair<MutableList<Event>,MutableList<Event>>> {
+        val fanComingEvents = mutableListOf<Event>()
+        val fanPastEvents = mutableListOf<Event>()
 
         val fanDocumentReference = firebaseFirestore.collection("fans").document(fanID).get().await()
         val eventsReferences = fanDocumentReference.get("interestedEvents") as List<DocumentReference>
 
         for(eventReference in eventsReferences) {
             val document = firebaseFirestore.document(eventReference.path).get().await()
+
 
             val locationMap = document.get("location") as Map<String, Any>
             val placeName = locationMap["placeName"].toString()
@@ -638,10 +657,45 @@ class CloudFirestoreRepository(private val application: Application) {
                 (document.get("artist") as DocumentReference).path,
                 document.id)
 
-            fanEvents.add(fanEvent)
+            val parsedDate = ZonedDateTime.parse(fanEvent.startDateTime, Constants.DATE_TIME_FORMATTER)
+            if(parsedDate.isBefore(ZonedDateTime.now())) {
+                fanPastEvents.add(fanEvent)
+            } else {
+                fanComingEvents.add(fanEvent)
+            }
         }
-        return Resource.Success(fanEvents)
+
+        fanPastEvents.sortWith(kotlin.Comparator { o1, o2 ->
+            ZonedDateTime.parse(o2.startDateTime, Constants.DATE_TIME_FORMATTER).
+            compareTo(ZonedDateTime.parse(o1.startDateTime, Constants.DATE_TIME_FORMATTER))})
+        fanComingEvents.sortWith(kotlin.Comparator { o1, o2 ->
+            ZonedDateTime.parse(o1.startDateTime, Constants.DATE_TIME_FORMATTER).
+            compareTo(ZonedDateTime.parse(o2.startDateTime, Constants.DATE_TIME_FORMATTER)) })
+
+        return Resource.Success(Pair(fanComingEvents,fanPastEvents))
     }
 
+    suspend fun retrieveFavouritesArtists(fanID: String): Resource.Success<MutableList<Artist>> {
+        val fanArtists = mutableListOf<Artist>()
+
+        val fanDocumentReference = firebaseFirestore.collection("fans").document(fanID).get().await()
+        val artistsReferences = fanDocumentReference.get("favouritesArtists") as List<DocumentReference>
+
+        for(artistReference in artistsReferences) {
+            val document = firebaseFirestore.document(artistReference.path).get().await()
+
+            val artist = Artist(document.id,
+                document.getString("email"),
+                document.getString("name")!!,
+                document.getString("description")!!,
+                document.getString("facebookLink")!!,
+                document.getString("youtubeLink")!!,
+                document.getString("spotifyLink")!!,
+                document.get("myGenres") as List<String>?)
+            
+            fanArtists.add(artist)
+        }
+        return Resource.Success(fanArtists)
+    }
  }
 

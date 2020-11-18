@@ -49,7 +49,6 @@ class EventsAdapter(private val eventsList: List<Event>, private  val artistsMap
 
             val artistPng = artistsMap.get(event.artistReferencePath)!!.id + ".png"
             var imgPath: String? = null
-            Log.i("img",artistPng)
             if(imagesMap.get(artistPng) != null) {
                 val image = imagesMap.get(artistPng)!!
                 imgPath = image.toString()
