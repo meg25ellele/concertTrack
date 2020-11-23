@@ -70,6 +70,7 @@ class EventsFragment: Fragment(R.layout.events_fragment) {
                     eventsViewModel.retrieveArtistPastEvents()
                 }
                 is Resource.Failure-> {
+                    Log.i("events1",it.throwable.toString())
                     hideSpinnerAndEnableControls()
                 }
             }
@@ -85,7 +86,7 @@ class EventsFragment: Fragment(R.layout.events_fragment) {
                     eventsViewModel.getArtistsMap()
                 }
                 is Resource.Failure-> {
-
+                    Log.i("events2",it.throwable.toString())
                     hideSpinnerAndEnableControls()
 
                 }
@@ -101,6 +102,7 @@ class EventsFragment: Fragment(R.layout.events_fragment) {
                     eventsViewModel.getArtistPhotos()
                 }
                 is Resource.Failure -> {
+                    Log.i("events3",it.throwable.toString())
                     hideSpinnerAndEnableControls()
                 }
             }
@@ -118,6 +120,7 @@ class EventsFragment: Fragment(R.layout.events_fragment) {
                     hideSpinnerAndEnableControls()
                 }
                 is Resource.Failure -> {
+                    Log.i("events4",it.throwable.toString())
                     hideSpinnerAndEnableControls()
                 }
             }

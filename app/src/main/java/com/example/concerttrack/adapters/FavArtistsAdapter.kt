@@ -8,17 +8,17 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.concerttrack.R
 import com.example.concerttrack.models.Artist
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.artist_item.view.*
+import kotlinx.android.synthetic.main.fav_artist_item.view.*
 
-class ArtistsAdapter(private val artistsList: List<Artist>, private  val imagesMap: Map<String, Uri>):
-    RecyclerView.Adapter<ArtistsAdapter.ArtistViewHolder>() {
+class FavArtistsAdapter(private val artistsList: List<Artist>, private  val imagesMap: Map<String, Uri>):
+                                                RecyclerView.Adapter<FavArtistsAdapter.FavArtistViewHolder>(){
 
-    inner class ArtistViewHolder(itemView: View): RecyclerView.ViewHolder(itemView)
+    inner class FavArtistViewHolder(itemView: View): RecyclerView.ViewHolder(itemView)
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ArtistViewHolder {
-        return ArtistViewHolder((
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavArtistViewHolder {
+        return FavArtistViewHolder((
                 LayoutInflater.from(parent.context).inflate(
-                    R.layout.artist_item,
+                    R.layout.fav_artist_item,
                     parent,
                     false)
                 ))
@@ -28,10 +28,11 @@ class ArtistsAdapter(private val artistsList: List<Artist>, private  val imagesM
         return artistsList.size
     }
 
-    override fun onBindViewHolder(holder: ArtistViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: FavArtistViewHolder, position: Int) {
         val artist = artistsList[position]
         holder.itemView.apply {
             artistName.text = artist.name
+            likeBtn.setImageDrawable(resources.getDrawable(R.drawable.heart_red))
 
 
             val artistPng = artist.id + ".png"
@@ -50,15 +51,29 @@ class ArtistsAdapter(private val artistsList: List<Artist>, private  val imagesM
                 onItemClickListener?.let { it(artist,imgPath) }
             }
 
+            likeBtn.setOnClickListener {
+                likeBtn.setImageDrawable(resources.getDrawable(R.drawable.heart_empty))
+                onHeartClickListener?.let { it(artist,position)  }
+            }
+
+
+
         }
     }
 
 
 
     private var onItemClickListener: ((Artist,String?) -> Unit)? = null
+    private var onHeartClickListener: ((Artist,Int) -> Unit)? = null
 
     fun setOnItemClickListener(listener: (Artist,String?) -> Unit) {
         onItemClickListener = listener
     }
+
+    fun setOnHeartClickListener (listener: (Artist,Int) -> Unit) {
+        onHeartClickListener = listener
+    }
+
+
 
 }

@@ -16,4 +16,10 @@ data class Event(
         var placeLng: Double,
     val artistReferencePath: String,
     val id: String? = null
-) : Serializable
+) : Serializable {
+
+    fun getEventString(): String = header.toLowerCase() + startDateTime.toLowerCase() +
+            shortDescription.toLowerCase() + ticketsLink.toLowerCase() + placeName.toLowerCase() +
+            placeAddress.toLowerCase()
+
+}

@@ -220,6 +220,8 @@ class EventFragment: Fragment(R.layout.event_fragment), OnMapReadyCallback, Dele
                 val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(event.ticketsLink))
                 startActivity(browserIntent)
             }
+        } else {
+            ticketLinkBtn.isEnabled = false
         }
     }
 

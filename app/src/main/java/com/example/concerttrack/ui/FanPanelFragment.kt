@@ -60,234 +60,239 @@ class FanPanelFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        allControls = listOf(logOutBtn)
 
-        comingEventsInfo.visibility = View.GONE
-        pastEventsInfo.visibility = View.GONE
-        noPastEventsInfo.visibility = View.GONE
-        noComingEventsInfo.visibility = View.GONE
-
-        comingEventsList.clear()
-        pastEventsList.clear()
-        artistsMap.clear()
-        imagesMap.clear()
-
-        val user = fanMainPageViewModel.getCurrentUser()
-        fanMainPageViewModel.getFanData(user.email!!)
-
-
-        val itemTouchHelperCallbackComing =object: ItemTouchHelper.SimpleCallback(0,
-            ItemTouchHelper.LEFT)
-        {
-            override fun onMove(
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder,
-                target: RecyclerView.ViewHolder
-            ): Boolean {
-                return false
-            }
-
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val position  = viewHolder.adapterPosition
-                val event = comingEventsList[position]
-                comingEventsList.removeAt(position)
-                comingEventsAdapter.notifyItemRemoved(position)
-                fanGoingEventsViewModel.removeEventFromMine(fan!!.id,event)
-                if(comingEventsList.size>0) {
-                    noComingEventsInfo.visibility = View.GONE
-                }
-                else {
-                    noComingEventsInfo.visibility = View.VISIBLE
-                }
-
-                Snackbar.make(view,getString(R.string.eventDeleted), Snackbar.LENGTH_LONG).apply {
-                    setAction(getString(R.string.undo)) {
-                        comingEventsList.add(position,event)
-                        comingEventsAdapter.notifyItemInserted(position)
-                        fanGoingEventsViewModel.addEventToMine(fan!!.id,event)
-                        if(comingEventsList.size>0) {
-                            noComingEventsInfo.visibility = View.GONE
-                        }
-                        else {
-                            noComingEventsInfo.visibility = View.VISIBLE
-                        }
-
-                    }
-                    show()
-                }
-            }
-
-            override fun onChildDraw(c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder,
-                                     dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean
-            ) {
-
-                RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
-                    .addSwipeLeftBackgroundColor(ContextCompat.getColor(activity?.applicationContext!!,R.color.red))
-                    .addSwipeLeftActionIcon(R.drawable.delete_icon)
-                    .create()
-                    .decorate();
-
-                super.onChildDraw(c, recyclerView, viewHolder,
-                    dX, dY, actionState, isCurrentlyActive
-                )
-            }
-        }
-
-        ItemTouchHelper(itemTouchHelperCallbackComing).apply {
-            attachToRecyclerView(comingEventsRV)
-        }
-
-        val itemTouchHelperCallbackPast =object: ItemTouchHelper.SimpleCallback(0,
-            ItemTouchHelper.LEFT)
-        {
-            override fun onMove(
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder,
-                target: RecyclerView.ViewHolder
-            ): Boolean {
-                return false
-            }
-
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val position  = viewHolder.adapterPosition
-                val event = pastEventsList[position]
-                pastEventsList.removeAt(position)
-                pastEventsAdapter.notifyItemRemoved(position)
-                fanGoingEventsViewModel.removeEventFromMine(fan!!.id,event)
-                if(pastEventsList.size>0) {
-                    noComingEventsInfo.visibility = View.GONE
-                }
-                else {
-                    noComingEventsInfo.visibility = View.VISIBLE
-                }
-
-                Snackbar.make(view,getString(R.string.eventDeleted), Snackbar.LENGTH_LONG).apply {
-                    setAction(getString(R.string.undo)) {
-                        pastEventsList.add(position,event)
-                        pastEventsAdapter.notifyItemInserted(position)
-                        fanGoingEventsViewModel.addEventToMine(fan!!.id,event)
-                        if(pastEventsList.size>0) {
-                            noComingEventsInfo.visibility = View.GONE
-                        }
-                        else {
-                            noComingEventsInfo.visibility = View.VISIBLE
-                        }
-
-                    }
-                    show()
-                }
-            }
-
-            override fun onChildDraw(c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder,
-                                     dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean
-            ) {
-
-                RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
-                    .addSwipeLeftBackgroundColor(ContextCompat.getColor(activity?.applicationContext!!,R.color.red))
-                    .addSwipeLeftActionIcon(R.drawable.delete_icon)
-                    .create()
-                    .decorate();
-
-                super.onChildDraw(c, recyclerView, viewHolder,
-                    dX, dY, actionState, isCurrentlyActive
-                )
-            }
-        }
-
-        ItemTouchHelper(itemTouchHelperCallbackPast).apply {
-            attachToRecyclerView(pastEventsRV)
-        }
-
-
-        fanMainPageViewModel.isFanLoggedOut.observe(viewLifecycleOwner, Observer<Boolean>{ loggedOut ->
-            if(loggedOut) {
-                startActivity(Intent(activity, MainPageActivity::class.java))
-                activity?.finish()
-            }
-
-        })
-
-        fanMainPageViewModel.fanLiveData.observe(viewLifecycleOwner, Observer {
-            when(it) {
-                is Resource.Loading -> {
-                    showSpinnerAndDisableControls()
-                }
-                is Resource.Success -> {
-                    welcomeTxt.text = """Cześć ${it.data.name}!"""
-                    fan = it.data
-                    fanGoingEventsViewModel.retrieveFanEvents(it.data.id)
-                }
-                is Resource.Failure -> {
-                    hideSpinnerAndEnableControls()
-                    Toast.makeText(activity,it.throwable.message,Toast.LENGTH_LONG).show()
-                }
-            }
-        })
-
-        fanGoingEventsViewModel.fanEventsLiveData.observe(viewLifecycleOwner, Observer {
-            when(it) {
-                is Resource.Loading -> {
-                }
-                is Resource.Success -> {
-                    comingEventsList.clear()
-                    pastEventsList.clear()
-
-                    comingEventsList.addAll(0,it.data.first)
-                    pastEventsList.addAll(0,it.data.second)
-
-
-                    if(it.data.first.size == 0 && it.data.second.size ==0) {
-                        comingEventsInfo.visibility = View.VISIBLE
-                        pastEventsInfo.visibility = View.VISIBLE
-                        noComingEventsInfo.visibility = View.VISIBLE
-                        noPastEventsInfo.visibility = View.VISIBLE
-                        hideSpinnerAndEnableControls()
-                    } else {
-                        fanGoingEventsViewModel.getArtistsMap()
-                    }
-                }
-                is Resource.Failure -> {
-                    hideSpinnerAndEnableControls()
-                    Toast.makeText(activity,it.throwable.message,Toast.LENGTH_LONG).show()
-                }
-            }
-        })
-
-        fanGoingEventsViewModel.artistsMap.observe(viewLifecycleOwner, Observer {
-            when(it) {
-                is Resource.Loading -> {
-                    Log.i("fan","3")
-                }
-                is Resource.Success -> {
-                    artistsMap.putAll(it.data)
-                    fanGoingEventsViewModel.getArtistPhotos()
-                }
-                is Resource.Failure -> {
-                    hideSpinnerAndEnableControls()
-                }
-            }
-        })
-
-        fanGoingEventsViewModel.imagesMap.observe(viewLifecycleOwner, Observer {
-            when(it) {
-                is Resource.Loading -> {
-                }
-                is Resource.Success -> {
-                    imagesMap.putAll(it.data)
-                    setComingEventsRecyclerView()
-                    setPastEventsRecyclerView()
-                    hideSpinnerAndEnableControls()
-                }
-                is Resource.Failure -> {
-                    hideSpinnerAndEnableControls()
-                }
-            }
-        })
 
         if(userType == Constants.FAN_TYPE_STR) {
+
             logOutBtn.setOnClickListener {
                 fanMainPageViewModel.logOut()
             }
+
+            allControls = listOf(logOutBtn)
+
+            comingEventsInfo.visibility = View.GONE
+            pastEventsInfo.visibility = View.GONE
+            noPastEventsInfo.visibility = View.GONE
+            noComingEventsInfo.visibility = View.GONE
+
+            comingEventsList.clear()
+            pastEventsList.clear()
+            artistsMap.clear()
+            imagesMap.clear()
+
+            val user = fanMainPageViewModel.getCurrentUser()
+            fanMainPageViewModel.getFanData(user.email!!)
+
+
+            val itemTouchHelperCallbackComing =object: ItemTouchHelper.SimpleCallback(0,
+                ItemTouchHelper.LEFT)
+            {
+                override fun onMove(
+                    recyclerView: RecyclerView,
+                    viewHolder: RecyclerView.ViewHolder,
+                    target: RecyclerView.ViewHolder
+                ): Boolean {
+                    return false
+                }
+
+                override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                    val position  = viewHolder.adapterPosition
+                    val event = comingEventsList[position]
+                    comingEventsList.removeAt(position)
+                    comingEventsAdapter.notifyItemRemoved(position)
+                    fanGoingEventsViewModel.removeEventFromMine(fan!!.id,event)
+                    if(comingEventsList.size>0) {
+                        noComingEventsInfo.visibility = View.GONE
+                    }
+                    else {
+                        noComingEventsInfo.visibility = View.VISIBLE
+                    }
+
+                    Snackbar.make(view,getString(R.string.eventDeleted), Snackbar.LENGTH_LONG).apply {
+                        setAction(getString(R.string.undo)) {
+                            comingEventsList.add(position,event)
+                            comingEventsAdapter.notifyItemInserted(position)
+                            fanGoingEventsViewModel.addEventToMine(fan!!.id,event)
+                            if(comingEventsList.size>0) {
+                                noComingEventsInfo.visibility = View.GONE
+                            }
+                            else {
+                                noComingEventsInfo.visibility = View.VISIBLE
+                            }
+
+                        }
+                        show()
+                    }
+                }
+
+                override fun onChildDraw(c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder,
+                                         dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean
+                ) {
+
+                    RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+                        .addSwipeLeftBackgroundColor(ContextCompat.getColor(activity?.applicationContext!!,R.color.red))
+                        .addSwipeLeftActionIcon(R.drawable.delete_icon)
+                        .create()
+                        .decorate();
+
+                    super.onChildDraw(c, recyclerView, viewHolder,
+                        dX, dY, actionState, isCurrentlyActive
+                    )
+                }
+            }
+
+            ItemTouchHelper(itemTouchHelperCallbackComing).apply {
+                attachToRecyclerView(comingEventsRV)
+            }
+
+            val itemTouchHelperCallbackPast =object: ItemTouchHelper.SimpleCallback(0,
+                ItemTouchHelper.LEFT)
+            {
+                override fun onMove(
+                    recyclerView: RecyclerView,
+                    viewHolder: RecyclerView.ViewHolder,
+                    target: RecyclerView.ViewHolder
+                ): Boolean {
+                    return false
+                }
+
+                override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                    val position  = viewHolder.adapterPosition
+                    val event = pastEventsList[position]
+                    pastEventsList.removeAt(position)
+                    pastEventsAdapter.notifyItemRemoved(position)
+                    fanGoingEventsViewModel.removeEventFromMine(fan!!.id,event)
+                    if(pastEventsList.size>0) {
+                        noComingEventsInfo.visibility = View.GONE
+                    }
+                    else {
+                        noComingEventsInfo.visibility = View.VISIBLE
+                    }
+
+                    Snackbar.make(view,getString(R.string.eventDeleted), Snackbar.LENGTH_LONG).apply {
+                        setAction(getString(R.string.undo)) {
+                            pastEventsList.add(position,event)
+                            pastEventsAdapter.notifyItemInserted(position)
+                            fanGoingEventsViewModel.addEventToMine(fan!!.id,event)
+                            if(pastEventsList.size>0) {
+                                noComingEventsInfo.visibility = View.GONE
+                            }
+                            else {
+                                noComingEventsInfo.visibility = View.VISIBLE
+                            }
+
+                        }
+                        show()
+                    }
+                }
+
+                override fun onChildDraw(c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder,
+                                         dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean
+                ) {
+
+                    RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+                        .addSwipeLeftBackgroundColor(ContextCompat.getColor(activity?.applicationContext!!,R.color.red))
+                        .addSwipeLeftActionIcon(R.drawable.delete_icon)
+                        .create()
+                        .decorate();
+
+                    super.onChildDraw(c, recyclerView, viewHolder,
+                        dX, dY, actionState, isCurrentlyActive
+                    )
+                }
+            }
+
+            ItemTouchHelper(itemTouchHelperCallbackPast).apply {
+                attachToRecyclerView(pastEventsRV)
+            }
+
+
+            fanMainPageViewModel.isFanLoggedOut.observe(viewLifecycleOwner, Observer<Boolean>{ loggedOut ->
+                if(loggedOut) {
+                    startActivity(Intent(activity, MainPageActivity::class.java))
+                    activity?.finish()
+                }
+
+            })
+
+            fanMainPageViewModel.fanLiveData.observe(viewLifecycleOwner, Observer {
+                when(it) {
+                    is Resource.Loading -> {
+                        showSpinnerAndDisableControls()
+                    }
+                    is Resource.Success -> {
+                        welcomeTxt.text = """Cześć ${it.data.name}!"""
+                        fan = it.data
+                        fanGoingEventsViewModel.retrieveFanEvents(it.data.id)
+                    }
+                    is Resource.Failure -> {
+                        hideSpinnerAndEnableControls()
+                        Toast.makeText(activity,it.throwable.message,Toast.LENGTH_LONG).show()
+                    }
+                }
+            })
+
+            fanGoingEventsViewModel.fanEventsLiveData.observe(viewLifecycleOwner, Observer {
+                when(it) {
+                    is Resource.Loading -> {
+                    }
+                    is Resource.Success -> {
+                        comingEventsList.clear()
+                        pastEventsList.clear()
+
+                        comingEventsList.addAll(0,it.data.first)
+                        pastEventsList.addAll(0,it.data.second)
+
+
+                        if(it.data.first.size == 0 && it.data.second.size ==0) {
+                            comingEventsInfo.visibility = View.VISIBLE
+                            pastEventsInfo.visibility = View.VISIBLE
+                            noComingEventsInfo.visibility = View.VISIBLE
+                            noPastEventsInfo.visibility = View.VISIBLE
+                            hideSpinnerAndEnableControls()
+                        } else {
+                            fanGoingEventsViewModel.getArtistsMap()
+                        }
+                    }
+                    is Resource.Failure -> {
+                        hideSpinnerAndEnableControls()
+                        Toast.makeText(activity,it.throwable.message,Toast.LENGTH_LONG).show()
+                    }
+                }
+            })
+
+            fanGoingEventsViewModel.artistsMap.observe(viewLifecycleOwner, Observer {
+                when(it) {
+                    is Resource.Loading -> {
+                        Log.i("fan","3")
+                    }
+                    is Resource.Success -> {
+                        artistsMap.putAll(it.data)
+                        fanGoingEventsViewModel.getArtistPhotos()
+                    }
+                    is Resource.Failure -> {
+                        hideSpinnerAndEnableControls()
+                    }
+                }
+            })
+
+            fanGoingEventsViewModel.imagesMap.observe(viewLifecycleOwner, Observer {
+                when(it) {
+                    is Resource.Loading -> {
+                    }
+                    is Resource.Success -> {
+                        imagesMap.putAll(it.data)
+                        setComingEventsRecyclerView()
+                        setPastEventsRecyclerView()
+                        hideSpinnerAndEnableControls()
+                    }
+                    is Resource.Failure -> {
+                        hideSpinnerAndEnableControls()
+                    }
+                }
+            })
+
+
         }
 
         if(userType == Constants.GUEST_TYPE_STR) {

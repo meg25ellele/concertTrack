@@ -12,4 +12,8 @@ data class Artist(
     var youtubeLink:String = "",
     var spotifyLink: String = "",
     var myGenres: List<String>? = null
-) : Serializable
+) : Serializable {
+
+    fun getArtistString(): String = name.toLowerCase() + description.toLowerCase() + facebookLink.toLowerCase() +
+            youtubeLink.toLowerCase() + spotifyLink.toLowerCase() + myGenres.toString().toLowerCase()
+}

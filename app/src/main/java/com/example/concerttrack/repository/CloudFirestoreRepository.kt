@@ -361,6 +361,7 @@ class CloudFirestoreRepository(private val application: Application) {
     suspend fun retrieveComingEvents(): Resource.Success<MutableList<Event>> {
         val artistEvents = mutableListOf<Event>()
 
+
         val now = Date.from(ZonedDateTime.now().toInstant())
 
         val querySnapshot = firebaseFirestore.collection("events")
@@ -402,8 +403,12 @@ class CloudFirestoreRepository(private val application: Application) {
             .orderBy("startDateTime",Query.Direction.DESCENDING)
             .get().await()
 
+        Log.i("events",querySnapshot.size().toString())
 
         for(document in querySnapshot) {
+
+            Log.i("events",document.toString())
+
             val locationMap = document.get("location") as Map<String, Any>
             val placeName = locationMap["placeName"].toString()
             val placeAddress = locationMap["placeAddress"].toString()
@@ -433,7 +438,6 @@ class CloudFirestoreRepository(private val application: Application) {
         val artists = firebaseFirestore.collection("artists").get().await()
 
         for(artistSnapshot in artists) {
-
             val artist = Artist(artistSnapshot.id,
                 artistSnapshot.getString("email"),
                 artistSnapshot.getString("name")!!,
@@ -444,9 +448,9 @@ class CloudFirestoreRepository(private val application: Application) {
                 artistSnapshot.get("myGenres") as List<String>?)
 
 
+
             artistsMap.set("artists/" + artistSnapshot.id,artist)
         }
-
         return Resource.Success(artistsMap)
     }
 
@@ -463,10 +467,7 @@ class CloudFirestoreRepository(private val application: Application) {
         Log.i("artist","in")
         val artist = firebaseFirestore.document("artists/"+ artistID)
 
-        Log.i("artist",artist.toString())
         var fan = firebaseFirestore.collection("fans").document(fanID)
-
-        Log.i("artist",fan.toString())
         fan.update("favouritesArtists", FieldValue.arrayRemove(artist)).await()
         return Resource.Success(true)
     }
@@ -592,33 +593,36 @@ class CloudFirestoreRepository(private val application: Application) {
 
         for(eventReference in eventsReferences) {
             val document = firebaseFirestore.document(eventReference.path).get().await()
-
-            val locationMap = document.get("location") as Map<String, Any>
-            val placeName = locationMap["placeName"].toString()
-            val placeAddress = locationMap["placeAddress"].toString()
-            val placeGeoPoint = locationMap["placeLatLng"] as GeoPoint
-
-
-            val formatter = SimpleDateFormat(Constants.DATE_TIME_FORMAT)
-            val startDateTime =  formatter.format(document.getTimestamp("startDateTime")!!.toDate())
-
-            val fanEvent = Event(document.getString("header")!!,
-                startDateTime,
-                document.getString("shortDescription")!!,
-                document.getString("ticketsLink")!!,
-                placeName,placeAddress,placeGeoPoint.latitude,placeGeoPoint.longitude,
-                (document.get("artist") as DocumentReference).path,
-                document.id)
-
-            val parsedDate = ZonedDateTime.parse(fanEvent.startDateTime, Constants.DATE_TIME_FORMATTER)
-            if(parsedDate.isBefore(ZonedDateTime.now())) {
-                fanPastEvents.add(fanEvent)
+            if(!document.exists()) {
+                var fan = firebaseFirestore.collection("fans").document(fanID)
+                fan.update("myEvents",FieldValue.arrayRemove(eventReference)).await()
             } else {
-                fanComingEvents.add(fanEvent)
+                val locationMap = document.get("location") as Map<String, Any>
+                val placeName = locationMap["placeName"].toString()
+                val placeAddress = locationMap["placeAddress"].toString()
+                val placeGeoPoint = locationMap["placeLatLng"] as GeoPoint
+
+
+                val formatter = SimpleDateFormat(Constants.DATE_TIME_FORMAT)
+                val startDateTime =  formatter.format(document.getTimestamp("startDateTime")!!.toDate())
+
+                val fanEvent = Event(document.getString("header")!!,
+                    startDateTime,
+                    document.getString("shortDescription")!!,
+                    document.getString("ticketsLink")!!,
+                    placeName,placeAddress,placeGeoPoint.latitude,placeGeoPoint.longitude,
+                    (document.get("artist") as DocumentReference).path,
+                    document.id)
+
+                val parsedDate = ZonedDateTime.parse(fanEvent.startDateTime, Constants.DATE_TIME_FORMATTER)
+                if(parsedDate.isBefore(ZonedDateTime.now())) {
+                    fanPastEvents.add(fanEvent)
+                } else {
+                    fanComingEvents.add(fanEvent)
+                }
+
             }
-
         }
-
         fanPastEvents.sortWith(kotlin.Comparator { o1, o2 ->
             ZonedDateTime.parse(o2.startDateTime, Constants.DATE_TIME_FORMATTER).
             compareTo(ZonedDateTime.parse(o1.startDateTime, Constants.DATE_TIME_FORMATTER))})
@@ -638,30 +642,38 @@ class CloudFirestoreRepository(private val application: Application) {
 
         for(eventReference in eventsReferences) {
             val document = firebaseFirestore.document(eventReference.path).get().await()
+            if(!document.exists()) {
+                var fan = firebaseFirestore.collection("fans").document(fanID)
+                fan.update("interestedEvents",FieldValue.arrayRemove(eventReference)).await()
+            }
+            else {
+                val locationMap = document.get("location") as Map<String, Any>
+                val placeName = locationMap["placeName"].toString()
+                val placeAddress = locationMap["placeAddress"].toString()
+                val placeGeoPoint = locationMap["placeLatLng"] as GeoPoint
 
 
-            val locationMap = document.get("location") as Map<String, Any>
-            val placeName = locationMap["placeName"].toString()
-            val placeAddress = locationMap["placeAddress"].toString()
-            val placeGeoPoint = locationMap["placeLatLng"] as GeoPoint
+                val formatter = SimpleDateFormat(Constants.DATE_TIME_FORMAT)
+                val startDateTime =
+                    formatter.format(document.getTimestamp("startDateTime")!!.toDate())
 
+                val fanEvent = Event(
+                    document.getString("header")!!,
+                    startDateTime,
+                    document.getString("shortDescription")!!,
+                    document.getString("ticketsLink")!!,
+                    placeName, placeAddress, placeGeoPoint.latitude, placeGeoPoint.longitude,
+                    (document.get("artist") as DocumentReference).path,
+                    document.id
+                )
 
-            val formatter = SimpleDateFormat(Constants.DATE_TIME_FORMAT)
-            val startDateTime =  formatter.format(document.getTimestamp("startDateTime")!!.toDate())
-
-            val fanEvent = Event(document.getString("header")!!,
-                startDateTime,
-                document.getString("shortDescription")!!,
-                document.getString("ticketsLink")!!,
-                placeName,placeAddress,placeGeoPoint.latitude,placeGeoPoint.longitude,
-                (document.get("artist") as DocumentReference).path,
-                document.id)
-
-            val parsedDate = ZonedDateTime.parse(fanEvent.startDateTime, Constants.DATE_TIME_FORMATTER)
-            if(parsedDate.isBefore(ZonedDateTime.now())) {
-                fanPastEvents.add(fanEvent)
-            } else {
-                fanComingEvents.add(fanEvent)
+                val parsedDate =
+                    ZonedDateTime.parse(fanEvent.startDateTime, Constants.DATE_TIME_FORMATTER)
+                if (parsedDate.isBefore(ZonedDateTime.now())) {
+                    fanPastEvents.add(fanEvent)
+                } else {
+                    fanComingEvents.add(fanEvent)
+                }
             }
         }
 
@@ -683,7 +695,10 @@ class CloudFirestoreRepository(private val application: Application) {
 
         for(artistReference in artistsReferences) {
             val document = firebaseFirestore.document(artistReference.path).get().await()
-
+            if(!document.exists()) {
+                var fan = firebaseFirestore.collection("fans").document(fanID)
+                fan.update("favouritesArtists", FieldValue.arrayRemove(artistReference)).await()
+            }
             val artist = Artist(document.id,
                 document.getString("email"),
                 document.getString("name")!!,
@@ -696,6 +711,217 @@ class CloudFirestoreRepository(private val application: Application) {
             fanArtists.add(artist)
         }
         return Resource.Success(fanArtists)
+    }
+
+    suspend fun searchForArtists(word: String): Resource<Map<String,Artist>> {
+        val artistsMap = mutableMapOf<String,Artist>()
+
+        //getArtistsResult
+        val artistsDocuments = firebaseFirestore.collection("artists").get().await()
+
+        for(artistSnapshot in artistsDocuments) {
+            val artist = Artist(artistSnapshot.id,
+                artistSnapshot.getString("email"),
+                artistSnapshot.getString("name")!!,
+                artistSnapshot.getString("description")!!,
+                artistSnapshot.getString("facebookLink")!!,
+                artistSnapshot.getString("youtubeLink")!!,
+                artistSnapshot.getString("spotifyLink")!!,
+                artistSnapshot.get("myGenres") as List<String>?)
+
+            if(artist.getArtistString().contains(word)) {
+                artistsMap[artist.id] = artist
+            }
+        }
+        return Resource.Success(artistsMap)
+    }
+
+    suspend fun searchForEvents(word: String,artistsIdList: List<String>): Resource<Map<String,Any>> {
+        val comingEventsList = mutableListOf<Event>()
+        val pastEventsList = mutableListOf<Event>()
+
+        val now = Date.from(ZonedDateTime.now().toInstant())
+
+        //getComingEvents
+        val querySnapshotComingEvents = firebaseFirestore.collection("events")
+            .whereGreaterThan("startDateTime",now)
+            .orderBy("startDateTime",Query.Direction.ASCENDING)
+            .get().await()
+
+
+        for(document in querySnapshotComingEvents) {
+            val locationMap = document.get("location") as Map<String, Any>
+            val placeName = locationMap["placeName"].toString()
+            val placeAddress = locationMap["placeAddress"].toString()
+            val placeGeoPoint = locationMap["placeLatLng"] as GeoPoint
+
+            val formatter = SimpleDateFormat(Constants.DATE_TIME_FORMAT)
+            val startDateTime =  formatter.format(document.getTimestamp("startDateTime")!!.toDate())
+
+            val event = Event(document.getString("header")!!,
+                startDateTime,
+                document.getString("shortDescription")!!,
+                document.getString("ticketsLink")!!,
+                placeName,placeAddress,placeGeoPoint.latitude,placeGeoPoint.longitude,
+                (document.get("artist") as DocumentReference).path,
+                document.id)
+
+            val artistID =   (document.get("artist") as DocumentReference).path.replace("artists/","")
+
+            if(event.getEventString().contains(word) || artistsIdList.contains(artistID)) {
+                comingEventsList.add(event)
+            }
+        }
+
+        //getPastEvents
+        val querySnapshotPastEvents = firebaseFirestore.collection("events")
+            .whereLessThan("startDateTime",now)
+            .orderBy("startDateTime",Query.Direction.DESCENDING)
+            .get().await()
+
+
+        for(document in querySnapshotPastEvents) {
+            val locationMap = document.get("location") as Map<String, Any>
+            val placeName = locationMap["placeName"].toString()
+            val placeAddress = locationMap["placeAddress"].toString()
+            val placeGeoPoint = locationMap["placeLatLng"] as GeoPoint
+
+            val formatter = SimpleDateFormat(Constants.DATE_TIME_FORMAT)
+            val startDateTime =  formatter.format(document.getTimestamp("startDateTime")!!.toDate())
+
+            val event = Event(document.getString("header")!!,
+                startDateTime,
+                document.getString("shortDescription")!!,
+                document.getString("ticketsLink")!!,
+                placeName,placeAddress,placeGeoPoint.latitude,placeGeoPoint.longitude,
+                (document.get("artist") as DocumentReference).path,
+                document.id)
+
+            val artistID =   (document.get("artist") as DocumentReference).path.replace("artists/","")
+
+            if(event.getEventString().contains(word) || artistsIdList.contains(artistID)) {
+                pastEventsList.add(event)
+            }
+        }
+
+        return Resource.Success(mapOf("comingEventsList" to comingEventsList,
+                                "pastEventsList" to pastEventsList))
+    }
+
+    suspend fun hasFanFavouritesArtists(fanID: String): Resource<Boolean> {
+        val fanDocumentReference = firebaseFirestore.collection("fans").document(fanID).get().await()
+        val artistsReferences = fanDocumentReference.get("favouritesArtists") as List<DocumentReference>
+
+        return Resource.Success(artistsReferences.isNotEmpty())
+
+    }
+
+    suspend fun getFavouriteAndRecommendedArtists(fanID: String):Resource<Map<String,Any>> {
+        val favArtistsMap = mutableMapOf<String,Artist>()
+        val recommendedArtistsMap = mutableMapOf<String,Artist>()
+        var favGenresList = mutableListOf<String>()
+
+        val fanDocumentReference = firebaseFirestore.collection("fans").document(fanID).get().await()
+        val artistsReferences = fanDocumentReference.get("favouritesArtists") as List<DocumentReference>
+
+        for(artistReference in artistsReferences) {
+            val document = firebaseFirestore.document(artistReference.path).get().await()
+            if (!document.exists()) {
+                var fan = firebaseFirestore.collection("fans").document(fanID)
+                fan.update("favouritesArtists", FieldValue.arrayRemove(artistReference)).await()
+            }
+            val artist = Artist(
+                document.id,
+                document.getString("email"),
+                document.getString("name")!!,
+                document.getString("description")!!,
+                document.getString("facebookLink")!!,
+                document.getString("youtubeLink")!!,
+                document.getString("spotifyLink")!!,
+                document.get("myGenres") as List<String>?
+            )
+
+            if (document.get("myGenres") != null) {
+                val myGenres = document.get("myGenres")!! as List<String>
+                for (genre in myGenres) {
+                    favGenresList.add(genre)
+                }
+            }
+
+            favArtistsMap["artists/" + artist.id] = artist
+        }
+
+        val favGenresDistinct = (favGenresList as List<String>).distinct()
+
+        val artists = firebaseFirestore.collection("artists").get().await()
+
+        for(artistSnapshot in artists) {
+
+            val artist = Artist(artistSnapshot.id,
+                artistSnapshot.getString("email"),
+                artistSnapshot.getString("name")!!,
+                artistSnapshot.getString("description")!!,
+                artistSnapshot.getString("facebookLink")!!,
+                artistSnapshot.getString("youtubeLink")!!,
+                artistSnapshot.getString("spotifyLink")!!,
+                artistSnapshot.get("myGenres") as List<String>?)
+
+            if(!favArtistsMap.contains("artists/" + artist.id)) {
+                if (artistSnapshot.get("myGenres") != null) {
+                    val myGenres = artistSnapshot.get("myGenres")!! as List<String>
+                    for (favGenre in favGenresDistinct) {
+                        if(myGenres.contains(favGenre)) {
+                            recommendedArtistsMap["artists/" + artistSnapshot.id] = artist
+                            break
+                        }
+                    }
+                }
+            }
+
+        }
+
+        return Resource.Success(mapOf("favArtistsMap" to favArtistsMap,
+            "recommendedArtistsMap" to recommendedArtistsMap))
+    }
+
+    suspend fun getRecommendedEvents(favArtistsMap: Map<String,
+            Artist>,recommendedArtistsMap: Map<String,Artist>): Resource<List<Event>>{
+        val comingEventsList = mutableListOf<Event>()
+
+        val now = Date.from(ZonedDateTime.now().toInstant())
+
+        //getComingEvents
+        val querySnapshotComingEvents = firebaseFirestore.collection("events")
+            .whereGreaterThan("startDateTime",now)
+            .orderBy("startDateTime",Query.Direction.ASCENDING)
+            .get().await()
+
+
+        for(document in querySnapshotComingEvents) {
+            val locationMap = document.get("location") as Map<String, Any>
+            val placeName = locationMap["placeName"].toString()
+            val placeAddress = locationMap["placeAddress"].toString()
+            val placeGeoPoint = locationMap["placeLatLng"] as GeoPoint
+
+            val formatter = SimpleDateFormat(Constants.DATE_TIME_FORMAT)
+            val startDateTime =  formatter.format(document.getTimestamp("startDateTime")!!.toDate())
+
+            val event = Event(document.getString("header")!!,
+                startDateTime,
+                document.getString("shortDescription")!!,
+                document.getString("ticketsLink")!!,
+                placeName,placeAddress,placeGeoPoint.latitude,placeGeoPoint.longitude,
+                (document.get("artist") as DocumentReference).path,
+                document.id)
+
+            val artistID =   (document.get("artist") as DocumentReference).path
+
+            if(favArtistsMap.containsKey(artistID) || recommendedArtistsMap.containsKey(artistID)) {
+                comingEventsList.add(event)
+            }
+        }
+        return Resource.Success(comingEventsList)
+
     }
  }
 

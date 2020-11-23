@@ -2,7 +2,6 @@ package com.example.concerttrack.ui
 
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -12,9 +11,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.concerttrack.R
-import com.example.concerttrack.adapters.ArtistsAdapter
+import com.example.concerttrack.adapters.FavArtistsAdapter
 import com.example.concerttrack.models.Artist
-import com.example.concerttrack.models.Event
 import com.example.concerttrack.models.Fan
 import com.example.concerttrack.util.Resource
 import com.example.concerttrack.viewmodel.FanFavouritesArtistsViewModel
@@ -36,7 +34,7 @@ class FavouritesArtistsFragment: Fragment(R.layout.favourites_artists_fragment) 
     val favArtistList = mutableListOf<Artist>()
     val imagesMap = mutableMapOf<String, Uri>()
 
-    lateinit var artistsAdapter: ArtistsAdapter
+    lateinit var artistsAdapter: FavArtistsAdapter
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -111,10 +109,9 @@ class FavouritesArtistsFragment: Fragment(R.layout.favourites_artists_fragment) 
     }
 
     private fun setRecyclerView() {
-        artistsAdapter = ArtistsAdapter(favArtistList,imagesMap)
+        artistsAdapter = FavArtistsAdapter(favArtistList,imagesMap)
         favouritesArtistsRV.adapter = artistsAdapter
         favouritesArtistsRV.layoutManager = GridLayoutManager(activity,2)
-        //favouritesArtistsRV.addItemDecoration(Grid(2, d(10), true))
         favouritesArtistsRV.itemAnimator = DefaultItemAnimator()
 
         artistsAdapter.setOnItemClickListener {artist: Artist, imgPath:String? ->
@@ -155,8 +152,6 @@ class FavouritesArtistsFragment: Fragment(R.layout.favourites_artists_fragment) 
                  show()
             }
         }
-
-
     }
 
     private fun showSpinnerAndDisableControls() {

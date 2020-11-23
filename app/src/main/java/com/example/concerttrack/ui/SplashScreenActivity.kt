@@ -8,6 +8,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.concerttrack.R
 import com.example.concerttrack.util.Resource
+import com.example.concerttrack.viewmodel.EventsViewModel
+import com.example.concerttrack.viewmodel.SearchViewModel
 import com.example.concerttrack.viewmodel.SplashScreenViewModel
 
 class SplashScreenActivity : AppCompatActivity() {
