@@ -2,18 +2,13 @@ package com.example.concerttrack.ui
 
 
 import android.os.Bundle
-import android.util.Patterns
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.concerttrack.R
-import com.example.concerttrack.util.Resource
-import com.example.concerttrack.util.content
-import com.example.concerttrack.util.showToastError
-import com.example.concerttrack.util.showToastSuccess
+import com.example.concerttrack.util.*
 import com.example.concerttrack.viewmodel.FanRegisterViewModel
-import com.google.firebase.auth.FirebaseUser
 import kotlinx.android.synthetic.main.activity_fan_register.*
 import kotlinx.android.synthetic.main.activity_login.registerBtn
 
@@ -97,14 +92,14 @@ class FanRegisterActivity : AppCompatActivity() {
 
 
     private fun validateUserName(): Boolean {
-        val isEmpty: Boolean = text_input_userName.editText?.content()?.isEmpty() ?: true
+        val nameEditText = text_input_userName.editText.toString()
 
         return when {
-            isEmpty -> {
+            FormValidators.isInputEmpty(nameEditText) -> {
                 text_input_userName.error = getString(R.string.notAllowedEmptyField)
                 false
             }
-            text_input_userName.editText?.length()!! > 15 -> {
+            FormValidators.isFanNameTooLong(nameEditText) -> {
                 text_input_userName.error = getString(R.string.tooLongUserName)
                 false
             }
@@ -117,12 +112,12 @@ class FanRegisterActivity : AppCompatActivity() {
     }
 
     private fun validateEmail(): Boolean {
-        val isEmpty: Boolean = text_input_email.editText?.content()?.isEmpty() ?: true
+        val emailEditText = text_input_email.editText.toString()
 
-        return if(isEmpty) {
+        return if(FormValidators.isInputEmpty(emailEditText)) {
             text_input_email.error = getString(R.string.notAllowedEmptyField)
             false
-        }else if(!Patterns.EMAIL_ADDRESS.matcher(text_input_email.editText?.content()).matches()) {
+        }else if(!FormValidators.isEmailCorrect(emailEditText)) {
             text_input_email.error = getString(R.string.badlyFormattedEmail)
             false
         } else {
@@ -132,9 +127,9 @@ class FanRegisterActivity : AppCompatActivity() {
     }
 
     private fun validatePassword(): Boolean {
-        val isEmpty: Boolean = text_input_password.editText?.content()?.isEmpty() ?: true
+        val passwordEditText = text_input_password.editText.toString()
 
-        return if(isEmpty) {
+        return if(FormValidators.isInputEmpty(passwordEditText)) {
             text_input_password.error = getString(R.string.notAllowedEmptyField)
             false
         } else {
@@ -144,9 +139,9 @@ class FanRegisterActivity : AppCompatActivity() {
     }
 
     private fun validateRepeatPassword(): Boolean {
-        val isEmpty: Boolean = text_input_repeat_password.editText?.content()?.isEmpty() ?: true
+        val repeatPasswordEditText = text_input_repeat_password.editText.toString()
 
-        return if(isEmpty) {
+        return if(FormValidators.isInputEmpty(repeatPasswordEditText)) {
             text_input_repeat_password.error = getString(R.string.notAllowedEmptyField)
             false
         } else {
@@ -156,10 +151,12 @@ class FanRegisterActivity : AppCompatActivity() {
     }
 
     private fun validateEqualPassword(): Boolean {
-        val password = text_input_password.editText?.content()
-        val repeatPassword = text_input_repeat_password.editText?.content()
 
-        return if(repeatPassword!=password) {
+
+        val password = text_input_password.editText.toString()
+        val repeatPassword = text_input_repeat_password.editText.toString()
+
+        return if(!FormValidators.arePasswordsEquals(password,repeatPassword)) {
             text_input_password.error = getString(R.string.differentPasswordMsg)
             text_input_repeat_password.error = getString(R.string.differentPasswordMsg)
             false
@@ -167,7 +164,9 @@ class FanRegisterActivity : AppCompatActivity() {
     }
 
     private fun validatePasswordLength(): Boolean {
-        return if (text_input_password.editText?.length()!!  <6){
+        val password = text_input_password.editText.toString()
+
+        return if (FormValidators.isPasswordTooShort(password)){
             text_input_password.error = getString(R.string.passwordTooShort)
             text_input_repeat_password.error = getString(R.string.passwordTooShort)
             false

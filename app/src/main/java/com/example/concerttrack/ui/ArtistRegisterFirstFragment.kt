@@ -1,7 +1,6 @@
 package com.example.concerttrack.ui
 
 import android.os.Bundle
-import android.util.Patterns
 import android.view.View
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
@@ -9,10 +8,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.example.concerttrack.R
-import com.example.concerttrack.util.Resource
-import com.example.concerttrack.util.content
-import com.example.concerttrack.util.showToastError
-import com.example.concerttrack.util.showToastSuccess
+import com.example.concerttrack.util.*
 import com.example.concerttrack.viewmodel.ArtistRegisterViewModel
 import kotlinx.android.synthetic.main.fragment_artist_register_first.*
 import kotlinx.android.synthetic.main.fragment_artist_register_first.progressBar
@@ -134,10 +130,10 @@ class ArtistRegisterFirstFragment: Fragment(R.layout.fragment_artist_register_fi
 
     }
     private fun validateUserName(): Boolean {
-        val isEmpty: Boolean = text_input_userName.editText?.content()?.isEmpty() ?: true
+        val nameEditText = text_input_userName.editText.toString()
 
         return when {
-            isEmpty -> {
+            FormValidators.isInputEmpty(nameEditText) -> {
                 text_input_userName.error = getString(R.string.notAllowedEmptyField)
                 false
             }
@@ -149,12 +145,12 @@ class ArtistRegisterFirstFragment: Fragment(R.layout.fragment_artist_register_fi
     }
 
     private fun validateEmail(): Boolean {
-        val isEmpty: Boolean = text_input_email.editText?.content()?.isEmpty() ?: true
+        val emailTextView = text_input_email.editText.toString()
 
-        return if(isEmpty) {
+        return if(FormValidators.isInputEmpty(emailTextView)) {
             text_input_email.error = getString(R.string.notAllowedEmptyField)
             false
-        }else if(!Patterns.EMAIL_ADDRESS.matcher(text_input_email.editText?.content()).matches()) {
+        }else if(!FormValidators.isEmailCorrect(emailTextView)) {
             text_input_email.error = getString(R.string.badlyFormattedEmail)
             false
         } else {
@@ -164,9 +160,9 @@ class ArtistRegisterFirstFragment: Fragment(R.layout.fragment_artist_register_fi
     }
 
     private fun validatePassword(): Boolean {
-        val isEmpty: Boolean = text_input_password.editText?.content()?.isEmpty() ?: true
+        val passwordEditText = text_input_password.editText.toString()
 
-        return if(isEmpty) {
+        return if(FormValidators.isInputEmpty(passwordEditText)) {
             text_input_password.error = getString(R.string.notAllowedEmptyField)
             false
         } else {
@@ -176,9 +172,9 @@ class ArtistRegisterFirstFragment: Fragment(R.layout.fragment_artist_register_fi
     }
 
     private fun validateRepeatPassword(): Boolean {
-        val isEmpty: Boolean = text_input_repeat_password.editText?.content()?.isEmpty() ?: true
+        val repeatPasswordEditText = text_input_repeat_password.editText.toString()
 
-        return if(isEmpty) {
+        return if(FormValidators.isInputEmpty(repeatPasswordEditText)) {
             text_input_repeat_password.error = getString(R.string.notAllowedEmptyField)
             false
         } else {
@@ -188,10 +184,10 @@ class ArtistRegisterFirstFragment: Fragment(R.layout.fragment_artist_register_fi
     }
 
     private fun validateEqualPassword(): Boolean {
-        val password = text_input_password.editText?.content()
-        val repeatPassword = text_input_repeat_password.editText?.content()
+        val password = text_input_password.editText.toString()
+        val repeatPassword = text_input_repeat_password.editText.toString()
 
-        return if(repeatPassword!=password) {
+        return if(FormValidators.arePasswordsEquals(password,repeatPassword)) {
             text_input_password.error = getString(R.string.differentPasswordMsg)
             text_input_repeat_password.error = getString(R.string.differentPasswordMsg)
             false
@@ -199,7 +195,9 @@ class ArtistRegisterFirstFragment: Fragment(R.layout.fragment_artist_register_fi
     }
 
     private fun validatePasswordLength(): Boolean {
-        return if (text_input_password.editText?.length()!!  <6){
+        val passwordEditText = text_input_password.editText.toString()
+
+        return if (FormValidators.isPasswordTooShort(passwordEditText)){
             text_input_password.error = getString(R.string.passwordTooShort)
             text_input_repeat_password.error = getString(R.string.passwordTooShort)
             false

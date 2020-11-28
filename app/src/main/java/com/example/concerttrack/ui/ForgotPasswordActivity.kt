@@ -120,18 +120,17 @@ class ForgotPasswordActivity : AppCompatActivity() {
     }
 
     private fun isEmailCorrect():Boolean {
-        val isEmpty: Boolean = text_input_email.editText?.content()?.isEmpty() ?: true
+        val emailEditText = text_input_email.editText.toString()
 
-        if(isEmpty) {
+        return if(FormValidators.isInputEmpty(emailEditText)) {
             text_input_email.error = getString(R.string.notAllowedEmptyField)
-            return false
-        }else if(!Patterns.EMAIL_ADDRESS.matcher(text_input_email.editText?.content()).matches()) {
+            false
+        }else if(!FormValidators.isEmailCorrect(emailEditText)) {
             text_input_email.error = getString(R.string.badlyFormattedEmail)
-            return false
-        }
-        else {
+            false
+        } else {
             text_input_email.error = null
-            return true
+            true
         }
     }
 

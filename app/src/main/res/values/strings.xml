@@ -19,6 +19,7 @@
     <string name="artistName">Nazwa artysty/zespołu</string>
     <string name="notAllowedEmptyField">Pole nie może być puste</string>
     <string name="tooLongUserName">Za długa nazwa użytkownika</string>
+    <string name="tooLongPlaceName">Za długa nazwa miejsca</string>
     <string name="passwordTooShort">Hasło powinno mieć przynajmniej 6 znaków</string>
     <string name="differentPasswordMsg">Hasła powinny być takie same </string>
     <string name="badlyFormattedEmail">Niepoprawny adres email</string>
@@ -98,4 +99,5 @@
     <string name="noSearchedComingEventsInfo">Brak wydarzeń spełniających, kryteria wyszukiwania</string>
     <string name="noSearchedPastEventsInfo">Brak wydarzeń spełniających, kryteria wyszukiwania</string>
     <string name="pastEventsInfo">Minione wydarzenia:</string>
+    <string name="wrongPasswordError">Niepoprawne hasło</string>
 </resources>

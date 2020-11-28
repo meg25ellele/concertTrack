@@ -15,7 +15,6 @@ class StorageRepository(private val application: Application) {
     suspend fun addPhotoToStorage(image: Uri, userUID: String): Resource.Success<Boolean> {
         val imageRef = firebaseStorage.reference.child("$userUID.png")
         imageRef.putFile(image).await()
-
         return Resource.Success(true)
     }
 

@@ -14,15 +14,13 @@ import androidx.navigation.findNavController
 import com.example.concerttrack.R
 import com.example.concerttrack.util.Constants
 import com.example.concerttrack.util.Constants.Companion.DATE_FORMAT
-import com.example.concerttrack.util.Constants.Companion.DATE_TIME_FORMATTER
 import com.example.concerttrack.util.Constants.Companion.TIME_FORMAT
-import com.example.concerttrack.util.content
+import com.example.concerttrack.util.FormValidators
 import com.example.concerttrack.util.showToastError
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import kotlinx.android.synthetic.main.add_event_first_fragment.*
 import java.text.SimpleDateFormat
-import java.time.ZonedDateTime
 import java.util.*
 
 class AddEventFirstFragment:Fragment(R.layout.add_event_first_fragment){
@@ -129,6 +127,8 @@ class AddEventFirstFragment:Fragment(R.layout.add_event_first_fragment){
         ).show()
     }
 
+
+    //check header, time, date, and description
     private fun isFormCorrect(): Boolean {
         val isHeaderOk = validateHeader()
         val isTimeOk = validateTime()
@@ -142,15 +142,20 @@ class AddEventFirstFragment:Fragment(R.layout.add_event_first_fragment){
         }
     }
 
+    private fun isInputNotFilled(input: String, defaultInput: String) : Boolean {
+        if(input.trim()==defaultInput) return true
+        return false
+    }
+
     private fun validateHeader(): Boolean {
-        val isEmpty: Boolean = text_input_event_header.editText?.content()?.isEmpty() ?: true
+        val headerEditText = text_input_event_header.editText.toString()
 
         return when {
-            isEmpty -> {
+            FormValidators.isInputEmpty(headerEditText) -> {
                 text_input_event_header.error = getString(R.string.notAllowedEmptyField)
                 false
             }
-            text_input_event_header.editText?.length()!! > 50 -> {
+            FormValidators.isHeaderTooLong(headerEditText)-> {
                 text_input_event_header.error = getString(R.string.tooLongHeader)
                 false
             }
@@ -162,8 +167,10 @@ class AddEventFirstFragment:Fragment(R.layout.add_event_first_fragment){
     }
 
     private fun validateDate(): Boolean {
+        val datePlainText = datePT.text.toString()
+
         return when {
-            datePT.text.toString()=="dd-MM-yyyy" -> {
+            isInputNotFilled(datePlainText,"dd-MM-yyyy") -> {
                 dataInfo.setTextColor(ContextCompat.getColor(activity?.applicationContext!!,R.color.red))
                 datePT.background = ContextCompat.getDrawable(activity?.applicationContext!!,R.drawable.edit_text_background_red)
                 false
@@ -176,9 +183,12 @@ class AddEventFirstFragment:Fragment(R.layout.add_event_first_fragment){
         }
     }
 
+
     private fun validateTime(): Boolean {
+        val timePlainText = timePT.text.toString()
+
         return when {
-            timePT.text.toString()=="HH:mm" -> {
+            isInputNotFilled(timePlainText,"HH:mm") -> {
                 timeInfo.setTextColor(ContextCompat.getColor(activity?.applicationContext!!,R.color.red))
                 timePT.background = ContextCompat.getDrawable(activity?.applicationContext!!,R.drawable.edit_text_background_red)
                 false
@@ -191,10 +201,10 @@ class AddEventFirstFragment:Fragment(R.layout.add_event_first_fragment){
         }
     }
     private fun validateDesc():Boolean {
-        val isEmpty: Boolean = eventDescET.text.isEmpty()
+        val descEditText = eventDescET.text.toString()
 
         return when {
-            isEmpty -> {
+            isInputNotFilled(descEditText,"") -> {
                 eventDescInfo.setTextColor(ContextCompat.getColor(activity?.applicationContext!!,R.color.red))
                 emptyDescMsg.visibility = View.VISIBLE
                 eventDescET.background = ContextCompat.getDrawable(activity?.applicationContext!!,R.drawable.edit_text_background_red)
@@ -210,10 +220,8 @@ class AddEventFirstFragment:Fragment(R.layout.add_event_first_fragment){
     }
 
     private fun isDateAndTimeOK():Boolean {
-        val dateAndTime =datePT.text.toString() + " " + timePT.text.toString()
-        val parsedDate = ZonedDateTime.parse(dateAndTime, DATE_TIME_FORMATTER)
 
-        return if(parsedDate.isBefore(ZonedDateTime.now())){
+        return if(!FormValidators.isDateTimeOK(datePT.text.toString(),timePT.text.toString())){
             dataInfo.setTextColor(ContextCompat.getColor(activity?.applicationContext!!,R.color.red))
             timeInfo.setTextColor(ContextCompat.getColor(activity?.applicationContext!!,R.color.red))
             timePT.background = ContextCompat.getDrawable(activity?.applicationContext!!,R.drawable.edit_text_background_red)
@@ -227,7 +235,5 @@ class AddEventFirstFragment:Fragment(R.layout.add_event_first_fragment){
             datePT.background = ContextCompat.getDrawable(activity?.applicationContext!!,R.drawable.edit_text_background)
             true
         }
-
     }
-
 }

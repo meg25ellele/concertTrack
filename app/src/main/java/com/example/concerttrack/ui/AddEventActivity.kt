@@ -17,9 +17,7 @@ class AddEventActivity : AppCompatActivity() {
 
     }
 
-
     override fun onBackPressed() {
         //super.onBackPressed()
-
     }
 }

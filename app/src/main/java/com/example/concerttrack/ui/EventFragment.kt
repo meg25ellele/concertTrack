@@ -215,7 +215,7 @@ class EventFragment: Fragment(R.layout.event_fragment), OnMapReadyCallback, Dele
             startActivity(intent)
         }
 
-        if(event.ticketsLink!="") {
+        if(event.ticketsLink.trim()!="") {
             ticketLinkBtn.setOnClickListener {
                 val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(event.ticketsLink))
                 startActivity(browserIntent)

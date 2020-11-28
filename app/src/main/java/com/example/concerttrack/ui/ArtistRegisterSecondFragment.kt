@@ -154,10 +154,6 @@ class ArtistRegisterSecondFragment: Fragment(R.layout.fragment_artist_register_s
          return myGenres
      }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        Log.i("saved","saved")
-    }
 
     private fun loadPhotoFromGallery(){
 

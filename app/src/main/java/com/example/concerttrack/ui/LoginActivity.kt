@@ -12,6 +12,7 @@ import com.example.concerttrack.R
 import com.example.concerttrack.util.*
 import com.example.concerttrack.viewmodel.LoginViewModel
 import kotlinx.android.synthetic.main.activity_login.*
+import java.text.Normalizer
 
 
 class LoginActivity : AppCompatActivity() {
@@ -132,6 +133,7 @@ class LoginActivity : AppCompatActivity() {
                    when(it.throwable.javaClass.simpleName) {
                        "FirebaseAuthInvalidCredentialsException" -> {
                            this.showToastError(R.string.wrongPassword)
+                           text_input_password.error = getString(R.string.wrongPasswordError)
                        }
                         "FirebaseAuthInvalidUserException" -> {
                             this.showToastError(R.string.noSuchAccount)
@@ -176,31 +178,29 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun validateEmail(): Boolean {
-       val isEmpty: Boolean = text_input_email.editText?.content()?.isEmpty() ?: true
+        val emailEditText = text_input_email.editText.toString()
 
-        if(isEmpty) {
+        return if(FormValidators.isInputEmpty(emailEditText)) {
             text_input_email.error = getString(R.string.notAllowedEmptyField)
-            return false
-        }else if(!Patterns.EMAIL_ADDRESS.matcher(text_input_email.editText?.content()).matches()) {
+            false
+        }else if(!FormValidators.isEmailCorrect(emailEditText)) {
             text_input_email.error = getString(R.string.badlyFormattedEmail)
-            return false
-        }
-        else {
+            false
+        } else {
             text_input_email.error = null
-            return true
+            true
         }
     }
 
     private fun validatePassword(): Boolean {
-        val isEmpty: Boolean = text_input_password.editText?.content()?.isEmpty() ?: true
+        val passwordEditText = text_input_password.editText.toString()
 
-        if(isEmpty) {
+        return if(FormValidators.isInputEmpty(passwordEditText)) {
             text_input_password.error = getString(R.string.notAllowedEmptyField)
-            return false
-        }
-        else {
+            false
+        } else {
             text_input_password.error = null
-            return true
+            true
         }
     }
 

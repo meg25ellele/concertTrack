@@ -172,14 +172,14 @@ class ArtistEventSettingsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun validateHeader(): Boolean {
-        val isEmpty: Boolean = text_input_event_header.editText?.content()?.isEmpty() ?: true
+        val headerEditText = text_input_event_header.editText.toString()
 
         return when {
-            isEmpty -> {
+            FormValidators.isInputEmpty(headerEditText) -> {
                 text_input_event_header.error = getString(R.string.notAllowedEmptyField)
                 false
             }
-            text_input_event_header.editText?.length()!! > 50 -> {
+            FormValidators.isHeaderTooLong(headerEditText) -> {
                 text_input_event_header.error = getString(R.string.tooLongHeader)
                 false
             }
@@ -191,10 +191,10 @@ class ArtistEventSettingsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun validateDesc():Boolean {
-        val isEmpty: Boolean = eventDescET.text.isEmpty()
+        val descriptionEditText = eventDescET.text.toString()
 
         return when {
-            isEmpty -> {
+            FormValidators.isInputEmpty(descriptionEditText) -> {
                 eventDescInfo.setTextColor(ContextCompat.getColor(this,R.color.red))
                 emptyDescMsg.visibility = View.VISIBLE
                 eventDescET.background = ContextCompat.getDrawable(this,R.drawable.edit_text_background_red)
@@ -210,15 +210,15 @@ class ArtistEventSettingsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun validatePlaceName(): Boolean {
-        val isEmpty: Boolean = text_input_placeName.editText?.content()?.isEmpty() ?: true
+        val placeNameEditText = text_input_placeName.editText.toString()
 
         return when {
-            isEmpty -> {
+            FormValidators.isInputEmpty(placeNameEditText) -> {
                 text_input_placeName.error = getString(R.string.notAllowedEmptyField)
                 false
             }
-            text_input_placeName.editText?.length()!! > 40 -> {
-                text_input_placeName.error = getString(R.string.tooLongUserName)
+            FormValidators.isPlaceNameTooLong(placeNameEditText) -> {
+                text_input_placeName.error = getString(R.string.tooLongPlaceName)
                 false
             }
             else -> {

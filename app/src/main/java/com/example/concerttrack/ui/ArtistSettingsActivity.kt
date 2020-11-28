@@ -173,7 +173,7 @@ class ArtistSettingsActivity : AppCompatActivity() {
 
         saveChangesBtn.setOnClickListener {
             if(isDataEdited()) {
-                if(validateUserName() && userName.text.toString() != artist?.name) {
+                if(validateUserName() && FormValidators.isNameChanged(userName.text.toString(),artist!!.name)) {
                     artistSettingsViewModel.alreadyExists(userName.text.toString())
                 }
                 else {
@@ -189,10 +189,11 @@ class ArtistSettingsActivity : AppCompatActivity() {
     }
 
     private fun validateUserName(): Boolean {
-        val isEmpty: Boolean = text_input_userName.editText?.content()?.isEmpty() ?: true
+        val nameEditText = text_input_userName.editText.toString()
+
 
         return when {
-            isEmpty -> {
+            FormValidators.isInputEmpty(nameEditText) -> {
                 text_input_userName.error = getString(R.string.notAllowedEmptyField)
                 false
             }

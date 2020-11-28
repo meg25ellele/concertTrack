@@ -271,15 +271,15 @@ class AddEventSecondFragment:Fragment(R.layout.add_event_second_fragment), OnMap
     }
 
     private fun validatePlaceName(): Boolean {
-        val isEmpty: Boolean = text_input_placeName.editText?.content()?.isEmpty() ?: true
+        val placeNameEditText = text_input_placeName.editText.toString()
 
         return when {
-            isEmpty -> {
+            FormValidators.isInputEmpty(placeNameEditText) -> {
                 text_input_placeName.error = getString(R.string.notAllowedEmptyField)
                 false
             }
-            text_input_placeName.editText?.length()!! > 40 -> {
-                text_input_placeName.error = getString(R.string.tooLongUserName)
+            FormValidators.isPlaceNameTooLong(placeNameEditText) -> {
+                text_input_placeName.error = getString(R.string.tooLongPlaceName)
                 false
             }
             else -> {
@@ -290,7 +290,8 @@ class AddEventSecondFragment:Fragment(R.layout.add_event_second_fragment), OnMap
     }
 
     private fun validatePlaceAddress():Boolean {
-        return if(placeAddressInput.text == resources.getString(R.string.empty)) {
+        val placeAddress = placeAddressInfo.text.toString()
+        return if(FormValidators.isInputEmpty(placeAddress)) {
             relLayout1.background = ContextCompat.getDrawable(activity?.applicationContext!!,R.drawable.red_border)
             false
         } else  {
