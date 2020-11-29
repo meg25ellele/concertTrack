@@ -5,6 +5,7 @@ import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -16,6 +17,7 @@ import com.example.concerttrack.util.Constants
 import com.example.concerttrack.util.Constants.Companion.DATE_FORMAT
 import com.example.concerttrack.util.Constants.Companion.TIME_FORMAT
 import com.example.concerttrack.util.FormValidators
+import com.example.concerttrack.util.content
 import com.example.concerttrack.util.showToastError
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
@@ -148,7 +150,7 @@ class AddEventFirstFragment:Fragment(R.layout.add_event_first_fragment){
     }
 
     private fun validateHeader(): Boolean {
-        val headerEditText = text_input_event_header.editText.toString()
+        val headerEditText = text_input_event_header.editText?.content().toString()
 
         return when {
             FormValidators.isInputEmpty(headerEditText) -> {
@@ -156,6 +158,7 @@ class AddEventFirstFragment:Fragment(R.layout.add_event_first_fragment){
                 false
             }
             FormValidators.isHeaderTooLong(headerEditText)-> {
+                Log.i("header",headerEditText)
                 text_input_event_header.error = getString(R.string.tooLongHeader)
                 false
             }

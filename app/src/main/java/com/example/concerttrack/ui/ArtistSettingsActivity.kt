@@ -189,8 +189,7 @@ class ArtistSettingsActivity : AppCompatActivity() {
     }
 
     private fun validateUserName(): Boolean {
-        val nameEditText = text_input_userName.editText.toString()
-
+        val nameEditText = text_input_userName.editText?.content().toString()
 
         return when {
             FormValidators.isInputEmpty(nameEditText) -> {

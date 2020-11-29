@@ -120,7 +120,7 @@ class ForgotPasswordActivity : AppCompatActivity() {
     }
 
     private fun isEmailCorrect():Boolean {
-        val emailEditText = text_input_email.editText.toString()
+        val emailEditText = text_input_email.editText?.content().toString()
 
         return if(FormValidators.isInputEmpty(emailEditText)) {
             text_input_email.error = getString(R.string.notAllowedEmptyField)

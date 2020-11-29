@@ -172,7 +172,7 @@ class ArtistEventSettingsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun validateHeader(): Boolean {
-        val headerEditText = text_input_event_header.editText.toString()
+        val headerEditText = text_input_event_header.editText?.content().toString()
 
         return when {
             FormValidators.isInputEmpty(headerEditText) -> {
@@ -210,7 +210,7 @@ class ArtistEventSettingsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun validatePlaceName(): Boolean {
-        val placeNameEditText = text_input_placeName.editText.toString()
+        val placeNameEditText = text_input_placeName.editText?.content().toString()
 
         return when {
             FormValidators.isInputEmpty(placeNameEditText) -> {

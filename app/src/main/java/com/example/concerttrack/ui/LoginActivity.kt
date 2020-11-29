@@ -178,7 +178,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun validateEmail(): Boolean {
-        val emailEditText = text_input_email.editText.toString()
+        val emailEditText = text_input_email.editText?.content().toString()
 
         return if(FormValidators.isInputEmpty(emailEditText)) {
             text_input_email.error = getString(R.string.notAllowedEmptyField)
@@ -193,7 +193,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun validatePassword(): Boolean {
-        val passwordEditText = text_input_password.editText.toString()
+        val passwordEditText = text_input_password.editText?.content().toString()
 
         return if(FormValidators.isInputEmpty(passwordEditText)) {
             text_input_password.error = getString(R.string.notAllowedEmptyField)

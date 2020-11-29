@@ -271,7 +271,7 @@ class AddEventSecondFragment:Fragment(R.layout.add_event_second_fragment), OnMap
     }
 
     private fun validatePlaceName(): Boolean {
-        val placeNameEditText = text_input_placeName.editText.toString()
+        val placeNameEditText = text_input_placeName.editText?.content().toString()
 
         return when {
             FormValidators.isInputEmpty(placeNameEditText) -> {
