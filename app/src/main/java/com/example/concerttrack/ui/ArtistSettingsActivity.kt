@@ -11,6 +11,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker
+import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -54,7 +55,12 @@ class ArtistSettingsActivity : AppCompatActivity() {
 
         artistSettingsViewModel.retrieveMusicGenres(myGenresString)
 
+
         allControls = listOf(text_input_userName,addAvatarBtn,shortDesc,fbLink,ytLink,spotiLink,musicGenresRV,deleteAvatarBtn,saveChangesBtn)
+
+        userName.addTextChangedListener {
+            text_input_userName.error = null
+        }
 
         artistSettingsViewModel.musicGenresLiveData.observe(this, Observer {
             when(it) {

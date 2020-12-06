@@ -10,6 +10,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.example.concerttrack.R
@@ -62,6 +63,25 @@ class AddEventFirstFragment:Fragment(R.layout.add_event_first_fragment){
             }
         }
 
+        eventHeaderET.addTextChangedListener {
+            text_input_event_header.error = null
+        }
+
+        eventDescET.addTextChangedListener {
+            emptyDescMsg.visibility = View.INVISIBLE
+            eventDescInfo.setTextColor(ContextCompat.getColor(activity?.applicationContext!!,R.color.secondary_text_material_light))
+            eventDescET.background = ContextCompat.getDrawable(activity?.applicationContext!!,R.drawable.edit_text_background)
+        }
+
+        dateET.addTextChangedListener {
+            dataInfo.setTextColor(ContextCompat.getColor(activity?.applicationContext!!,R.color.secondary_text_material_light))
+            dateET.background = ContextCompat.getDrawable(activity?.applicationContext!!,R.drawable.edit_text_background)
+        }
+
+        timeET.addTextChangedListener {
+            timeInfo.setTextColor(ContextCompat.getColor(activity?.applicationContext!!,R.color.secondary_text_material_light))
+            timeET.background = ContextCompat.getDrawable(activity?.applicationContext!!,R.drawable.edit_text_background)
+        }
     }
 
     override fun onAttach(context: Context) {

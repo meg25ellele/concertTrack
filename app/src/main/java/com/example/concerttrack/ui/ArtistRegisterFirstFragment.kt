@@ -3,6 +3,7 @@ package com.example.concerttrack.ui
 import android.os.Bundle
 import android.view.View
 import androidx.core.os.bundleOf
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -36,6 +37,22 @@ class ArtistRegisterFirstFragment: Fragment(R.layout.fragment_artist_register_fi
             if(areInputValid()){
                 artistRegisterViewModel.alreadyExists(userName.text.toString())
             }
+        }
+
+        userName.addTextChangedListener {
+            text_input_userName.error = null
+        }
+
+        userEmail.addTextChangedListener {
+            text_input_email.error = null
+        }
+
+        userPassword.addTextChangedListener {
+            text_input_password.error = null
+        }
+
+        repeatPassword.addTextChangedListener {
+            text_input_repeat_password.error = null
         }
 
         artistRegisterViewModel.isNameTaken.observe(viewLifecycleOwner, Observer {

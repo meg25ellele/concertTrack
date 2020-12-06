@@ -6,6 +6,7 @@ import android.util.Patterns
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.concerttrack.R
@@ -48,6 +49,16 @@ class LoginActivity : AppCompatActivity() {
                 }
 
             }
+        }
+
+        mailLoginET.addTextChangedListener {
+            text_input_email.error = null
+
+        }
+
+        passwordLoginET.addTextChangedListener {
+            text_input_password.error = null
+
         }
 
         loginViewModel.artistFound.observe(this, Observer {

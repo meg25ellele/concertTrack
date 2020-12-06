@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Patterns
 import android.view.View
 import android.widget.Toast
+import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.concerttrack.R
@@ -32,6 +33,10 @@ class ForgotPasswordActivity : AppCompatActivity() {
         allControls = listOf(text_input_email, sendEmailBt)
 
         userType = intent.getStringExtra(Constants.USER_TYPE)!!
+
+        mailLoginET.addTextChangedListener {
+            text_input_email.error = null
+        }
 
         forgotPasswordViewModel.artistFound.observe(this, Observer {
             when(it) {

@@ -93,7 +93,6 @@ class ArtistEventSettingsActivity : AppCompatActivity(), OnMapReadyCallback {
             eventDescET.background = ContextCompat.getDrawable(this,R.drawable.edit_text_background)
         }
 
-
         eventHeaderET.addTextChangedListener {
             text_input_event_header.error = null
         }

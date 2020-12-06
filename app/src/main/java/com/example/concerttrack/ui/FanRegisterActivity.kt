@@ -4,13 +4,24 @@ package com.example.concerttrack.ui
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.concerttrack.R
 import com.example.concerttrack.util.*
 import com.example.concerttrack.viewmodel.FanRegisterViewModel
 import kotlinx.android.synthetic.main.activity_fan_register.*
+import kotlinx.android.synthetic.main.activity_fan_register.progressBar
+import kotlinx.android.synthetic.main.activity_fan_register.repeatPassword
+import kotlinx.android.synthetic.main.activity_fan_register.text_input_email
+import kotlinx.android.synthetic.main.activity_fan_register.text_input_password
+import kotlinx.android.synthetic.main.activity_fan_register.text_input_repeat_password
+import kotlinx.android.synthetic.main.activity_fan_register.text_input_userName
+import kotlinx.android.synthetic.main.activity_fan_register.userEmail
+import kotlinx.android.synthetic.main.activity_fan_register.userName
+import kotlinx.android.synthetic.main.activity_fan_register.userPassword
 import kotlinx.android.synthetic.main.activity_login.registerBtn
+import kotlinx.android.synthetic.main.fragment_artist_register_first.*
 
 
 class FanRegisterActivity : AppCompatActivity() {
@@ -25,6 +36,21 @@ class FanRegisterActivity : AppCompatActivity() {
 
         allControls = listOf(text_input_userName, text_input_email, text_input_password,text_input_repeat_password, registerBtn)
 
+        userName.addTextChangedListener {
+            text_input_userName.error = null
+        }
+
+        userEmail.addTextChangedListener {
+            text_input_email.error = null
+        }
+
+        userPassword.addTextChangedListener {
+            text_input_password.error = null
+        }
+
+        repeatPassword.addTextChangedListener {
+            text_input_repeat_password.error = null
+        }
 
         fanRegisterViewModel.registerUIDLiveData.observe(this, Observer {
             when(it) {

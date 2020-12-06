@@ -11,6 +11,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -28,8 +29,16 @@ import com.example.concerttrack.viewmodel.ArtistRegisterViewModel
 import com.squareup.picasso.Picasso
 import com.theartofdev.edmodo.cropper.CropImage
 import kotlinx.android.synthetic.main.fragment_artist_register_second.*
+import kotlinx.android.synthetic.main.fragment_artist_register_second.addAvatarBtn
+import kotlinx.android.synthetic.main.fragment_artist_register_second.avatarIV
+import kotlinx.android.synthetic.main.fragment_artist_register_second.deleteAvatarBtn
+import kotlinx.android.synthetic.main.fragment_artist_register_second.fbLink
+import kotlinx.android.synthetic.main.fragment_artist_register_second.musicGenresRV
 import kotlinx.android.synthetic.main.fragment_artist_register_second.progressBar
 import kotlinx.android.synthetic.main.fragment_artist_register_second.registerBtn
+import kotlinx.android.synthetic.main.fragment_artist_register_second.shortDesc
+import kotlinx.android.synthetic.main.fragment_artist_register_second.spotiLink
+import kotlinx.android.synthetic.main.fragment_artist_register_second.ytLink
 
 
 class ArtistRegisterSecondFragment: Fragment(R.layout.fragment_artist_register_second) {
