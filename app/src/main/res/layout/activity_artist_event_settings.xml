@@ -93,8 +93,8 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/text_input_event_header" />
 
-            <TextView
-                android:id="@+id/datePT"
+            <EditText
+                android:id="@+id/dateET"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
@@ -121,7 +121,7 @@
                 android:paddingTop="5sp"
                 android:paddingEnd="5sp"
                 android:paddingBottom="5sp"
-                app:layout_constraintStart_toEndOf="@+id/datePT"
+                app:layout_constraintStart_toEndOf="@+id/dateET"
                 app:layout_constraintTop_toBottomOf="@+id/dataInfo"
                 app:srcCompat="@drawable/calendar_icon" />
 
@@ -135,8 +135,8 @@
                 app:layout_constraintStart_toEndOf="@+id/dataInfo"
                 app:layout_constraintTop_toBottomOf="@+id/text_input_event_header" />
 
-            <TextView
-                android:id="@+id/timePT"
+            <EditText
+                android:id="@+id/timeET"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="50dp"
@@ -163,7 +163,7 @@
                 android:paddingTop="5sp"
                 android:paddingEnd="5sp"
                 android:paddingBottom="5sp"
-                app:layout_constraintStart_toEndOf="@+id/timePT"
+                app:layout_constraintStart_toEndOf="@+id/timeET"
                 app:layout_constraintTop_toBottomOf="@+id/timeInfo"
                 app:srcCompat="@drawable/time_icon" />
 
@@ -177,7 +177,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/timePT" />
+                app:layout_constraintTop_toBottomOf="@+id/timeET" />
 
             <EditText
                 android:id="@+id/eventDescET"

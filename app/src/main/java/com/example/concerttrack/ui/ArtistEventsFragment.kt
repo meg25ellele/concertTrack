@@ -16,6 +16,7 @@ import com.example.concerttrack.R
 import com.example.concerttrack.adapters.ArtistEventsAdapter
 import com.example.concerttrack.models.Artist
 import com.example.concerttrack.models.Event
+import com.example.concerttrack.util.EspressoIdlingResource
 import com.example.concerttrack.util.Resource
 import com.example.concerttrack.viewmodel.ArtistEventsViewModel
 import com.google.android.material.snackbar.Snackbar
@@ -105,7 +106,7 @@ class ArtistEventsFragment: Fragment(R.layout.artist_events_fragment) {
         }
 
         ItemTouchHelper(itemTouchHelperCallback).apply {
-            attachToRecyclerView(comingEventsRV)
+            attachToRecyclerView(comingArtistEventsRV)
         }
 
 
@@ -116,7 +117,6 @@ class ArtistEventsFragment: Fragment(R.layout.artist_events_fragment) {
                 is Resource.Success -> {
                     comingEventsList.clear()
                     comingEventsList.addAll(0,it.data)
-
                     setComingEventsRecyclerView()
                 }
                 is Resource.Failure-> {
@@ -132,6 +132,7 @@ class ArtistEventsFragment: Fragment(R.layout.artist_events_fragment) {
                     pastEventsList.clear()
                     pastEventsList.addAll(0,it.data)
                     setPastEventsRecyclerView()
+                    EspressoIdlingResource.decrement()
                 }
                 is Resource.Failure-> {
 
@@ -147,8 +148,8 @@ class ArtistEventsFragment: Fragment(R.layout.artist_events_fragment) {
 
     private fun setComingEventsRecyclerView() {
         comingEventsAdapter = ArtistEventsAdapter(comingEventsList,ArtistMainPageActivity.artist!!,null)
-        comingEventsRV.adapter = comingEventsAdapter
-        comingEventsRV.layoutManager =LinearLayoutManager(activity)
+        comingArtistEventsRV.adapter = comingEventsAdapter
+        comingArtistEventsRV.layoutManager =LinearLayoutManager(activity)
 
         comingEventsInfo.visibility = View.VISIBLE
 

@@ -102,7 +102,7 @@ class ArtistRegisterSecondFragment: Fragment(R.layout.fragment_artist_register_s
 
                     val myGenres = getMusicGenres()
 
-                    artistRegisterViewModel.addNewArtist(it.data,email,name,
+                    artistRegisterViewModel.addNewArtist(it.data,email.toLowerCase(),name,
                         shortDesc.text.toString(),fbLink.text.toString(),
                         ytLink.text.toString(),spotiLink.text.toString(),myGenres)
 

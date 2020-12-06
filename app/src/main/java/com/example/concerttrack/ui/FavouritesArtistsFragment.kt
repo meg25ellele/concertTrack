@@ -14,6 +14,7 @@ import com.example.concerttrack.R
 import com.example.concerttrack.adapters.FavArtistsAdapter
 import com.example.concerttrack.models.Artist
 import com.example.concerttrack.models.Fan
+import com.example.concerttrack.util.EspressoIdlingResource
 import com.example.concerttrack.util.Resource
 import com.example.concerttrack.viewmodel.FanFavouritesArtistsViewModel
 import com.example.concerttrack.viewmodel.FanMainPageViewModel
@@ -46,6 +47,7 @@ class FavouritesArtistsFragment: Fragment(R.layout.favourites_artists_fragment) 
         favArtistList.clear()
         imagesMap.clear()
 
+        EspressoIdlingResource.increment()
         val user = fanMainPageViewModel.getCurrentUser()
         fanMainPageViewModel.getFanData(user.email!!)
 
@@ -99,6 +101,7 @@ class FavouritesArtistsFragment: Fragment(R.layout.favourites_artists_fragment) 
                     favouritesArtistsInfo.visibility = View.VISIBLE
                     setRecyclerView()
                     hideSpinnerAndEnableControls()
+                    EspressoIdlingResource.decrement()
                 }
                 is Resource.Failure -> {
                     hideSpinnerAndEnableControls()

@@ -77,4 +77,13 @@ dependencies {
 
     implementation 'it.xabaras.android:recyclerview-swipedecorator:1.2.3'
     implementation "androidx.cardview:cardview:1.0.0"
+
+    testImplementation 'junit:junit:4.+'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    androidTestImplementation "androidx.test.espresso:espresso-contrib:3.3.0"
+    implementation "androidx.test.espresso:espresso-idling-resource:3.3.0"
+
+    androidTestImplementation 'androidx.test:rules:1.1.1'
+
 }

@@ -153,6 +153,7 @@ class AddEventSecondFragment:Fragment(R.layout.add_event_second_fragment), OnMap
                 actionId == EditorInfo.IME_ACTION_DONE ||
                     keyEvent.action == KeyEvent.ACTION_DOWN ||
                         keyEvent.action == KeyEvent.KEYCODE_ENTER) {
+                EspressoIdlingResource.increment()
                 geoLocate()
             }
             false
@@ -176,6 +177,7 @@ class AddEventSecondFragment:Fragment(R.layout.add_event_second_fragment), OnMap
 
         addEventBtn.setOnClickListener {
             if(areInputValid()) {
+                EspressoIdlingResource.increment()
                 addEventViewModel.addNewEvent(header,startDate + " " + startTime,description,ticketsLink,ArtistMainPageActivity.artistReference!!.path,
                     placeNameET.text.toString(),placeAddressInput.text.toString(),
                     eventAddress!!.latitude, eventAddress!!.longitude)
@@ -201,6 +203,7 @@ class AddEventSecondFragment:Fragment(R.layout.add_event_second_fragment), OnMap
             placeLocationBtn.visibility = View.VISIBLE
             placeAddressInfo.text = resources.getString(R.string.addressInfo)
             placeAddressInput.text = address.getAddressLine(0)
+            EspressoIdlingResource.decrement()
         } else  {
             this.showToastError(R.string.noPlaceFound)
         }

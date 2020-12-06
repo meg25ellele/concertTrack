@@ -363,7 +363,7 @@ class EventFragment: Fragment(R.layout.event_fragment), OnMapReadyCallback, Dele
         shortDescInput.text = event.shortDescription
         placeNameInput.text = event.placeName
         placeAddressInput.text = event.placeAddress
-        eventName.text = event.header
+        eventNameInFragment.text = event.header
 
         whenInput.text = event.startDateTime
     }
@@ -373,9 +373,9 @@ class EventFragment: Fragment(R.layout.event_fragment), OnMapReadyCallback, Dele
         iconParams.setMargins(16,110,0,0)
         eventIcon.layoutParams = iconParams
 
-        val nameParams: ConstraintLayout.LayoutParams = eventName.layoutParams as ConstraintLayout.LayoutParams
+        val nameParams: ConstraintLayout.LayoutParams = eventNameInFragment.layoutParams as ConstraintLayout.LayoutParams
         nameParams.setMargins(8,130,0,0)
-        eventName.layoutParams = nameParams
+        eventNameInFragment.layoutParams = nameParams
 
     }
 

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.WindowManager
 import androidx.navigation.findNavController
 import com.example.concerttrack.R
+import com.example.concerttrack.util.EspressoIdlingResource
 
 class AddEventActivity : AppCompatActivity() {
 

@@ -20,20 +20,20 @@ import com.example.concerttrack.models.Artist
 import com.example.concerttrack.models.Event
 import com.example.concerttrack.models.Fan
 import com.example.concerttrack.util.Constants
+import com.example.concerttrack.util.EspressoIdlingResource
 import com.example.concerttrack.util.Resource
 import com.example.concerttrack.viewmodel.FanMainPageViewModel
 import com.example.concerttrack.viewmodel.SearchViewModel
 import kotlinx.android.synthetic.main.search_fragment.*
 import kotlinx.android.synthetic.main.search_fragment.comingEventsInfo
 import kotlinx.android.synthetic.main.search_fragment.comingEventsRV
-import kotlinx.android.synthetic.main.search_fragment.favouritesArtistsRV
 import kotlinx.android.synthetic.main.search_fragment.noComingEventsInfo
 import kotlinx.android.synthetic.main.search_fragment.noPastEventsInfo
 import kotlinx.android.synthetic.main.search_fragment.pastEventsInfo
 import kotlinx.android.synthetic.main.search_fragment.pastEventsRV
-import kotlinx.android.synthetic.main.search_fragment.progressBar
 
 class SearchFragment : Fragment(R.layout.search_fragment) {
+
 
     private val searchViewModel: SearchViewModel by lazy { ViewModelProvider(this).get(
         SearchViewModel::class.java) }
@@ -98,6 +98,7 @@ class SearchFragment : Fragment(R.layout.search_fragment) {
                 keyEvent.action == KeyEvent.KEYCODE_ENTER) {
 
                 word = searchEventArtistET.text.toString().toLowerCase()
+                EspressoIdlingResource.countingIdlingResource.increment()
                 if(word.isNotEmpty()) {
                     noRecommendedInfo.visibility = View.GONE
                     artistList.clear()
@@ -297,6 +298,7 @@ class SearchFragment : Fragment(R.layout.search_fragment) {
                         setComingEventsRecyclerView(comingEventsList)
                         setPastEventsRecyclerView(pastEventsList)
                         setArtistRecyclerView(artistList)
+                        EspressoIdlingResource.countingIdlingResource.decrement()
                     } else {
                         setComingEventsRecyclerView(recommendedComingEventsList)
                         setArtistRecyclerView(recommendedArtistsList)
@@ -379,8 +381,8 @@ class SearchFragment : Fragment(R.layout.search_fragment) {
 
     private fun setArtistRecyclerView(artistList: List<Artist>) {
         artistsAdapter = ArtistsAdapter(artistList,imagesMap)
-        favouritesArtistsRV.adapter = artistsAdapter
-        favouritesArtistsRV.layoutManager = StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.HORIZONTAL)
+        artistsInSearchRV.adapter = artistsAdapter
+        artistsInSearchRV.layoutManager = StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.HORIZONTAL)
 
         artistsInfo.visibility = View.VISIBLE
         if(word.isEmpty()) {
@@ -410,13 +412,13 @@ class SearchFragment : Fragment(R.layout.search_fragment) {
     }
 
     private fun showSpinnerAndDisableControls() {
-        progressBar.visibility = View.VISIBLE
+        searchProgressBar.visibility = View.VISIBLE
         allControls.forEach { v -> v.isEnabled = false }
 
     }
 
     private  fun hideSpinnerAndEnableControls() {
-        progressBar.visibility = View.GONE
+        searchProgressBar.visibility = View.GONE
         allControls.forEach { v -> v.isEnabled = true }
     }
 

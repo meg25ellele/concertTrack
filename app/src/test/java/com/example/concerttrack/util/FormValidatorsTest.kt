@@ -13,7 +13,7 @@ class FormValidatorsTest {
         val time = "20:00"
 
         val actual = FormValidators.isDateTimeOK(date,time)
-        Assert.assertEquals(actual,true)
+        Assert.assertEquals(true,actual)
     }
 
     @Test
@@ -22,7 +22,7 @@ class FormValidatorsTest {
         val time = "20:00"
 
         val actual = FormValidators.isDateTimeOK(date,time)
-        Assert.assertEquals(actual,false)
+        Assert.assertEquals(false,actual)
     }
 
     @Test
@@ -30,7 +30,7 @@ class FormValidatorsTest {
         val header = "Wydarzenie na stadionie"
 
         val actual = FormValidators.isHeaderTooLong(header)
-        Assert.assertEquals(actual,false)
+        Assert.assertEquals(false,actual)
     }
 
     @Test
@@ -38,7 +38,7 @@ class FormValidatorsTest {
         val header = "To jest zdecydowanie za długa nazwa wydarzenia"
 
         val actual = FormValidators.isHeaderTooLong(header)
-        Assert.assertEquals(actual,true)
+        Assert.assertEquals(true,actual)
     }
 
     @Test
@@ -46,7 +46,7 @@ class FormValidatorsTest {
         val placeName = "Stary Klasztor"
 
         val actual = FormValidators.isPlaceNameTooLong(placeName)
-        Assert.assertEquals(actual,false)
+        Assert.assertEquals(false,actual)
     }
 
     @Test
@@ -54,7 +54,7 @@ class FormValidatorsTest {
         val placeName = "Stadion Narodowy w Warszawie, ulica Księcia Józefa Poniatowskiego"
 
         val actual = FormValidators.isHeaderTooLong(placeName)
-        Assert.assertEquals(actual,true)
+        Assert.assertEquals(true,actual)
     }
 
     @Test
@@ -62,7 +62,7 @@ class FormValidatorsTest {
         val header = ""
 
         val actual = FormValidators.isInputEmpty(header)
-        Assert.assertEquals(actual,true)
+        Assert.assertEquals(true,actual)
     }
 
     @Test
@@ -70,7 +70,7 @@ class FormValidatorsTest {
         val header = "Wydarzenie na stadionie"
 
         val actual = FormValidators.isInputEmpty(header)
-        Assert.assertEquals(actual,false)
+        Assert.assertEquals(false,actual)
     }
 
     @Test
@@ -78,7 +78,7 @@ class FormValidatorsTest {
         val fanName = "Katarzyna Elżbieta Kowalska"
 
         val actual = FormValidators.isFanNameTooLong(fanName)
-        Assert.assertEquals(actual,true)
+        Assert.assertEquals(true,actual)
     }
 
     @Test
@@ -86,7 +86,7 @@ class FormValidatorsTest {
         val fanName = "Ania"
 
         val actual = FormValidators.isFanNameTooLong(fanName)
-        Assert.assertEquals(actual,false)
+        Assert.assertEquals(false,actual)
     }
 
     @Test
@@ -95,7 +95,7 @@ class FormValidatorsTest {
         val secondPassword = "123456"
 
         val actual = FormValidators.arePasswordsEquals(firstPassword,secondPassword)
-        Assert.assertEquals(actual,true)
+        Assert.assertEquals(true,actual)
     }
 
     @Test
@@ -104,7 +104,7 @@ class FormValidatorsTest {
         val secondPassword = "123444"
 
         val actual = FormValidators.arePasswordsEquals(firstPassword,secondPassword)
-        Assert.assertEquals(actual,false)
+        Assert.assertEquals(false,actual)
     }
 
     @Test
@@ -112,7 +112,7 @@ class FormValidatorsTest {
         val password = "123"
 
         val actual = FormValidators.isPasswordTooShort(password)
-        Assert.assertEquals(actual,true)
+        Assert.assertEquals(true,actual)
     }
 
     @Test
@@ -120,7 +120,7 @@ class FormValidatorsTest {
         val password = "123456"
 
         val actual = FormValidators.isPasswordTooShort(password)
-        Assert.assertEquals(actual,false)
+        Assert.assertEquals(false,actual)
     }
 
     @Test
@@ -129,7 +129,7 @@ class FormValidatorsTest {
         val previousName = "Joanna"
 
         val actual = FormValidators.isNameChanged(newName,previousName)
-        Assert.assertEquals(actual,true)
+        Assert.assertEquals(true,actual)
     }
 
     @Test
@@ -138,7 +138,7 @@ class FormValidatorsTest {
         val previousName = "Ania"
 
         val actual = FormValidators.isNameChanged(newName,previousName)
-        Assert.assertEquals(actual,false)
+        Assert.assertEquals(false,actual)
     }
 
 }

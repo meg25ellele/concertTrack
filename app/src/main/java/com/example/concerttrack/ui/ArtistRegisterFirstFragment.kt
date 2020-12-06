@@ -72,7 +72,7 @@ class ArtistRegisterFirstFragment: Fragment(R.layout.fragment_artist_register_fi
                     showSpinnerAndDisableControls()
                 }
                 is Resource.Success -> {
-                    artistRegisterViewModel.addNewArtist(it.data,userEmail.text.toString(),userName.text.toString(),
+                    artistRegisterViewModel.addNewArtist(it.data,userEmail.text.toString().toLowerCase(),userName.text.toString(),
                         "","","","",null)
                 }
                 is Resource.Failure -> {
@@ -187,7 +187,7 @@ class ArtistRegisterFirstFragment: Fragment(R.layout.fragment_artist_register_fi
         val password = text_input_password.editText?.content().toString()
         val repeatPassword = text_input_repeat_password.editText?.content().toString()
 
-        return if(FormValidators.arePasswordsEquals(password,repeatPassword)) {
+        return if(!FormValidators.arePasswordsEquals(password,repeatPassword)) {
             text_input_password.error = getString(R.string.differentPasswordMsg)
             text_input_repeat_password.error = getString(R.string.differentPasswordMsg)
             false

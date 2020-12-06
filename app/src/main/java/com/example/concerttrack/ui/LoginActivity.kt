@@ -152,10 +152,10 @@ class LoginActivity : AppCompatActivity() {
 
                 when (userType) {
                     Constants.ARTIST_TYPE_STR -> {
-                        loginViewModel.findArtist(mailLoginET.text.toString())
+                        loginViewModel.findArtist(mailLoginET.text.toString().toLowerCase())
                     }
                     Constants.FAN_TYPE_STR -> {
-                        loginViewModel.findFan(mailLoginET.text.toString())
+                        loginViewModel.findFan(mailLoginET.text.toString().toLowerCase())
                     }
                 }
             }

@@ -38,7 +38,6 @@ import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.android.synthetic.main.activity_artist_event_settings.*
 import kotlinx.android.synthetic.main.activity_artist_event_settings.currentLocationBtn
 import kotlinx.android.synthetic.main.activity_artist_event_settings.dateBtn
-import kotlinx.android.synthetic.main.activity_artist_event_settings.datePT
 import kotlinx.android.synthetic.main.activity_artist_event_settings.eventDescET
 import kotlinx.android.synthetic.main.activity_artist_event_settings.eventHeaderET
 import kotlinx.android.synthetic.main.activity_artist_event_settings.exitBtn
@@ -52,7 +51,6 @@ import kotlinx.android.synthetic.main.activity_artist_event_settings.text_input_
 import kotlinx.android.synthetic.main.activity_artist_event_settings.text_input_placeName
 import kotlinx.android.synthetic.main.activity_artist_event_settings.ticketsLink
 import kotlinx.android.synthetic.main.activity_artist_event_settings.timeBtn
-import kotlinx.android.synthetic.main.activity_artist_event_settings.timePT
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -151,7 +149,7 @@ class ArtistEventSettingsActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun getNewData(): Event {
 
         val header = eventHeaderET.text.toString()
-        val starDateTime = datePT.text.toString() + " " + timePT.text.toString()
+        val starDateTime = dateET.text.toString() + " " + timeET.text.toString()
         val shortDescription = eventDescET.text.toString()
         val ticketsLink = ticketsLink.text.toString()
         val placeName = placeNameET.text.toString()
@@ -232,8 +230,8 @@ class ArtistEventSettingsActivity : AppCompatActivity(), OnMapReadyCallback {
         val spitedDateTime = event.startDateTime.split(" ")
 
        return eventHeaderET.text.toString() != event.header ||
-               datePT.text != spitedDateTime[0] ||
-               timePT.text != spitedDateTime[1] ||
+               dateET.text.toString() != spitedDateTime[0] ||
+               timeET.text.toString() != spitedDateTime[1] ||
                eventDescET.text.toString() != event.shortDescription ||
                ticketsLink.text.toString() != event.ticketsLink ||
                placeNameET.text.toString() != event.placeName ||
@@ -318,7 +316,7 @@ class ArtistEventSettingsActivity : AppCompatActivity(), OnMapReadyCallback {
             cal.set(Calendar.DAY_OF_MONTH, day)
             val date = cal.time
             val formatter  = SimpleDateFormat(Constants.DATE_FORMAT)
-            datePT.text = formatter.format(date)
+            dateET.setText(formatter.format(date))
         }
 
         DatePickerDialog(
@@ -338,7 +336,7 @@ class ArtistEventSettingsActivity : AppCompatActivity(), OnMapReadyCallback {
             cal.set(Calendar.MINUTE, minute)
             val time = cal.time
             val formater  = SimpleDateFormat(Constants.TIME_FORMAT)
-            timePT.text = formater.format(time)
+            timeET.setText(formater.format(time))
         }
 
         TimePickerDialog(
@@ -442,8 +440,8 @@ class ArtistEventSettingsActivity : AppCompatActivity(), OnMapReadyCallback {
         eventHeaderET.setText(event.header)
 
         val spitedDateTime = event.startDateTime.split(" ")
-        datePT.text = spitedDateTime[0]
-        timePT.text = spitedDateTime[1]
+        dateET.setText(spitedDateTime[0])
+        timeET.setText(spitedDateTime[1])
 
         eventDescET.setText(event.shortDescription)
         ticketsLink.setText(event.ticketsLink)

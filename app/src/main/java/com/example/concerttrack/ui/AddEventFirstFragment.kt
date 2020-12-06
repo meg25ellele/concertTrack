@@ -51,7 +51,7 @@ class AddEventFirstFragment:Fragment(R.layout.add_event_first_fragment){
         nextBtn.setOnClickListener {
             if(isFormCorrect()) {
                 val bundle = bundleOf(getString(R.string.header) to eventHeaderET.text.toString(),
-                getString(R.string.startDate) to datePT.text.toString(), getString(R.string.startTime) to timePT.text.toString(),
+                getString(R.string.startDate) to dateET.text.toString(), getString(R.string.startTime) to timeET.text.toString(),
                 getString(R.string.description) to eventDescET.text.toString(),
                 getString(R.string.ticketsLink) to ticketsLink.text.toString())
 
@@ -97,7 +97,7 @@ class AddEventFirstFragment:Fragment(R.layout.add_event_first_fragment){
             cal.set(Calendar.DAY_OF_MONTH, day)
             val date = cal.time
             val formatter  = SimpleDateFormat(DATE_FORMAT)
-            datePT.text = formatter.format(date)
+            dateET.setText(formatter.format(date))
         }
 
         DatePickerDialog(
@@ -117,7 +117,7 @@ class AddEventFirstFragment:Fragment(R.layout.add_event_first_fragment){
             cal.set(Calendar.MINUTE, minute)
             val time = cal.time
             val formater  = SimpleDateFormat(TIME_FORMAT)
-            timePT.text = formater.format(time)
+            timeET.setText(formater.format(time))
         }
 
         TimePickerDialog(
@@ -170,17 +170,17 @@ class AddEventFirstFragment:Fragment(R.layout.add_event_first_fragment){
     }
 
     private fun validateDate(): Boolean {
-        val datePlainText = datePT.text.toString()
+        val datePlainText = dateET.text.toString()
 
         return when {
             isInputNotFilled(datePlainText,"dd-MM-yyyy") -> {
                 dataInfo.setTextColor(ContextCompat.getColor(activity?.applicationContext!!,R.color.red))
-                datePT.background = ContextCompat.getDrawable(activity?.applicationContext!!,R.drawable.edit_text_background_red)
+                dateET.background = ContextCompat.getDrawable(activity?.applicationContext!!,R.drawable.edit_text_background_red)
                 false
             }
             else ->  {
                 dataInfo.setTextColor(ContextCompat.getColor(activity?.applicationContext!!,R.color.secondary_text_material_light))
-                datePT.background = ContextCompat.getDrawable(activity?.applicationContext!!,R.drawable.edit_text_background)
+                dateET.background = ContextCompat.getDrawable(activity?.applicationContext!!,R.drawable.edit_text_background)
                 true
             }
         }
@@ -188,17 +188,17 @@ class AddEventFirstFragment:Fragment(R.layout.add_event_first_fragment){
 
 
     private fun validateTime(): Boolean {
-        val timePlainText = timePT.text.toString()
+        val timePlainText = timeET.text.toString()
 
         return when {
             isInputNotFilled(timePlainText,"HH:mm") -> {
                 timeInfo.setTextColor(ContextCompat.getColor(activity?.applicationContext!!,R.color.red))
-                timePT.background = ContextCompat.getDrawable(activity?.applicationContext!!,R.drawable.edit_text_background_red)
+                timeET.background = ContextCompat.getDrawable(activity?.applicationContext!!,R.drawable.edit_text_background_red)
                 false
             }
             else ->  {
                 timeInfo.setTextColor(ContextCompat.getColor(activity?.applicationContext!!,R.color.secondary_text_material_light))
-                timePT.background = ContextCompat.getDrawable(activity?.applicationContext!!,R.drawable.edit_text_background)
+                timeET.background = ContextCompat.getDrawable(activity?.applicationContext!!,R.drawable.edit_text_background)
                 true
             }
         }
@@ -224,18 +224,18 @@ class AddEventFirstFragment:Fragment(R.layout.add_event_first_fragment){
 
     private fun isDateAndTimeOK():Boolean {
 
-        return if(!FormValidators.isDateTimeOK(datePT.text.toString(),timePT.text.toString())){
+        return if(!FormValidators.isDateTimeOK(dateET.text.toString(),timeET.text.toString())){
             dataInfo.setTextColor(ContextCompat.getColor(activity?.applicationContext!!,R.color.red))
             timeInfo.setTextColor(ContextCompat.getColor(activity?.applicationContext!!,R.color.red))
-            timePT.background = ContextCompat.getDrawable(activity?.applicationContext!!,R.drawable.edit_text_background_red)
-            datePT.background = ContextCompat.getDrawable(activity?.applicationContext!!,R.drawable.edit_text_background_red)
+            timeET.background = ContextCompat.getDrawable(activity?.applicationContext!!,R.drawable.edit_text_background_red)
+            dateET.background = ContextCompat.getDrawable(activity?.applicationContext!!,R.drawable.edit_text_background_red)
             this.showToastError(R.string.wrong_start_time)
             false
         } else {
             dataInfo.setTextColor(ContextCompat.getColor(activity?.applicationContext!!,R.color.secondary_text_material_light))
             timeInfo.setTextColor(ContextCompat.getColor(activity?.applicationContext!!,R.color.secondary_text_material_light))
-            timePT.background = ContextCompat.getDrawable(activity?.applicationContext!!,R.drawable.edit_text_background)
-            datePT.background = ContextCompat.getDrawable(activity?.applicationContext!!,R.drawable.edit_text_background)
+            timeET.background = ContextCompat.getDrawable(activity?.applicationContext!!,R.drawable.edit_text_background)
+            dateET.background = ContextCompat.getDrawable(activity?.applicationContext!!,R.drawable.edit_text_background)
             true
         }
     }

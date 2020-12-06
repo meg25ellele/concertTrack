@@ -45,7 +45,7 @@ class ArtistViewFragment: Fragment(R.layout.artist_view_fragment) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        allControls = listOf(likeBtn)
+        allControls = listOf(addToFavBtn)
 
         artist = arguments?.getSerializable("artist") as Artist
         loadData()
@@ -102,7 +102,7 @@ class ArtistViewFragment: Fragment(R.layout.artist_view_fragment) {
 
     private fun loadData() {
 
-        nameTV.text = artist!!.name
+        artistNameTV.text = artist!!.name
         descTV.text = artist!!.description
 
         var genres = "?????"
@@ -115,7 +115,8 @@ class ArtistViewFragment: Fragment(R.layout.artist_view_fragment) {
         }
         genresTV.text = genres
 
-        val imgPath  = arguments?.getString("imgPath")
+        val imgPath
+                = arguments?.getString("imgPath")
         if(imgPath !=null) {
             Picasso.get().load(imgPath.toUri()).into(avatarIV)
         }
@@ -124,24 +125,24 @@ class ArtistViewFragment: Fragment(R.layout.artist_view_fragment) {
         }
 
         if(!arguments?.getBoolean("isFan")!!) {
-            likeBtn.visibility = View.GONE
+            addToFavBtn.visibility = View.GONE
         } else {
             favouriteArtist = FanMainPageActivity.fan!!.favouritesArtists.contains("artists/" + artist.id)
 
             if(favouriteArtist) {
-                likeBtn.setImageDrawable(resources.getDrawable(R.drawable.heart_red))
+                addToFavBtn.setImageDrawable(resources.getDrawable(R.drawable.heart_red))
             }
 
-            likeBtn.setOnClickListener{
+            addToFavBtn.setOnClickListener{
                 if(favouriteArtist) {
-                    likeBtn.setImageDrawable(resources.getDrawable(R.drawable.heart_empty))
+                    addToFavBtn.setImageDrawable(resources.getDrawable(R.drawable.heart_empty))
                     fanFavouritesArtistsViewModel.removeArtistFromFavourites(FanMainPageActivity.fan!!.id,artist.id)
                     FanMainPageActivity.fan?.favouritesArtists?.remove("artists/" + artist.id)
                     favouriteArtist = false
                 } else {
                     fanFavouritesArtistsViewModel.addArtistToFavourites(FanMainPageActivity.fan!!.id,artist.id)
                     FanMainPageActivity.fan?.favouritesArtists?.add("artists/" + artist.id)
-                    likeBtn.setImageDrawable(resources.getDrawable(R.drawable.heart_red))
+                    addToFavBtn.setImageDrawable(resources.getDrawable(R.drawable.heart_red))
                     favouriteArtist = true
                 }
             }
